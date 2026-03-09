@@ -30,7 +30,7 @@
             overflow: hidden;
         }
 
-        /* ================= NUEVO: MOTOR DE VIDEO DE FONDO ================= */
+        /* ================= MOTOR DE VIDEO DE FONDO ================= */
         .video-container {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -42,19 +42,19 @@
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             object-fit: cover;
-            /* Bajamos el brillo para que la interfaz resalte y se lea bien */
             filter: brightness(0.35); 
             transition: opacity 0.5s ease;
         }
 
-        /* Contenedor principal con Glassmorphism */
+        /* ================= CONTENEDOR GLASSMORPHISM MEJORADO ================= */
         .player-container {
             width: 380px;
             padding: 30px;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            /* Cristal más transparente y fino */
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 30px;
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8);
             text-align: center;
@@ -103,7 +103,7 @@
         /* Barra de progreso */
         .progress-container {
             width: 100%;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             padding: 10px 0; 
             cursor: pointer;
         }
@@ -123,7 +123,7 @@
             width: 0%;
             pointer-events: none; 
             transition: background-color 1s ease;
-            box-shadow: 0 0 10px var(--primary-color); /* Brillo neón suave */
+            box-shadow: 0 0 10px var(--primary-color);
         }
 
         .time-info {
@@ -136,11 +136,19 @@
             pointer-events: none;
         }
 
-        /* Controles */
+        /* ================= CONTROLES ORDENADOS PERFECTAMENTE ================= */
         .controls {
             display: flex;
-            justify-content: space-between;
+            justify-content: space-between; /* Mantiene Shuffle y Repeat a los lados */
             align-items: center;
+            width: 100%;
+        }
+
+        /* Agrupamos los 3 botones centrales para que el de Play quede EXACTAMENTE en el medio */
+        .main-controls {
+            display: flex;
+            align-items: center;
+            gap: 25px; 
         }
 
         .btn {
@@ -160,15 +168,15 @@
         }
 
         .btn svg {
-            width: 24px;
-            height: 24px;
+            width: 22px;
+            height: 22px;
             fill: currentColor;
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
         }
 
         .btn-play {
-            width: 60px;
-            height: 60px;
+            width: 64px;
+            height: 64px;
             background-color: var(--primary-color);
             color: #000;
             border-radius: 50%;
@@ -181,25 +189,24 @@
         }
 
         .btn-play svg {
-            width: 28px;
-            height: 28px;
+            width: 30px;
+            height: 30px;
             filter: none;
         }
 
         #play-icon {
-            transform: translateX(2px);
+            transform: translateX(2px); /* Corrección óptica del triángulo */
         }
 
-        .active-shuffle {
+        .active-state {
             color: var(--primary-color);
         }
     </style>
 </head>
 <body>
 
-    <!-- Nuevo: Contenedor Dual de Videos -->
+    <!-- Contenedor Dual de Videos -->
     <div class="video-container">
-        <!-- 'muted' y 'playsinline' son obligatorios para que el navegador permita el autoplay -->
         <video id="bg-video-main" class="bg-video" autoplay loop muted playsinline></video>
         <video id="bg-video-next" class="bg-video" autoplay loop muted playsinline style="opacity: 0;"></video>
     </div>
@@ -225,30 +232,40 @@
             </div>
         </div>
 
+        <!-- Controles reestructurados -->
         <div class="controls">
+            <!-- Izquierda: Aleatorio -->
             <button class="btn" id="btn-shuffle">
                 <svg viewBox="0 0 24 24"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg>
             </button>
-            <button class="btn" id="btn-prev">
-                <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
-            </button>
-            <button class="btn btn-play" id="btn-play">
-                <svg id="play-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                <svg id="pause-icon" viewBox="0 0 24 24" style="display:none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-            </button>
-            <button class="btn" id="btn-next">
-                <svg viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+            
+            <!-- Centro: Controles Principales -->
+            <div class="main-controls">
+                <button class="btn" id="btn-prev">
+                    <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+                </button>
+                <button class="btn btn-play" id="btn-play">
+                    <svg id="play-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    <svg id="pause-icon" viewBox="0 0 24 24" style="display:none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                </button>
+                <button class="btn" id="btn-next">
+                    <svg viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+                </button>
+            </div>
+
+            <!-- Derecha: Repetir (Equilibra el diseño) -->
+            <button class="btn" id="btn-repeat">
+                <svg viewBox="0 0 24 24"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
             </button>
         </div>
     </div>
 
     <script>
         /* ================= CONFIGURACIÓN DE TU PLAYLIST ================= */
-        // Agregamos la ruta de los videos .mp4
         const playlist =[
             { 
                 title: "WOH OH OH", 
-                artist: "OMAR COURTZ, ROA", 
+                artist: "Omar COurtz, ROA", 
                 cover: "covers/WOH OH OH.jpg", 
                 file: "songs/WOH OH OH.mp3",
                 video: "videos/WOH OH OH.mp4"
@@ -273,14 +290,13 @@
         let currentIndex = 0;
         let isPlaying = false;
         let isShuffle = false;
+        let isRepeat = false; // Nuevo estado
         let isCrossfading = false;
         const CROSSFADE_DURATION = 6; 
 
-        // Motores Duales de Audio
+        // Motores Duales
         let audioMain = new Audio();
         let audioNext = new Audio();
-
-        // Motores Duales de Video
         let videoMain = document.getElementById('bg-video-main');
         let videoNext = document.getElementById('bg-video-next');
 
@@ -296,7 +312,6 @@
             audioMain.src = playlist[currentIndex].file;
             audioMain.volume = 1;
 
-            // Reiniciar el estado de los videos para saltos manuales (sin crossfade lento)
             videoMain.style.transition = 'opacity 0.5s ease';
             videoNext.style.transition = 'opacity 0.5s ease';
             videoMain.style.opacity = '1';
@@ -342,7 +357,7 @@
             }
         };
 
-        /* ================= AI: SMART CROSSFADE ENGINE (AUDIO Y VIDEO) ================= */
+        /* ================= AI: SMART CROSSFADE ENGINE ================= */
         audioMain.addEventListener('timeupdate', () => {
             if (!isPlaying) return;
 
@@ -351,7 +366,6 @@
             
             updateProgressBar(currentTime, duration);
 
-            // Iniciar la mezcla si faltan pocos segundos
             if (duration - currentTime <= CROSSFADE_DURATION && !isCrossfading && duration > 0) {
                 startSmartCrossfade();
             }
@@ -366,7 +380,10 @@
             }
         });
 
+        // Lógica actualizada para incluir Repetir (Loop)
         function getNextIndex() {
+            if (isRepeat) return currentIndex; // Si "Repetir" está encendido, se queda en la misma canción
+            
             if (isShuffle) {
                 let next;
                 do { next = Math.floor(Math.random() * playlist.length); } 
@@ -380,17 +397,14 @@
             isCrossfading = true;
             let nextIdx = getNextIndex();
             
-            // 1. Preparar el siguiente Audio
             audioNext.src = playlist[nextIdx].file;
             audioNext.volume = 0; 
             audioNext.play();
 
-            // 2. Preparar el siguiente Video (y sincronizar el tiempo del Fade con el del audio)
             videoNext.src = playlist[nextIdx].video;
             videoNext.style.transition = `opacity ${CROSSFADE_DURATION}s linear`;
             videoMain.style.transition = `opacity ${CROSSFADE_DURATION}s linear`;
             
-            // Un pequeño delay para que el navegador procese el cambio de source del video
             setTimeout(() => {
                 videoNext.play().catch(e => console.log(e));
                 videoNext.style.opacity = '1';
@@ -399,23 +413,19 @@
 
             loadSongInfo(nextIdx); 
 
-            // 3. Mezcla de Audio
             let fadeInterval = setInterval(() => {
                 if (audioMain.volume > 0.05) audioMain.volume -= 0.05;
                 if (audioNext.volume < 0.95) audioNext.volume += 0.05;
 
-                // Cuando acaba la transición
                 if (audioMain.volume <= 0.05) {
                     clearInterval(fadeInterval);
                     
-                    // Detener e Intercambiar Audio
                     audioMain.pause();
                     audioMain.volume = 1;
                     let tempAudio = audioMain;
                     audioMain = audioNext;
                     audioNext = tempAudio;
                     
-                    // Detener e Intercambiar Video
                     videoMain.pause();
                     let tempVid = videoMain;
                     videoMain = videoNext;
@@ -427,7 +437,7 @@
             }, (CROSSFADE_DURATION * 1000) / 20); 
         }
 
-        /* ================= CONTROLES BÁSICOS ================= */
+        /* ================= CONTROLES ================= */
         const playBtn = document.getElementById('btn-play');
         const playIcon = document.getElementById('play-icon');
         const pauseIcon = document.getElementById('pause-icon');
@@ -446,7 +456,7 @@
                 playerContainer.classList.add('paused');
             } else {
                 audioMain.play();
-                videoMain.play().catch(e=>console.log("Auto-play prevenido en video"));
+                videoMain.play().catch(e=>console.log("Auto-play prevenido"));
                 if (isCrossfading) {
                     audioNext.play();
                     videoNext.play();
@@ -486,7 +496,13 @@
 
         document.getElementById('btn-shuffle').addEventListener('click', function() {
             isShuffle = !isShuffle;
-            this.classList.toggle('active-shuffle', isShuffle);
+            this.classList.toggle('active-state', isShuffle);
+        });
+
+        // Nuevo control de repetir
+        document.getElementById('btn-repeat').addEventListener('click', function() {
+            isRepeat = !isRepeat;
+            this.classList.toggle('active-state', isRepeat);
         });
 
         /* ================= BARRA DE PROGRESO ================= */
@@ -526,7 +542,7 @@
             }
         });
 
-        // Iniciar el reproductor
+        // Iniciar
         initPlayer();
     </script>
 </body>
