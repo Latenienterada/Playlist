@@ -78,7 +78,6 @@
             object-fit: cover;
         }
 
-        /* Animación cuando está en pausa */
         .paused .cover-wrapper {
             transform: scale(0.85);
             box-shadow: 0 5px 15px rgba(0,0,0,0.3) !important;
@@ -105,7 +104,7 @@
             font-weight: 500;
         }
 
-        /* Barra de progreso interactiva (Input Range) */
+        /* Barra de progreso */
         .progress-container {
             width: 100%;
             margin-bottom: 30px;
@@ -153,12 +152,12 @@
             font-variant-numeric: tabular-nums;
         }
 
-        /* Controles */
+        /* ================= CONTROLES SIMÉTRICOS ================= */
         .controls {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 10px;
+            width: 100%;
         }
 
         .btn {
@@ -170,6 +169,8 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            width: 44px;
+            height: 44px;
         }
 
         .btn:hover {
@@ -178,20 +179,21 @@
         }
 
         .btn svg {
-            width: 26px;
-            height: 26px;
+            width: 24px;
+            height: 24px;
             fill: currentColor;
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
         }
 
         .btn-play {
-            width: 68px;
+            width: 68px; 
             height: 68px;
             background-color: var(--primary-color);
             color: #000;
             border-radius: 50%;
             transition: background-color 1s ease, transform 0.1s ease;
             box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            flex-shrink: 0;
         }
 
         .btn-play:hover {
@@ -213,8 +215,9 @@
             transform: translateX(2px);
         }
 
-        .active-shuffle {
+        .active-action {
             color: var(--primary-color);
+            filter: drop-shadow(0 0 5px rgba(29, 185, 84, 0.4));
         }
     </style>
 </head>
@@ -236,7 +239,6 @@
         </div>
 
         <div class="progress-container">
-            <!-- Valor inicial fijado estrictamente en 0 -->
             <input type="range" class="progress-slider" id="progress-slider" min="0" max="100" step="0.1" value="0">
             <div class="time-info">
                 <span id="current-time">0:00</span>
@@ -245,18 +247,26 @@
         </div>
 
         <div class="controls">
-            <button class="btn" id="btn-shuffle">
+            <!-- Aleatorio -->
+            <button class="btn" id="btn-shuffle" title="Modo Aleatorio">
                 <svg viewBox="0 0 24 24"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg>
             </button>
-            <button class="btn" id="btn-prev">
+            <!-- Anterior -->
+            <button class="btn" id="btn-prev" title="Anterior">
                 <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
             </button>
-            <button class="btn btn-play" id="btn-play">
+            <!-- Reproducir -->
+            <button class="btn btn-play" id="btn-play" title="Reproducir / Pausar">
                 <svg id="play-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                 <svg id="pause-icon" viewBox="0 0 24 24" style="display:none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
             </button>
-            <button class="btn" id="btn-next">
+            <!-- Siguiente -->
+            <button class="btn" id="btn-next" title="Siguiente">
                 <svg viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+            </button>
+            <!-- Repetir -->
+            <button class="btn" id="btn-repeat" title="Repetir Canción">
+                <svg viewBox="0 0 24 24"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
             </button>
         </div>
     </div>
@@ -266,24 +276,32 @@
         const playlist =[
             { 
                 title: "WOH OH OH", 
-                artist: "Tu Artista", 
+                artist: "OMAR COURTZ, ROA", 
                 cover: "covers/WOH OH OH.jpg", 
                 file: "songs/WOH OH OH.mp3",
                 video: "videos/WOH OH OH.mp4"
             },
             { 
                 title: "444", 
-                artist: "Tu Artista", 
+                artist: "Yan Block", 
                 cover: "covers/444.jpg", 
                 file: "songs/444.mp3",
                 video: "videos/444.mp4"
             },
             { 
                 title: "FOREVEL TU GANTEL", 
-                artist: "Tu Artista", 
+                artist: "OMAR COURTZ, NENGO FLOW", 
                 cover: "covers/FOREVEL TU GANTEL.jpg", 
                 file: "songs/FOREVEL TU GANTEL.mp3",
                 video: "videos/FOREVEL TU GANTEL.mp4"
+            },
+            // NUEVA CANCIÓN AGREGADA AQUÍ:
+            { 
+                title: "YO QUIERO", 
+                artist: "HADES66", 
+                cover: "covers/YO QUIERO.jpg", 
+                file: "songs/YO QUIERO.mp3",
+                video: "videos/YO QUIERO.mp4"
             }
         ];
 
@@ -291,6 +309,7 @@
         let currentIndex = 0;
         let isPlaying = false;
         let isShuffle = false;
+        let isRepeat = false; 
         
         let isCrossfading = false;
         let fadeInterval = null;
@@ -313,7 +332,6 @@
         const currTimeEl = document.getElementById('current-time');
         const durationEl = document.getElementById('duration');
 
-        // Formato de tiempo
         function formatTime(sec) {
             if (isNaN(sec)) return "0:00";
             let min = Math.floor(sec / 60);
@@ -321,15 +339,13 @@
             return `${min}:${s < 10 ? '0' : ''}${s}`;
         }
 
-        /* ================= SOLUCIÓN: REINICIO INSTANTÁNEO DE LA UI ================= */
         function resetProgressUI() {
             slider.value = 0;
             slider.style.setProperty('--progress', '0%');
             currTimeEl.textContent = "0:00";
-            durationEl.textContent = "0:00"; // Se sobreescribirá cuando cargue la data
+            durationEl.textContent = "0:00";
         }
 
-        /* ================= INICIALIZACIÓN BÁSICA ================= */
         function initPlayer() {
             loadSongInfo(currentIndex);
             
@@ -341,7 +357,6 @@
             videoMain.style.opacity = '1';
             videoNext.style.opacity = '0';
 
-            // Resetea la barra al instante de iniciar
             resetProgressUI();
         }
 
@@ -352,23 +367,19 @@
             artistEl.textContent = song.artist;
         }
 
-        /* ================= MANEJO INTELIGENTE DE EVENTOS DUALES ================= */
-        // Para evitar que los eventos se pierdan al intercambiar (swap) las pistas de audio, 
-        // asignamos eventos a los 2 objetos de audio, pero solo responden si son la "Pista Principal".
+        /* ================= EVENTOS DE AUDIO ================= */
         function setupAudioListeners(audioElement) {
             audioElement.addEventListener('timeupdate', (e) => {
-                if (e.target !== audioMain) return; // Ignorar si es la pista secundaria
-                if (!audioMain.duration) return; // Prevenir cálculos fallidos (NaN)
+                if (e.target !== audioMain) return;
+                if (!audioMain.duration) return;
 
                 const currentTime = audioMain.currentTime;
                 const duration = audioMain.duration;
 
-                // Sincronización Forzada de Video (Anti-Drift)
                 if (!isDragging && Math.abs(videoMain.currentTime - currentTime) > 0.3) {
                     videoMain.currentTime = currentTime;
                 }
                 
-                // Actualizar barra visual
                 if (!isDragging) {
                     const percent = (currentTime / duration) * 100;
                     slider.value = percent;
@@ -376,15 +387,14 @@
                     currTimeEl.textContent = formatTime(currentTime);
                 }
 
-                // Evaluar Crossfade
                 if (duration - currentTime <= CROSSFADE_DURATION && !isCrossfading && duration > 0) {
-                    startSmartCrossfade();
+                    startSmartCrossfade(true); 
                 }
             });
 
             audioElement.addEventListener('ended', (e) => {
                 if (e.target !== audioMain) return;
-                if (!isCrossfading) playManual(getNextIndex());
+                if (!isCrossfading) playManual(getNextIndex(true)); 
             });
 
             audioElement.addEventListener('loadedmetadata', (e) => {
@@ -393,12 +403,10 @@
             });
         }
 
-        // Activamos los escuchadores para ambos audios
         setupAudioListeners(audioMain);
         setupAudioListeners(audioNext);
 
-
-        /* ================= COLOR DINÁMICO ================= */
+        /* ================= EXTRACCIÓN DE COLOR ================= */
         coverEl.onload = function() {
             const canvas = document.createElement('canvas');
             const context = canvas.getContext('2d');
@@ -425,10 +433,10 @@
             }
         };
 
-        /* ================= INTERACCIÓN CON LA BARRA (SCRUBBING) ================= */
+        /* ================= BARRA DE PROGRESO ================= */
         slider.addEventListener('input', () => {
             isDragging = true;
-            if (!audioMain.duration) return; // Prevenir NaN
+            if (!audioMain.duration) return;
             const seekTime = (slider.value / 100) * audioMain.duration;
             currTimeEl.textContent = formatTime(seekTime);
             slider.style.setProperty('--progress', `${slider.value}%`);
@@ -451,7 +459,10 @@
             }
         });
 
-        function getNextIndex() {
+        /* ================= LÓGICA DE REPRODUCCIÓN ================= */
+        function getNextIndex(isAuto = false) {
+            if (isAuto && isRepeat) return currentIndex; 
+
             if (isShuffle) {
                 let next;
                 do { next = Math.floor(Math.random() * playlist.length); } 
@@ -461,23 +472,19 @@
             return (currentIndex + 1) % playlist.length;
         }
 
-        /* ================= SMART CROSSFADE ENGINE ================= */
-        function startSmartCrossfade() {
+        function startSmartCrossfade(isAuto = true) {
             isCrossfading = true;
-            let nextIdx = getNextIndex();
+            let nextIdx = getNextIndex(isAuto);
             
-            // Invertimos variables de motor
             let oldAudio = audioMain; audioMain = audioNext; audioNext = oldAudio;
             let oldVideo = videoMain; videoMain = videoNext; videoNext = oldVideo;
 
-            // Preparamos nueva pista
             audioMain.src = playlist[nextIdx].file;
             videoMain.src = playlist[nextIdx].video;
             audioMain.volume = 0;
             audioMain.currentTime = 0;
             videoMain.currentTime = 0;
 
-            // ¡¡AQUI REINICIAMOS LA BARRA VISUAL AL INSTANTE!!
             resetProgressUI();
             
             videoMain.style.transition = `opacity ${CROSSFADE_DURATION}s linear`;
@@ -492,7 +499,6 @@
             currentIndex = nextIdx;
             loadSongInfo(currentIndex);
 
-            // Transición del Volumen
             if (fadeInterval) clearInterval(fadeInterval);
             
             fadeInterval = setInterval(() => {
@@ -513,7 +519,6 @@
             }, (CROSSFADE_DURATION * 1000) / 20); 
         }
 
-        // Cancelación de limpieza
         function cancelCrossfade() {
             if (fadeInterval) clearInterval(fadeInterval);
             fadeInterval = null;
@@ -528,7 +533,7 @@
             videoMain.style.opacity = '1';
         }
 
-        /* ================= CONTROLES MANUALES ================= */
+        /* ================= CONTROLES ================= */
         const playBtn = document.getElementById('btn-play');
         const playIcon = document.getElementById('play-icon');
         const pauseIcon = document.getElementById('pause-icon');
@@ -555,11 +560,10 @@
 
         playBtn.addEventListener('click', togglePlay);
 
-        // Salto forzado
         function playManual(index) {
             cancelCrossfade(); 
             currentIndex = index;
-            initPlayer(); // initPlayer ahora incluye resetProgressUI()
+            initPlayer();
             
             if(isPlaying) {
                 audioMain.play();
@@ -568,7 +572,7 @@
         }
 
         document.getElementById('btn-next').addEventListener('click', () => {
-            playManual(getNextIndex());
+            playManual(getNextIndex(false)); 
         });
 
         document.getElementById('btn-prev').addEventListener('click', () => {
@@ -582,12 +586,15 @@
 
         document.getElementById('btn-shuffle').addEventListener('click', function() {
             isShuffle = !isShuffle;
-            this.classList.toggle('active-shuffle', isShuffle);
+            this.classList.toggle('active-action', isShuffle);
         });
 
-        // Iniciar Reproductor
-        initPlayer();
+        document.getElementById('btn-repeat').addEventListener('click', function() {
+            isRepeat = !isRepeat;
+            this.classList.toggle('active-action', isRepeat);
+        });
 
+        initPlayer();
     </script>
 </body>
 </html>
