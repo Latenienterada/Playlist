@@ -63,7 +63,7 @@
         }
 
         .cover-wrapper {
-            position: relative; /* Modificado para el overlay de letras */
+            position: relative;
             width: 100%;
             aspect-ratio: 1;
             border-radius: 24px;
@@ -352,7 +352,6 @@
 
     <script>
         /* ================= CONFIGURACIÓN DE TU PLAYLIST ================= */
-        // SE AGREGARON LAS RUTAS DE LOS .lrc
         const playlist =[
             { 
                 title: "WOH OH OH", 
@@ -360,7 +359,7 @@
                 cover: "covers/WOH OH OH.jpg", 
                 file: "songs/WOH OH OH.mp3",
                 video: "videos/WOH OH OH.mp4",
-                lyrics: "lyrics/WOH OH OH.lrc"
+                lyrics: "lyrics/WOH OH OH.lrc" // Fallback local
             },
             { 
                 title: "444", 
@@ -368,7 +367,7 @@
                 cover: "covers/444.jpg", 
                 file: "songs/444.mp3",
                 video: "videos/444.mp4",
-                lyrics: "lyrics/444.lrc"
+                lyrics: "lyrics/444.lrc" // Fallback local
             },
             { 
                 title: "FOREVEL TU GANTEL", 
@@ -376,7 +375,7 @@
                 cover: "covers/FOREVEL TU GANTEL.jpg", 
                 file: "songs/FOREVEL TU GANTEL.mp3",
                 video: "videos/FOREVEL TU GANTEL.mp4",
-                lyrics: "lyrics/FOREVEL TU GANTEL.lrc"
+                lyrics: "lyrics/FOREVEL TU GANTEL.lrc" // Fallback local
             },
             { 
                 title: "YO QUIERO", 
@@ -384,7 +383,7 @@
                 cover: "covers/YO QUIERO.jpg", 
                 file: "songs/YO QUIERO.mp3",
                 video: "videos/YO QUIERO.mp4",
-                lyrics: "lyrics/YO QUIERO.lrc"
+                lyrics: "lyrics/YO QUIERO.lrc" // Fallback local
             },
             { 
                 title: "VVS SWITCH REMIX", 
@@ -392,7 +391,7 @@
                 cover: "covers/VVS SWITCH REMIX.jpg", 
                 file: "songs/VVS SWITCH REMIX.mp3",
                 video: "videos/VVS SWITCH REMIX.mp4",
-                lyrics: "lyrics/VVS SWITCH REMIX.lrc"
+                lyrics: "lyrics/VVS SWITCH REMIX.lrc" // Fallback local
             }
         ];
 
@@ -465,29 +464,57 @@
             loadLyrics(index); // Cargar letras al cambiar de canción
         }
 
-        /* ================= SISTEMA DE LETRAS SINCRONIZADAS ================= */
+        /* ================= SISTEMA DE LETRAS HÍBRIDO (LOCAL + API) ================= */
         btnLyrics.addEventListener('click', () => {
             lyricsOverlay.classList.toggle('show');
         });
 
         async function loadLyrics(index) {
-            parsedLyrics =[];
-            lyricsContent.innerHTML = '';
+            parsedLyrics = [];
             const song = playlist[index];
+            lyricsContent.innerHTML = '<p class="lyrics-line" style="color: var(--primary-color);">Buscando letras... 🎵</p>';
 
-            if (!song.lyrics) {
-                lyricsContent.innerHTML = '<p class="lyrics-line">Letras no disponibles</p>';
-                return;
+            // 1. PRIMERO: Intenta cargar el archivo local si lo pusiste en el array (ej. lyrics: "letra.lrc")
+            if (song.lyrics) {
+                try {
+                    const res = await fetch(song.lyrics);
+                    if (res.ok) {
+                        const text = await res.text();
+                        lyricsContent.innerHTML = '';
+                        parseLyrics(text);
+                        renderLyrics();
+                        return; // Si funcionó, termina aquí y no busca en internet
+                    }
+                } catch(e) {
+                    // Si falla (no existe el archivo o hay error CORS), sigue al paso 2 silenciosamente
+                } 
             }
 
+            // 2. SEGUNDO: Si no hay archivo local, busca en internet automáticamente en la API
             try {
-                const response = await fetch(song.lyrics);
-                if (!response.ok) throw new Error('No se encontró el archivo');
-                const text = await response.text();
-                parseLyrics(text);
+                const artist = encodeURIComponent(song.artist);
+                const title = encodeURIComponent(song.title);
+                const response = await fetch(`https://lrclib.net/api/get?artist_name=${artist}&track_name=${title}`);
+                
+                if (!response.ok) throw new Error('No encontrada en la base de datos');
+                const data = await response.json();
+
+                lyricsContent.innerHTML = '';
+                
+                if (data.syncedLyrics) {
+                    parseLyrics(data.syncedLyrics);
+                } else if (data.plainLyrics) {
+                    parseLyrics(data.plainLyrics);
+                } else {
+                    throw new Error('Vacío');
+                }
+
                 renderLyrics();
             } catch (error) {
-                lyricsContent.innerHTML = '<p class="lyrics-line">Error al cargar letras.</p>';
+                lyricsContent.innerHTML = `
+                    <p class="lyrics-line">Letras no disponibles.</p>
+                    <p class="lyrics-line" style="font-size: 12px; opacity: 0.5;">(No se encontró archivo local ni datos en internet para esta canción)</p>
+                `;
             }
         }
 
