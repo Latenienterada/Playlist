@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seamless Flow Player | DJ Edition</title>
+    <title>Seamless Flow Player | Premium & Solid</title>
     <style>
         /* ================= CSS: UI PREMIUM / APPLE MUSIC STYLE ================= */
         :root {
@@ -45,7 +45,6 @@
             object-fit: cover;
             filter: brightness(0.4) saturate(1.2) blur(8px);
             transform: scale(1.05); 
-            transition: opacity 0.8s ease-in-out;
         }
 
         .vignette-overlay {
@@ -335,12 +334,12 @@
         let isPlaying = false;
         let isShuffle = false;
         let isRepeat = false; 
-        
-        let isCrossfading = false;
-        let fadeAnimation = null;
-        let fadeStartTime = 0;
         let isDragging = false; 
-        const CROSSFADE_DURATION = 6; // Segundos de mezcla
+
+        // Crossfade Settings
+        const CROSSFADE_DURATION = 3; // Reducido a 3 segundos para transiciones más precisas y comerciales
+        let isCrossfading = false;
+        let crossfadeInterval = null;
 
         // Motores Duales
         let audioMain = new Audio();
@@ -372,25 +371,21 @@
             durationEl.textContent = "0:00";
         }
 
-        function initPlayer() {
-            loadSongInfo(currentIndex);
-            
-            audioMain.src = playlist[currentIndex].file;
-            videoMain.src = playlist[currentIndex].video;
-            audioMain.volume = 1;
-
-            videoMain.style.transition = 'opacity 0.4s ease';
-            videoMain.style.opacity = '1';
-            videoNext.style.opacity = '0';
-
-            resetProgressUI();
-        }
-
         function loadSongInfo(index) {
             const song = playlist[index];
             coverEl.src = song.cover;
             titleEl.textContent = song.title;
             artistEl.textContent = song.artist;
+        }
+
+        function initPlayer() {
+            loadSongInfo(currentIndex);
+            
+            audioMain.src = playlist[currentIndex].file;
+            videoMain.src = playlist[currentIndex].video;
+            
+            forceStopCrossfade(); // Limpieza absoluta antes de iniciar
+            resetProgressUI();
         }
 
         /* ================= EVENTOS DE AUDIO ================= */
@@ -413,14 +408,10 @@
                     currTimeEl.textContent = formatTime(currentTime);
                 }
 
+                // Iniciar mezcla automática cuando falten pocos segundos
                 if (duration - currentTime <= CROSSFADE_DURATION && !isCrossfading && duration > 0) {
                     startSmartCrossfade(true); 
                 }
-            });
-
-            audioElement.addEventListener('ended', (e) => {
-                if (e.target !== audioMain) return;
-                if (!isCrossfading) playManual(getNextIndex(true)); 
             });
 
             audioElement.addEventListener('loadedmetadata', (e) => {
@@ -450,8 +441,7 @@
                 const count = data.length / 16;
                 r = Math.floor(r / count); g = Math.floor(g / count); b = Math.floor(b / count);
 
-                const rgb = `rgb(${r}, ${g}, ${b})`;
-                rootVars.setProperty('--primary-color', rgb);
+                rootVars.setProperty('--primary-color', `rgb(${r}, ${g}, ${b})`);
                 coverGlow.style.boxShadow = `0 15px 45px rgba(${r}, ${g}, ${b}, 0.5)`;
             } catch (e) {
                 rootVars.setProperty('--primary-color', '#1DB954');
@@ -469,26 +459,22 @@
         });
 
         slider.addEventListener('change', () => {
-            if (!audioMain.duration) {
-                isDragging = false;
-                return;
-            }
+            if (!audioMain.duration) return;
             const seekTime = (slider.value / 100) * audioMain.duration;
             
             audioMain.currentTime = seekTime;
             videoMain.currentTime = seekTime; 
-            
             isDragging = false;
 
-            if (isCrossfading && (audioMain.duration - audioMain.currentTime > CROSSFADE_DURATION)) {
-                cancelCrossfade();
+            // Si adelantamos la canción y caemos en zona de crossfade o lo interrumpimos, abortamos errores
+            if (audioMain.duration - audioMain.currentTime > CROSSFADE_DURATION) {
+                forceStopCrossfade();
             }
         });
 
-        /* ================= MOTOR DE MEZCLA DJ (EQUAL POWER CROSSFADE) ================= */
+        /* ================= MOTOR DE MEZCLA DJ (ROBUSTO Y LIBRE DE BUGS) ================= */
         function getNextIndex(isAuto = false) {
             if (isAuto && isRepeat) return currentIndex; 
-
             if (isShuffle) {
                 let next;
                 do { next = Math.floor(Math.random() * playlist.length); } 
@@ -498,84 +484,80 @@
             return (currentIndex + 1) % playlist.length;
         }
 
+        // Esta función destruye cualquier estado fantasma para evitar canciones sonando a la vez
+        function forceStopCrossfade() {
+            if (crossfadeInterval) {
+                clearInterval(crossfadeInterval);
+                crossfadeInterval = null;
+            }
+            isCrossfading = false;
+            
+            // Apaga por completo el motor secundario
+            audioNext.pause();
+            videoNext.pause();
+            audioNext.volume = 0;
+            videoNext.style.opacity = '0';
+            
+            // Asegura que el principal esté al 100%
+            audioMain.volume = 1;
+            videoMain.style.opacity = '1';
+        }
+
         function startSmartCrossfade(isAuto = true) {
+            // Prevenir doble ejecución
+            if (isCrossfading) return;
+            
             isCrossfading = true;
             let nextIdx = getNextIndex(isAuto);
             
-            // Intercambiar variables (El Main ahora será el Outgoing, el Next será el Incoming)
-            let oldAudio = audioMain; audioMain = audioNext; audioNext = oldAudio;
-            let oldVideo = videoMain; videoMain = videoNext; videoNext = oldVideo;
+            // Intercambio estricto de roles
+            let outgoingAudio = audioMain;
+            let outgoingVideo = videoMain;
+            
+            audioMain = audioNext;
+            videoMain = videoNext;
+            audioNext = outgoingAudio;
+            videoNext = outgoingVideo;
 
+            // Cargar nueva canción (Main ahora es la nueva, Next es la vieja)
             audioMain.src = playlist[nextIdx].file;
             videoMain.src = playlist[nextIdx].video;
-            
-            // Configurar volúmenes iniciales para el Fade
-            audioMain.volume = 0; // Entrante empieza en 0
-            audioNext.volume = 1; // Saliente empieza en 1
-            
+            audioMain.volume = 0;
             audioMain.currentTime = 0;
             videoMain.currentTime = 0;
 
             resetProgressUI();
             
-            // Transición de videos
-            videoMain.style.transition = `opacity ${CROSSFADE_DURATION}s ease-in-out`;
-            videoNext.style.transition = `opacity ${CROSSFADE_DURATION}s ease-in-out`;
-            videoMain.style.opacity = '1';
-            videoNext.style.opacity = '0';
-            
+            // Iniciar reproducción
             audioMain.play().catch(e => console.log(e));
             videoMain.play().catch(e => console.log(e));
 
             currentIndex = nextIdx;
             loadSongInfo(currentIndex);
 
-            // Detener animaciones previas si existen
-            if (fadeAnimation) cancelAnimationFrame(fadeAnimation);
-            
-            fadeStartTime = performance.now();
-            
-            // Función renderizada a 60 FPS
-            function crossfadeStep(timestamp) {
-                let elapsed = (timestamp - fadeStartTime) / 1000; // Tiempo en segundos
-                let t = Math.min(elapsed / CROSSFADE_DURATION, 1); // Va de 0.0 a 1.0
-                
-                // MATH MAGIC: "Equal Power Crossfade"
-                // Track saliente (Coseno): Baja suavemente pero se mantiene alto al principio
-                audioNext.volume = Math.max(0, Math.cos(t * 0.5 * Math.PI));
-                
-                // Track entrante (Seno): Sube rápidamente y se estabiliza
-                audioMain.volume = Math.min(1, Math.sin(t * 0.5 * Math.PI));
+            // Temporizador basado en reloj real (Date.now) para que NO se buguee en pestañas minimizadas
+            let startTime = Date.now();
+            let durationMs = CROSSFADE_DURATION * 1000;
 
-                if (t < 1) {
-                    // Seguir animando
-                    fadeAnimation = requestAnimationFrame(crossfadeStep);
-                } else {
-                    // Finalizar y limpiar
-                    audioNext.pause(); 
-                    videoNext.pause(); 
-                    audioNext.volume = 0;
-                    audioMain.volume = 1;
-                    isCrossfading = false;
-                    fadeAnimation = null;
+            if (crossfadeInterval) clearInterval(crossfadeInterval);
+
+            crossfadeInterval = setInterval(() => {
+                let elapsed = Date.now() - startTime;
+                let t = Math.min(elapsed / durationMs, 1); // t va de 0.0 a 1.0 de forma perfecta
+                
+                // Equal Power Curve (Seno / Coseno)
+                audioMain.volume = Math.min(1, Math.max(0, Math.sin(t * 0.5 * Math.PI)));
+                audioNext.volume = Math.min(1, Math.max(0, Math.cos(t * 0.5 * Math.PI)));
+                
+                // Opacidad de video ligada al mismo cálculo temporal
+                videoMain.style.opacity = t;
+                videoNext.style.opacity = 1 - t;
+
+                // Cuando el tiempo se cumple, limpiamos todo estrictamente
+                if (t >= 1) {
+                    forceStopCrossfade();
                 }
-            }
-            
-            fadeAnimation = requestAnimationFrame(crossfadeStep);
-        }
-
-        function cancelCrossfade() {
-            if (fadeAnimation) cancelAnimationFrame(fadeAnimation);
-            fadeAnimation = null;
-            isCrossfading = false;
-            
-            audioNext.pause();
-            videoNext.pause();
-            audioNext.volume = 0;
-            videoNext.style.opacity = '0';
-            
-            audioMain.volume = 1;
-            videoMain.style.opacity = '1';
+            }, 50); // Actualiza cada 50ms para suavidad extrema sin agotar la memoria
         }
 
         /* ================= BOTONES Y CONTROLES ================= */
@@ -605,8 +587,9 @@
 
         playBtn.addEventListener('click', togglePlay);
 
+        // Si el usuario cambia manualmente, hacemos un corte limpio y matamos cualquier crossfade activo
         function playManual(index) {
-            cancelCrossfade(); 
+            forceStopCrossfade(); 
             currentIndex = index;
             initPlayer();
             
@@ -621,6 +604,7 @@
         });
 
         document.getElementById('btn-prev').addEventListener('click', () => {
+            // Si pasaron más de 3 segundos, reinicia la canción actual
             if (audioMain.currentTime > 3) {
                 audioMain.currentTime = 0; 
                 videoMain.currentTime = 0;
