@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seamless Flow Player | Pro Version</title>
+    <title>Seamless Flow Player | Premium UI</title>
     <style>
-        /* ================= CSS: UI APPLE/SPOTIFY INSPIRADA ================= */
+        /* ================= CSS: UI PREMIUM / APPLE MUSIC STYLE ================= */
         :root {
             --primary-color: #1DB954; 
             --bg-color: #000000;
@@ -31,11 +31,11 @@
             overflow: hidden;
         }
 
-        /* Video de Fondo */
+        /* ================= FONDO DE VIDEO Y CAPAS ================= */
         .video-container {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1;
+            z-index: -2;
             background-color: #000;
         }
 
@@ -43,130 +43,75 @@
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             object-fit: cover;
-            filter: brightness(0.3) blur(5px);
-            transform: scale(1.05);
-            transition: opacity 0.5s ease;
+            /* Se redujo el blur para que el video se note más, pero oscurecido para no lastimar la vista */
+            filter: brightness(0.4) saturate(1.2) blur(8px);
+            transform: scale(1.05); /* Evita bordes blancos al hacer blur */
+            transition: opacity 0.8s ease-in-out;
         }
 
-        /* Contenedor principal Glassmorphism */
+        /* Viñeta para oscurecer los bordes de la pantalla y enfocar el centro */
+        .vignette-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, transparent 10%, rgba(0,0,0,0.85) 100%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* ================= CONTENEDOR PRINCIPAL ================= */
         .player-container {
-            width: 380px;
-            padding: 35px 30px;
-            background: rgba(30, 30, 30, 0.4);
-            backdrop-filter: blur(40px) saturate(150%);
-            -webkit-backdrop-filter: blur(40px) saturate(150%);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            width: 360px; /* Ligeramente más estilizado */
+            padding: 40px 30px;
+            /* Glassmorphism más profundo y limpio */
+            background: rgba(20, 20, 20, 0.25);
+            backdrop-filter: blur(50px) saturate(200%);
+            -webkit-backdrop-filter: blur(50px) saturate(200%);
+            border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 40px;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255,255,255,0.1);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255,255,255,0.1);
             text-align: center;
             transition: box-shadow 1s ease;
+            z-index: 10;
         }
 
+        /* ================= PORTADA ================= */
         .cover-wrapper {
-            position: relative; /* Modificado para el overlay de letras */
             width: 100%;
             aspect-ratio: 1;
-            border-radius: 24px;
+            border-radius: 20px; /* Bordes un poco más cerrados para look moderno */
             overflow: hidden;
-            margin-bottom: 30px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 1s ease;
+            margin-bottom: 35px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 1s ease;
+            position: relative;
         }
 
         .cover-wrapper img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transition: transform 0.5s ease;
         }
 
+        /* Animación suave al pausar */
         .paused .cover-wrapper {
             transform: scale(0.85);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3) !important;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4) !important;
         }
 
-        /* ================= CSS: LETRAS (LYRICS) ================= */
-        .btn-lyrics-toggle {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(5px);
-            border: none;
-            border-radius: 50%;
-            width: 36px;
-            height: 36px;
-            cursor: pointer;
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: all 0.3s ease;
-            z-index: 10;
+        .paused .cover-wrapper img {
+            transform: scale(1.05);
         }
 
-        .btn-lyrics-toggle:hover {
-            background: var(--primary-color);
-            transform: scale(1.1);
-        }
-
-        .btn-lyrics-toggle svg {
-            width: 20px;
-            height: 20px;
-            fill: currentColor;
-        }
-
-        .lyrics-overlay {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            display: flex;
-            flex-direction: column;
-            padding: 30px 20px;
-            overflow-y: auto;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.4s ease;
-            z-index: 5;
-            text-align: left;
-            scroll-behavior: smooth;
-        }
-
-        .lyrics-overlay.show {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .lyrics-overlay::-webkit-scrollbar { display: none; }
-
-        .lyrics-line {
-            font-size: 16px;
-            color: rgba(255, 255, 255, 0.5);
-            margin-bottom: 12px;
-            transition: all 0.3s ease;
-            cursor: default;
-            font-weight: 600;
-        }
-
-        .lyrics-line.active {
-            color: #FFF;
-            font-size: 20px;
-            font-weight: 800;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-            transform: scale(1.02);
-            transform-origin: left center;
-        }
-
-        /* Resto de estilos del reproductor */
+        /* ================= INFO CANCIÓN ================= */
         .song-info {
             margin-bottom: 25px;
         }
 
         .song-title {
-            font-size: 26px;
+            font-size: 24px;
             font-weight: 800;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             letter-spacing: -0.5px;
             text-shadow: 0 2px 10px rgba(0,0,0,0.5);
             white-space: nowrap;
@@ -175,11 +120,13 @@
         }
 
         .song-artist {
-            font-size: 16px;
-            color: var(--text-secondary);
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.7);
             font-weight: 500;
+            letter-spacing: 0.2px;
         }
 
+        /* ================= BARRA DE PROGRESO ================= */
         .progress-container {
             width: 100%;
             margin-bottom: 30px;
@@ -188,45 +135,46 @@
         .progress-slider {
             -webkit-appearance: none;
             width: 100%;
-            height: 6px;
-            background: linear-gradient(to right, var(--primary-color) var(--progress, 0%), rgba(255, 255, 255, 0.15) var(--progress, 0%));
+            height: 5px; /* Más fina y elegante */
+            background: rgba(255, 255, 255, 0.1);
+            background-image: linear-gradient(var(--primary-color), var(--primary-color));
+            background-size: var(--progress, 0%) 100%;
+            background-repeat: no-repeat;
             border-radius: 3px;
             outline: none;
             cursor: pointer;
             transition: height 0.2s ease;
-            box-shadow: 0 0 10px rgba(0,0,0,0.2);
         }
 
         .progress-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 14px;
-            height: 14px;
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
             background: #fff;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
-            opacity: 0;
-            transition: opacity 0.2s ease, transform 0.1s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            transform: scale(0.5); /* Bolita pequeña por defecto */
+            transition: transform 0.2s cubic-bezier(0.25, 1.5, 0.5, 1);
         }
 
-        .progress-container:hover .progress-slider::-webkit-slider-thumb {
-            opacity: 1;
-        }
-
-        .progress-slider::-webkit-slider-thumb:hover {
-            transform: scale(1.3);
+        .progress-container:hover .progress-slider::-webkit-slider-thumb,
+        .progress-slider:active::-webkit-slider-thumb {
+            transform: scale(1.2); /* Crece al interactuar */
         }
 
         .time-info {
             display: flex;
             justify-content: space-between;
             font-size: 12px;
-            color: var(--text-secondary);
+            color: rgba(255, 255, 255, 0.5);
             margin-top: 10px;
-            font-weight: 500;
+            font-weight: 600;
             font-variant-numeric: tabular-nums;
+            letter-spacing: 0.5px;
         }
 
+        /* ================= CONTROLES ================= */
         .controls {
             display: flex;
             justify-content: space-between;
@@ -238,7 +186,7 @@
             background: none;
             border: none;
             cursor: pointer;
-            color: var(--text-secondary);
+            color: rgba(255, 255, 255, 0.6);
             transition: all 0.2s ease;
             display: flex;
             justify-content: center;
@@ -252,27 +200,32 @@
             transform: scale(1.1);
         }
 
+        .btn:active {
+            transform: scale(0.9);
+        }
+
         .btn svg {
-            width: 24px;
-            height: 24px;
+            width: 22px;
+            height: 22px;
             fill: currentColor;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
         }
 
         .btn-play {
-            width: 68px; 
-            height: 68px;
+            width: 64px; 
+            height: 64px;
             background-color: var(--primary-color);
             color: #000;
             border-radius: 50%;
-            transition: background-color 1s ease, transform 0.1s ease;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
             flex-shrink: 0;
         }
 
         .btn-play:hover {
-            transform: scale(1.05);
+            transform: scale(1.08);
             color: #000;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
         }
 
         .btn-play:active {
@@ -280,41 +233,34 @@
         }
 
         .btn-play svg {
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
             filter: none;
         }
 
         #play-icon {
-            transform: translateX(2px);
+            transform: translateX(2px); /* Centra visualmente el triángulo de play */
         }
 
         .active-action {
             color: var(--primary-color);
-            filter: drop-shadow(0 0 5px rgba(29, 185, 84, 0.4));
+            filter: drop-shadow(0 0 8px rgba(29, 185, 84, 0.5));
         }
     </style>
 </head>
 <body>
 
+    <!-- Fondo y Viñeta -->
     <div class="video-container">
         <video id="bg-video-1" class="bg-video" autoplay loop muted playsinline></video>
         <video id="bg-video-2" class="bg-video" autoplay loop muted playsinline style="opacity: 0;"></video>
+        <div class="vignette-overlay"></div>
     </div>
 
+    <!-- UI del Reproductor -->
     <div class="player-container paused" id="player">
         <div class="cover-wrapper" id="cover-glow">
             <img src="" id="cover" crossorigin="anonymous">
-            
-            <!-- Contenedor de Letras -->
-            <div class="lyrics-overlay" id="lyrics-overlay">
-                <div id="lyrics-content"></div>
-            </div>
-
-            <!-- Botón flotante para ver Letras -->
-            <button class="btn-lyrics-toggle" id="btn-lyrics-toggle" title="Ver Letras">
-                <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 14H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
-            </button>
         </div>
         
         <div class="song-info">
@@ -331,19 +277,24 @@
         </div>
 
         <div class="controls">
+            <!-- Shuffle -->
             <button class="btn" id="btn-shuffle" title="Modo Aleatorio">
                 <svg viewBox="0 0 24 24"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg>
             </button>
+            <!-- Anterior -->
             <button class="btn" id="btn-prev" title="Anterior">
                 <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
             </button>
+            <!-- Reproducir/Pausar -->
             <button class="btn btn-play" id="btn-play" title="Reproducir / Pausar">
                 <svg id="play-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                 <svg id="pause-icon" viewBox="0 0 24 24" style="display:none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
             </button>
+            <!-- Siguiente -->
             <button class="btn" id="btn-next" title="Siguiente">
                 <svg viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
             </button>
+            <!-- Repetir -->
             <button class="btn" id="btn-repeat" title="Repetir Canción">
                 <svg viewBox="0 0 24 24"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
             </button>
@@ -352,47 +303,41 @@
 
     <script>
         /* ================= CONFIGURACIÓN DE TU PLAYLIST ================= */
-        // SE AGREGARON LAS RUTAS DE LOS .lrc
         const playlist =[
             { 
                 title: "WOH OH OH", 
                 artist: "Tu Artista", 
                 cover: "covers/WOH OH OH.jpg", 
                 file: "songs/WOH OH OH.mp3",
-                video: "videos/WOH OH OH.mp4",
-                lyrics: "lyrics/WOH OH OH.lrc"
+                video: "videos/WOH OH OH.mp4"
             },
             { 
                 title: "444", 
                 artist: "Tu Artista", 
                 cover: "covers/444.jpg", 
                 file: "songs/444.mp3",
-                video: "videos/444.mp4",
-                lyrics: "lyrics/444.lrc"
+                video: "videos/444.mp4"
             },
             { 
                 title: "FOREVEL TU GANTEL", 
                 artist: "Tu Artista", 
                 cover: "covers/FOREVEL TU GANTEL.jpg", 
                 file: "songs/FOREVEL TU GANTEL.mp3",
-                video: "videos/FOREVEL TU GANTEL.mp4",
-                lyrics: "lyrics/FOREVEL TU GANTEL.lrc"
+                video: "videos/FOREVEL TU GANTEL.mp4"
             },
             { 
                 title: "YO QUIERO", 
                 artist: "Tu Artista", 
                 cover: "covers/YO QUIERO.jpg", 
                 file: "songs/YO QUIERO.mp3",
-                video: "videos/YO QUIERO.mp4",
-                lyrics: "lyrics/YO QUIERO.lrc"
+                video: "videos/YO QUIERO.mp4"
             },
             { 
                 title: "VVS SWITCH REMIX", 
                 artist: "Tu Artista", 
                 cover: "covers/VVS SWITCH REMIX.jpg", 
                 file: "songs/VVS SWITCH REMIX.mp3",
-                video: "videos/VVS SWITCH REMIX.mp4",
-                lyrics: "lyrics/VVS SWITCH REMIX.lrc"
+                video: "videos/VVS SWITCH REMIX.mp4"
             }
         ];
 
@@ -423,12 +368,6 @@
         const currTimeEl = document.getElementById('current-time');
         const durationEl = document.getElementById('duration');
 
-        // Letras
-        let parsedLyrics =[];
-        const lyricsOverlay = document.getElementById('lyrics-overlay');
-        const lyricsContent = document.getElementById('lyrics-content');
-        const btnLyrics = document.getElementById('btn-lyrics-toggle');
-
         function formatTime(sec) {
             if (isNaN(sec)) return "0:00";
             let min = Math.floor(sec / 60);
@@ -450,7 +389,7 @@
             videoMain.src = playlist[currentIndex].video;
             audioMain.volume = 1;
 
-            videoMain.style.transition = 'opacity 0.3s ease';
+            videoMain.style.transition = 'opacity 0.4s ease';
             videoMain.style.opacity = '1';
             videoNext.style.opacity = '0';
 
@@ -462,88 +401,6 @@
             coverEl.src = song.cover;
             titleEl.textContent = song.title;
             artistEl.textContent = song.artist;
-            loadLyrics(index); // Cargar letras al cambiar de canción
-        }
-
-        /* ================= SISTEMA DE LETRAS SINCRONIZADAS ================= */
-        btnLyrics.addEventListener('click', () => {
-            lyricsOverlay.classList.toggle('show');
-        });
-
-        async function loadLyrics(index) {
-            parsedLyrics =[];
-            lyricsContent.innerHTML = '';
-            const song = playlist[index];
-
-            if (!song.lyrics) {
-                lyricsContent.innerHTML = '<p class="lyrics-line">Letras no disponibles</p>';
-                return;
-            }
-
-            try {
-                const response = await fetch(song.lyrics);
-                if (!response.ok) throw new Error('No se encontró el archivo');
-                const text = await response.text();
-                parseLyrics(text);
-                renderLyrics();
-            } catch (error) {
-                lyricsContent.innerHTML = '<p class="lyrics-line">Error al cargar letras.</p>';
-            }
-        }
-
-        function parseLyrics(text) {
-            const lines = text.split('\n');
-            const regex = /\[(\d{2}):(\d{2}(?:\.\d{2,3})?)\](.*)/;
-
-            lines.forEach(line => {
-                const match = regex.exec(line);
-                if (match) {
-                    const minutes = parseInt(match[1]);
-                    const seconds = parseFloat(match[2]);
-                    const time = (minutes * 60) + seconds;
-                    const textContent = match[3].trim();
-                    if(textContent) parsedLyrics.push({ time, text: textContent });
-                } else if (line.trim() !== '') {
-                    parsedLyrics.push({ time: -1, text: line.trim() });
-                }
-            });
-        }
-
-        function renderLyrics() {
-            parsedLyrics.forEach((line, idx) => {
-                const p = document.createElement('div');
-                p.className = 'lyrics-line';
-                p.textContent = line.text;
-                p.id = `lyric-${idx}`;
-                lyricsContent.appendChild(p);
-            });
-        }
-
-        function syncLyrics(currentTime) {
-            if (parsedLyrics.length === 0 || parsedLyrics[0].time === -1) return;
-
-            let activeIndex = -1;
-            for (let i = 0; i < parsedLyrics.length; i++) {
-                if (currentTime >= parsedLyrics[i].time - 0.3) {
-                    activeIndex = i;
-                } else {
-                    break;
-                }
-            }
-
-            if (activeIndex !== -1) {
-                const currentActive = document.querySelector('.lyrics-line.active');
-                const newActive = document.getElementById(`lyric-${activeIndex}`);
-                
-                if (currentActive !== newActive) {
-                    if (currentActive) currentActive.classList.remove('active');
-                    if (newActive) {
-                        newActive.classList.add('active');
-                        // Scroll automático para centrar la letra activa
-                        newActive.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }
-                }
-            }
         }
 
         /* ================= EVENTOS DE AUDIO ================= */
@@ -555,6 +412,7 @@
                 const currentTime = audioMain.currentTime;
                 const duration = audioMain.duration;
 
+                // Sincroniza el video con el audio si se desfasan por más de 0.3s
                 if (!isDragging && Math.abs(videoMain.currentTime - currentTime) > 0.3) {
                     videoMain.currentTime = currentTime;
                 }
@@ -564,9 +422,6 @@
                     slider.value = percent;
                     slider.style.setProperty('--progress', `${percent}%`);
                     currTimeEl.textContent = formatTime(currentTime);
-                    
-                    // Sincronizar las letras en tiempo real
-                    syncLyrics(currentTime); 
                 }
 
                 if (duration - currentTime <= CROSSFADE_DURATION && !isCrossfading && duration > 0) {
@@ -588,7 +443,7 @@
         setupAudioListeners(audioMain);
         setupAudioListeners(audioNext);
 
-        /* ================= EXTRACCIÓN DE COLOR ================= */
+        /* ================= EXTRACCIÓN DE COLOR DINÁMICA ================= */
         coverEl.onload = function() {
             const canvas = document.createElement('canvas');
             const context = canvas.getContext('2d');
@@ -608,14 +463,17 @@
 
                 const rgb = `rgb(${r}, ${g}, ${b})`;
                 rootVars.setProperty('--primary-color', rgb);
-                coverGlow.style.boxShadow = `0 20px 50px rgba(${r}, ${g}, ${b}, 0.5)`;
+                
+                // Sombra suave en la portada que se mezcla con el video de fondo
+                coverGlow.style.boxShadow = `0 15px 45px rgba(${r}, ${g}, ${b}, 0.5)`;
             } catch (e) {
+                // Color por defecto si hay error CORS
                 rootVars.setProperty('--primary-color', '#1DB954');
-                coverGlow.style.boxShadow = `0 20px 50px rgba(29, 185, 84, 0.4)`;
+                coverGlow.style.boxShadow = `0 15px 45px rgba(29, 185, 84, 0.4)`;
             }
         };
 
-        /* ================= BARRA DE PROGRESO ================= */
+        /* ================= BARRA DE PROGRESO INTERACTIVA ================= */
         slider.addEventListener('input', () => {
             isDragging = true;
             if (!audioMain.duration) return;
@@ -634,9 +492,6 @@
             audioMain.currentTime = seekTime;
             videoMain.currentTime = seekTime; 
             
-            // Forzar actualización de letras al saltar tiempo
-            syncLyrics(seekTime);
-            
             isDragging = false;
 
             if (isCrossfading && (audioMain.duration - audioMain.currentTime > CROSSFADE_DURATION)) {
@@ -644,7 +499,7 @@
             }
         });
 
-        /* ================= LÓGICA DE REPRODUCCIÓN ================= */
+        /* ================= LÓGICA DE REPRODUCCIÓN Y CROSSFADE ================= */
         function getNextIndex(isAuto = false) {
             if (isAuto && isRepeat) return currentIndex; 
 
@@ -718,7 +573,7 @@
             videoMain.style.opacity = '1';
         }
 
-        /* ================= CONTROLES ================= */
+        /* ================= BOTONES Y CONTROLES ================= */
         const playBtn = document.getElementById('btn-play');
         const playIcon = document.getElementById('play-icon');
         const pauseIcon = document.getElementById('pause-icon');
@@ -779,6 +634,7 @@
             this.classList.toggle('active-action', isRepeat);
         });
 
+        // Iniciar el reproductor por primera vez
         initPlayer();
     </script>
 </body>
