@@ -63,6 +63,7 @@
         }
 
         .cover-wrapper {
+            position: relative; /* Modificado para el overlay de letras */
             width: 100%;
             aspect-ratio: 1;
             border-radius: 24px;
@@ -83,6 +84,81 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.3) !important;
         }
 
+        /* ================= CSS: LETRAS (LYRICS) ================= */
+        .btn-lyrics-toggle {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            cursor: pointer;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .btn-lyrics-toggle:hover {
+            background: var(--primary-color);
+            transform: scale(1.1);
+        }
+
+        .btn-lyrics-toggle svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        .lyrics-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            display: flex;
+            flex-direction: column;
+            padding: 30px 20px;
+            overflow-y: auto;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+            z-index: 5;
+            text-align: left;
+            scroll-behavior: smooth;
+        }
+
+        .lyrics-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .lyrics-overlay::-webkit-scrollbar { display: none; }
+
+        .lyrics-line {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+            cursor: default;
+            font-weight: 600;
+        }
+
+        .lyrics-line.active {
+            color: #FFF;
+            font-size: 20px;
+            font-weight: 800;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            transform: scale(1.02);
+            transform-origin: left center;
+        }
+
+        /* Resto de estilos del reproductor */
         .song-info {
             margin-bottom: 25px;
         }
@@ -104,7 +180,6 @@
             font-weight: 500;
         }
 
-        /* Barra de progreso */
         .progress-container {
             width: 100%;
             margin-bottom: 30px;
@@ -152,7 +227,6 @@
             font-variant-numeric: tabular-nums;
         }
 
-        /* ================= CONTROLES SIMÉTRICOS ================= */
         .controls {
             display: flex;
             justify-content: space-between;
@@ -231,6 +305,16 @@
     <div class="player-container paused" id="player">
         <div class="cover-wrapper" id="cover-glow">
             <img src="" id="cover" crossorigin="anonymous">
+            
+            <!-- Contenedor de Letras -->
+            <div class="lyrics-overlay" id="lyrics-overlay">
+                <div id="lyrics-content"></div>
+            </div>
+
+            <!-- Botón flotante para ver Letras -->
+            <button class="btn-lyrics-toggle" id="btn-lyrics-toggle" title="Ver Letras">
+                <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 14H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+            </button>
         </div>
         
         <div class="song-info">
@@ -247,24 +331,19 @@
         </div>
 
         <div class="controls">
-            <!-- Aleatorio -->
             <button class="btn" id="btn-shuffle" title="Modo Aleatorio">
                 <svg viewBox="0 0 24 24"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg>
             </button>
-            <!-- Anterior -->
             <button class="btn" id="btn-prev" title="Anterior">
                 <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
             </button>
-            <!-- Reproducir -->
             <button class="btn btn-play" id="btn-play" title="Reproducir / Pausar">
                 <svg id="play-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                 <svg id="pause-icon" viewBox="0 0 24 24" style="display:none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
             </button>
-            <!-- Siguiente -->
             <button class="btn" id="btn-next" title="Siguiente">
                 <svg viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
             </button>
-            <!-- Repetir -->
             <button class="btn" id="btn-repeat" title="Repetir Canción">
                 <svg viewBox="0 0 24 24"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
             </button>
@@ -273,42 +352,47 @@
 
     <script>
         /* ================= CONFIGURACIÓN DE TU PLAYLIST ================= */
+        // SE AGREGARON LAS RUTAS DE LOS .lrc
         const playlist =[
             { 
                 title: "WOH OH OH", 
-                artist: "OMAR COURTZ, ROA", 
+                artist: "Tu Artista", 
                 cover: "covers/WOH OH OH.jpg", 
                 file: "songs/WOH OH OH.mp3",
-                video: "videos/WOH OH OH.mp4"
+                video: "videos/WOH OH OH.mp4",
+                lyrics: "lyrics/WOH OH OH.lrc"
             },
             { 
                 title: "444", 
-                artist: "YAN BLOCK", 
+                artist: "Tu Artista", 
                 cover: "covers/444.jpg", 
                 file: "songs/444.mp3",
-                video: "videos/444.mp4"
+                video: "videos/444.mp4",
+                lyrics: "lyrics/444.lrc"
             },
             { 
                 title: "FOREVEL TU GANTEL", 
-                artist: "OMAR COURTZ, NENGO FLOW", 
+                artist: "Tu Artista", 
                 cover: "covers/FOREVEL TU GANTEL.jpg", 
                 file: "songs/FOREVEL TU GANTEL.mp3",
-                video: "videos/FOREVEL TU GANTEL.mp4"
+                video: "videos/FOREVEL TU GANTEL.mp4",
+                lyrics: "lyrics/FOREVEL TU GANTEL.lrc"
             },
-            // NUEVA CANCIÓN AGREGADA AQUÍ:
             { 
                 title: "YO QUIERO", 
-                artist: "HADES66", 
+                artist: "Tu Artista", 
                 cover: "covers/YO QUIERO.jpg", 
                 file: "songs/YO QUIERO.mp3",
-                video: "videos/YO QUIERO.mp4"
+                video: "videos/YO QUIERO.mp4",
+                lyrics: "lyrics/YO QUIERO.lrc"
             },
             { 
                 title: "VVS SWITCH REMIX", 
-                artist: "PRESSURE, Hades66, YOVNGCHIMI, CDobleta, Luar La L y Anuel AA", 
+                artist: "Tu Artista", 
                 cover: "covers/VVS SWITCH REMIX.jpg", 
                 file: "songs/VVS SWITCH REMIX.mp3",
-                video: "videos/VVS SWITCH REMIX.mp4"
+                video: "videos/VVS SWITCH REMIX.mp4",
+                lyrics: "lyrics/VVS SWITCH REMIX.lrc"
             }
         ];
 
@@ -338,6 +422,12 @@
         const slider = document.getElementById('progress-slider');
         const currTimeEl = document.getElementById('current-time');
         const durationEl = document.getElementById('duration');
+
+        // Letras
+        let parsedLyrics =[];
+        const lyricsOverlay = document.getElementById('lyrics-overlay');
+        const lyricsContent = document.getElementById('lyrics-content');
+        const btnLyrics = document.getElementById('btn-lyrics-toggle');
 
         function formatTime(sec) {
             if (isNaN(sec)) return "0:00";
@@ -372,6 +462,88 @@
             coverEl.src = song.cover;
             titleEl.textContent = song.title;
             artistEl.textContent = song.artist;
+            loadLyrics(index); // Cargar letras al cambiar de canción
+        }
+
+        /* ================= SISTEMA DE LETRAS SINCRONIZADAS ================= */
+        btnLyrics.addEventListener('click', () => {
+            lyricsOverlay.classList.toggle('show');
+        });
+
+        async function loadLyrics(index) {
+            parsedLyrics =[];
+            lyricsContent.innerHTML = '';
+            const song = playlist[index];
+
+            if (!song.lyrics) {
+                lyricsContent.innerHTML = '<p class="lyrics-line">Letras no disponibles</p>';
+                return;
+            }
+
+            try {
+                const response = await fetch(song.lyrics);
+                if (!response.ok) throw new Error('No se encontró el archivo');
+                const text = await response.text();
+                parseLyrics(text);
+                renderLyrics();
+            } catch (error) {
+                lyricsContent.innerHTML = '<p class="lyrics-line">Error al cargar letras.</p>';
+            }
+        }
+
+        function parseLyrics(text) {
+            const lines = text.split('\n');
+            const regex = /\[(\d{2}):(\d{2}(?:\.\d{2,3})?)\](.*)/;
+
+            lines.forEach(line => {
+                const match = regex.exec(line);
+                if (match) {
+                    const minutes = parseInt(match[1]);
+                    const seconds = parseFloat(match[2]);
+                    const time = (minutes * 60) + seconds;
+                    const textContent = match[3].trim();
+                    if(textContent) parsedLyrics.push({ time, text: textContent });
+                } else if (line.trim() !== '') {
+                    parsedLyrics.push({ time: -1, text: line.trim() });
+                }
+            });
+        }
+
+        function renderLyrics() {
+            parsedLyrics.forEach((line, idx) => {
+                const p = document.createElement('div');
+                p.className = 'lyrics-line';
+                p.textContent = line.text;
+                p.id = `lyric-${idx}`;
+                lyricsContent.appendChild(p);
+            });
+        }
+
+        function syncLyrics(currentTime) {
+            if (parsedLyrics.length === 0 || parsedLyrics[0].time === -1) return;
+
+            let activeIndex = -1;
+            for (let i = 0; i < parsedLyrics.length; i++) {
+                if (currentTime >= parsedLyrics[i].time - 0.3) {
+                    activeIndex = i;
+                } else {
+                    break;
+                }
+            }
+
+            if (activeIndex !== -1) {
+                const currentActive = document.querySelector('.lyrics-line.active');
+                const newActive = document.getElementById(`lyric-${activeIndex}`);
+                
+                if (currentActive !== newActive) {
+                    if (currentActive) currentActive.classList.remove('active');
+                    if (newActive) {
+                        newActive.classList.add('active');
+                        // Scroll automático para centrar la letra activa
+                        newActive.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }
+            }
         }
 
         /* ================= EVENTOS DE AUDIO ================= */
@@ -392,6 +564,9 @@
                     slider.value = percent;
                     slider.style.setProperty('--progress', `${percent}%`);
                     currTimeEl.textContent = formatTime(currentTime);
+                    
+                    // Sincronizar las letras en tiempo real
+                    syncLyrics(currentTime); 
                 }
 
                 if (duration - currentTime <= CROSSFADE_DURATION && !isCrossfading && duration > 0) {
@@ -458,6 +633,9 @@
             
             audioMain.currentTime = seekTime;
             videoMain.currentTime = seekTime; 
+            
+            // Forzar actualización de letras al saltar tiempo
+            syncLyrics(seekTime);
             
             isDragging = false;
 
