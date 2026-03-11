@@ -336,8 +336,8 @@
         let isRepeat = false; 
         let isDragging = false; 
 
-        // Crossfade Settings
-        const CROSSFADE_DURATION = 3; // Reducido a 3 segundos para transiciones más precisas y comerciales
+        // Crossfade Settings - CONFIGURADO A 12 SEGUNDOS
+        const CROSSFADE_DURATION = 12; 
         let isCrossfading = false;
         let crossfadeInterval = null;
 
@@ -408,7 +408,7 @@
                     currTimeEl.textContent = formatTime(currentTime);
                 }
 
-                // Iniciar mezcla automática cuando falten pocos segundos
+                // Iniciar mezcla automática cuando falten 12 segundos (o lo que dictamine CROSSFADE_DURATION)
                 if (duration - currentTime <= CROSSFADE_DURATION && !isCrossfading && duration > 0) {
                     startSmartCrossfade(true); 
                 }
@@ -535,9 +535,9 @@
             currentIndex = nextIdx;
             loadSongInfo(currentIndex);
 
-            // Temporizador basado en reloj real (Date.now) para que NO se buguee en pestañas minimizadas
+            // Temporizador basado en reloj real (Date.now)
             let startTime = Date.now();
-            let durationMs = CROSSFADE_DURATION * 1000;
+            let durationMs = CROSSFADE_DURATION * 1000; // 12000 milisegundos
 
             if (crossfadeInterval) clearInterval(crossfadeInterval);
 
@@ -604,7 +604,7 @@
         });
 
         document.getElementById('btn-prev').addEventListener('click', () => {
-            // Si pasaron más de 3 segundos, reinicia la canción actual
+            // Si pasaron más de 3 segundos, reinicia la canción actual (Estándar de UX)
             if (audioMain.currentTime > 3) {
                 audioMain.currentTime = 0; 
                 videoMain.currentTime = 0;
