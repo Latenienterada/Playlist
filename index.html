@@ -3,14 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apple Music Flow Player - Full Color Edition</title>
+    <title>Apple Music Flow - Vibrant Colors</title>
     <style>
-        /* ================= CSS: UI APPLE MUSIC / iOS 17 STYLE ================= */
+        /* ================= CSS: UI APPLE MUSIC ================= */
         :root {
-            /* Variables maestras de color dinámico */
             --primary-color: #ffffff; 
             --primary-color-rgb: 255, 255, 255;
-            
             --bg-color: #000000;
             --text-color: #FFFFFF;
             --text-secondary: rgba(255, 255, 255, 0.55);
@@ -34,7 +32,6 @@
             overflow: hidden;
         }
 
-        /* ================= FONDO FLUIDO E INMERSIVO ================= */
         .video-container {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -58,7 +55,6 @@
             pointer-events: none;
         }
 
-        /* ================= CONTENEDOR PRINCIPAL ================= */
         .player-container {
             width: 100%; 
             max-width: 390px; 
@@ -73,14 +69,14 @@
             z-index: 10;
         }
 
-        /* ================= PORTADA ================= */
         .cover-wrapper {
             width: 100%;
             aspect-ratio: 1;
             border-radius: 24px; 
             overflow: hidden;
             margin-bottom: 40px;
-            box-shadow: 0 25px 50px -12px rgba(var(--primary-color-rgb), 0.5);
+            /* Sombra mucho más fuerte para el disco */
+            box-shadow: 0 25px 60px -10px rgba(var(--primary-color-rgb), 0.75);
             transition: transform 0.6s cubic-bezier(0.32, 0.72, 0, 1), box-shadow 0.6s ease;
             position: relative;
         }
@@ -94,15 +90,12 @@
 
         .paused .cover-wrapper {
             transform: scale(0.78); 
-            box-shadow: 0 10px 20px -10px rgba(var(--primary-color-rgb), 0.2) !important;
+            box-shadow: 0 10px 20px -10px rgba(var(--primary-color-rgb), 0.3) !important;
             border-radius: 30px;
         }
 
-        .paused .cover-wrapper img {
-            transform: scale(1.02);
-        }
+        .paused .cover-wrapper img { transform: scale(1.02); }
 
-        /* ================= INFO CANCIÓN ================= */
         .song-info {
             margin-bottom: 30px;
             display: flex;
@@ -129,7 +122,7 @@
             letter-spacing: 0.1px;
         }
 
-        /* ================= BARRA DE PROGRESO ================= */
+        /* ================= BARRA DE PROGRESO (COLORES INTENSOS) ================= */
         .progress-container {
             width: 100%;
             margin-bottom: 40px;
@@ -139,10 +132,8 @@
         .progress-slider {
             -webkit-appearance: none;
             width: 100%;
-            height: 5px; 
-            /* El fondo de la barra también toma un tono translúcido del color de la portada */
-            background-color: rgba(var(--primary-color-rgb), 0.2);
-            /* El relleno es 100% el color de la portada */
+            height: 6px; 
+            background-color: rgba(var(--primary-color-rgb), 0.25);
             background-image: linear-gradient(var(--primary-color), var(--primary-color));
             background-size: var(--progress, 0%) 100%;
             background-repeat: no-repeat;
@@ -158,18 +149,18 @@
             width: 0px; 
             height: 0px;
             border-radius: 50%;
-            /* Bolita 100% del color extraído */
             background: var(--primary-color);
-            box-shadow: 0 2px 8px rgba(var(--primary-color-rgb), 0.8);
+            /* Glow fuerte en la bolita */
+            box-shadow: 0 0 10px rgba(var(--primary-color-rgb), 1);
             transition: width 0.2s ease, height 0.2s ease;
         }
 
         .progress-container:hover .progress-slider,
-        .progress-slider:active { height: 8px; }
+        .progress-slider:active { height: 9px; }
 
         .progress-container:hover .progress-slider::-webkit-slider-thumb,
         .progress-slider:active::-webkit-slider-thumb {
-            width: 16px; height: 16px;
+            width: 18px; height: 18px;
         }
 
         /* ================= TEXTOS DE TIEMPO Y "MIXING..." ================= */
@@ -194,30 +185,30 @@
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
-            /* El texto MIXING toma el color de la nueva canción */
+            /* Texto neón súper brillante */
             color: var(--primary-color);
-            font-size: 10px;
+            font-size: 11px;
             font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
+            letter-spacing: 2px;
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.4s ease;
-            text-shadow: 0 0 10px rgba(var(--primary-color-rgb), 0.6);
+            text-shadow: 0 0 15px rgba(var(--primary-color-rgb), 1);
         }
 
         .is-mixing .time-text { opacity: 0; }
         .is-mixing .mixing-label {
             opacity: 1;
-            animation: glow-pulse 1.2s infinite alternate ease-in-out;
+            animation: glow-pulse 1s infinite alternate ease-in-out;
         }
 
         @keyframes glow-pulse {
-            0% { opacity: 0.5; filter: brightness(1); transform: translate(-50%, -50%) scale(0.98); }
-            100% { opacity: 1; filter: brightness(1.3); transform: translate(-50%, -50%) scale(1.02); }
+            0% { opacity: 0.6; filter: brightness(1); transform: translate(-50%, -50%) scale(0.95); }
+            100% { opacity: 1; filter: brightness(1.5); transform: translate(-50%, -50%) scale(1.05); }
         }
 
-        /* ================= CONTROLES COLOREADOS ================= */
+        /* ================= CONTROLES COLOREADOS (FULL VIBRANCE) ================= */
         .controls {
             display: flex;
             justify-content: space-between;
@@ -237,40 +228,40 @@
             border-radius: 12px;
         }
 
-        /* Anterior y Siguiente: toman el 100% del color extraído */
+        /* Botones Anterior y Siguiente */
         .btn-nav {
             width: 44px; height: 44px;
             color: var(--primary-color);
-            opacity: 0.95;
-            filter: drop-shadow(0 2px 6px rgba(var(--primary-color-rgb), 0.3));
+            /* Ahora tienen un destello brillante detrás */
+            filter: drop-shadow(0 0 12px rgba(var(--primary-color-rgb), 0.7));
         }
-        .btn-nav svg { width: 32px; height: 32px; fill: currentColor; }
-        .btn-nav:hover { opacity: 1; transform: scale(1.1); }
+        .btn-nav svg { width: 34px; height: 34px; fill: currentColor; }
+        .btn-nav:hover { opacity: 1; transform: scale(1.1); filter: drop-shadow(0 0 18px rgba(var(--primary-color-rgb), 1)); }
         .btn-nav:active { transform: scale(0.9); opacity: 0.7; }
 
-        /* Aleatorio y Repetir: Toman una versión tenue del color extraído cuando están inactivos */
+        /* Aleatorio y Repetir */
         .btn-action {
             width: 36px; height: 36px;
-            color: rgba(var(--primary-color-rgb), 0.4); /* ¡Ahora combinan incluso apagados! */
+            color: rgba(var(--primary-color-rgb), 0.5); 
         }
-        .btn-action svg { width: 20px; height: 20px; fill: currentColor; }
+        .btn-action svg { width: 22px; height: 22px; fill: currentColor; }
         
-        /* Cuando se encienden brillan con el color a full */
         .active-action {
             color: var(--primary-color) !important;
-            background-color: rgba(var(--primary-color-rgb), 0.15);
+            background-color: rgba(var(--primary-color-rgb), 0.2);
+            filter: drop-shadow(0 0 8px rgba(var(--primary-color-rgb), 0.5));
         }
 
-        /* Play / Pausa: Toma el 100% del color extraído */
+        /* Botón Play gigante y súper brillante */
         .btn-play {
-            width: 60px; height: 60px;
+            width: 64px; height: 64px;
             color: var(--primary-color);
-            filter: drop-shadow(0 4px 12px rgba(var(--primary-color-rgb), 0.4));
+            filter: drop-shadow(0 0 15px rgba(var(--primary-color-rgb), 0.8));
         }
-        .btn-play svg { width: 46px; height: 46px; fill: currentColor; }
+        .btn-play svg { width: 50px; height: 50px; fill: currentColor; }
         .btn-play:hover {
             transform: scale(1.1);
-            filter: drop-shadow(0 6px 15px rgba(var(--primary-color-rgb), 0.6));
+            filter: drop-shadow(0 0 25px rgba(var(--primary-color-rgb), 1));
         }
         .btn-play:active { transform: scale(0.9); opacity: 0.7; }
 
@@ -286,7 +277,7 @@
 
     <div class="player-container paused" id="player">
         <div class="cover-wrapper" id="cover-glow">
-            <img src="" id="cover" crossorigin="anonymous">
+            <img src="" id="cover">
         </div>
         
         <div class="song-info">
@@ -377,8 +368,6 @@
 
         function loadSongInfo(index) {
             const song = playlist[index];
-            // Aseguramos que la imagen se intente cargar con permisos cors si estamos en un servidor
-            coverEl.crossOrigin = "anonymous";
             coverEl.src = song.cover;
             titleEl.textContent = song.title;
             artistEl.textContent = song.artist;
@@ -425,7 +414,7 @@
         setupAudioListeners(audioMain);
         setupAudioListeners(audioNext);
 
-        /* ================= EXTRACCIÓN DE COLOR ================= */
+        /* ================= EXTRACCIÓN DE COLOR NIVEL DIOS (APPLE VIBRANCE) ================= */
         coverEl.onload = function() {
             const canvas = document.createElement('canvas');
             const context = canvas.getContext('2d');
@@ -434,34 +423,70 @@
             
             try {
                 context.drawImage(coverEl, 0, 0, canvas.width, canvas.height);
-                // Si esto da error, es por culpa de CORS (abrir html sin servidor local)
                 const data = context.getImageData(0, 0, canvas.width, canvas.height).data;
-                let r = 0, g = 0, b = 0;
                 
+                let r = 0, g = 0, b = 0, count = 0;
+                
+                // Extraer el promedio general de la imagen
                 for (let i = 0; i < data.length; i += 16) { 
                     r += data[i]; g += data[i+1]; b += data[i+2];
+                    count++;
                 }
-                const count = data.length / 16;
-                r = Math.floor(r / count); g = Math.floor(g / count); b = Math.floor(b / count);
+                r = Math.floor(r / count); 
+                g = Math.floor(g / count); 
+                b = Math.floor(b / count);
 
-                // Algoritmo para evitar botones oscuros
-                let brightness = (r * 299 + g * 587 + b * 114) / 1000;
-                if (brightness < 110) { 
-                    let mix = (110 - brightness) / 100; 
-                    r = Math.floor(r + (255 - r) * mix);
-                    g = Math.floor(g + (255 - g) * mix);
-                    b = Math.floor(b + (255 - b) * mix);
+                // --- CONVERSIÓN MAGICA A HSL PARA FORZAR QUE SEA SÚPER BRILLANTE ---
+                let rNorm = r/255, gNorm = g/255, bNorm = b/255;
+                let cMax = Math.max(rNorm, gNorm, bNorm), cMin = Math.min(rNorm, gNorm, bNorm);
+                let delta = cMax - cMin;
+                let h = 0, s = 0, l = (cMax + cMin) / 2;
+
+                if (delta !== 0) {
+                    s = l < 0.5 ? delta / (cMax + cMin) : delta / (2 - cMax - cMin);
+                    if (cMax === rNorm) h = ((gNorm - bNorm) / delta) % 6;
+                    else if (cMax === gNorm) h = (bNorm - rNorm) / delta + 2;
+                    else h = (rNorm - gNorm) / delta + 4;
+                    h = Math.round(h * 60);
+                    if (h < 0) h += 360;
                 }
 
+                // SI LA PORTADA NO ES TOTALMENTE BLANCA/NEGRA, LA VOLVEMOS NEÓN.
+                if (s > 0.08) { 
+                    s = 0.85; // Saturación brutal al 85%
+                    l = 0.65; // Brillo perfecto para destacar en fondos oscuros (65%)
+                } else {
+                    // Si es escala de grises, usamos color blanco para que no se vea sucio
+                    s = 0;
+                    l = 1; 
+                }
+
+                // Convertir de vuelta a RGB
+                let c = (1 - Math.abs(2 * l - 1)) * s;
+                let x = c * (1 - Math.abs((h / 60) % 2 - 1));
+                let m = l - c / 2;
+                let finalR = 0, finalG = 0, finalB = 0;
+
+                if (h >= 0 && h < 60) { finalR = c; finalG = x; finalB = 0; }
+                else if (h >= 60 && h < 120) { finalR = x; finalG = c; finalB = 0; }
+                else if (h >= 120 && h < 180) { finalR = 0; finalG = c; finalB = x; }
+                else if (h >= 180 && h < 240) { finalR = 0; finalG = x; finalB = c; }
+                else if (h >= 240 && h < 300) { finalR = x; finalG = 0; finalB = c; }
+                else if (h >= 300 && h < 360) { finalR = c; finalG = 0; finalB = x; }
+
+                r = Math.round((finalR + m) * 255);
+                g = Math.round((finalG + m) * 255);
+                b = Math.round((finalB + m) * 255);
+
+                // Inyectar el color vitaminado al CSS
                 rootVars.setProperty('--primary-color-rgb', `${r}, ${g}, ${b}`);
                 rootVars.setProperty('--primary-color', `rgb(${r}, ${g}, ${b})`);
                 
                 if (!playerContainer.classList.contains('paused')) {
-                    coverGlow.style.boxShadow = `0 25px 50px -12px rgba(${r}, ${g}, ${b}, 0.6)`;
+                    coverGlow.style.boxShadow = `0 25px 60px -10px rgba(${r}, ${g}, ${b}, 0.75)`;
                 }
             } catch (e) {
-                console.error("No se pudo extraer el color. Asegúrate de abrir el archivo en un servidor local (Live Server).", e);
-                // Fallback a blanco puro
+                console.error("Error leyendo el color:", e);
                 rootVars.setProperty('--primary-color-rgb', `255, 255, 255`);
                 rootVars.setProperty('--primary-color', `#ffffff`);
             }
@@ -496,10 +521,7 @@
         }
 
         function forceStopCrossfade() {
-            if (crossfadeInterval) {
-                clearInterval(crossfadeInterval);
-                crossfadeInterval = null;
-            }
+            if (crossfadeInterval) { clearInterval(crossfadeInterval); crossfadeInterval = null; }
             isCrossfading = false;
             playerContainer.classList.remove('is-mixing');
             audioNext.pause(); videoNext.pause();
@@ -561,7 +583,7 @@
                 if (isCrossfading) { audioNext.play(); videoNext.play(); }
                 playIcon.style.display = 'none'; pauseIcon.style.display = 'block';
                 playerContainer.classList.remove('paused');
-                coverGlow.style.boxShadow = `0 25px 50px -12px rgba(${rootVars.getPropertyValue('--primary-color-rgb') || '255,255,255'}, 0.6)`;
+                coverGlow.style.boxShadow = `0 25px 60px -10px rgba(${rootVars.getPropertyValue('--primary-color-rgb') || '255,255,255'}, 0.75)`;
             }
             isPlaying = !isPlaying;
         }
