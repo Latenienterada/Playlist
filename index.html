@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apple Music Flow Player</title>
+    <title>Apple Music Flow Player - Mixing Edition</title>
     <style>
         /* ================= CSS: UI APPLE MUSIC / iOS 17 STYLE ================= */
         :root {
             --primary-color: #ffffff; 
             --primary-color-rgb: 255, 255, 255;
+            
             --bg-color: #000000;
             --text-color: #FFFFFF;
             --text-secondary: rgba(255, 255, 255, 0.55);
@@ -32,7 +33,7 @@
             overflow: hidden;
         }
 
-        /* ================= FONDO FLUIDO E INMERSIVO (AMBIENT BACKGROUND) ================= */
+        /* ================= FONDO FLUIDO E INMERSIVO ================= */
         .video-container {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -42,9 +43,8 @@
 
         .bg-video {
             position: absolute;
-            top: -10%; left: -10%; width: 120%; height: 120%; /* Sobredimensionado para evitar bordes blancos */
+            top: -10%; left: -10%; width: 120%; height: 120%; 
             object-fit: cover;
-            /* Apple Music effect: Desenfoque extremo, saturación alta, brillo controlado */
             filter: blur(80px) saturate(350%) brightness(0.6);
             transition: opacity 1.2s ease-in-out;
         }
@@ -60,9 +60,8 @@
         /* ================= CONTENEDOR PRINCIPAL ================= */
         .player-container {
             width: 100%; 
-            max-width: 390px; /* Tamaño exacto de un iPhone Pro */
+            max-width: 390px; 
             padding: 40px 35px;
-            /* Glassmorphism hiper-limpio sin bordes duros */
             background: rgba(30, 30, 30, 0.15);
             backdrop-filter: blur(60px) saturate(150%);
             -webkit-backdrop-filter: blur(60px) saturate(150%);
@@ -73,16 +72,14 @@
             z-index: 10;
         }
 
-        /* ================= PORTADA (EL EFECTO SHRINK) ================= */
+        /* ================= PORTADA ================= */
         .cover-wrapper {
             width: 100%;
             aspect-ratio: 1;
-            border-radius: 24px; /* Apple usa esquinas muy suaves pero no redondas */
+            border-radius: 24px; 
             overflow: hidden;
             margin-bottom: 40px;
-            /* Sombra colorida dinámica que se inyecta desde JS */
             box-shadow: 0 25px 50px -12px rgba(var(--primary-color-rgb), 0.5);
-            /* Curva de resorte típica de iOS */
             transition: transform 0.6s cubic-bezier(0.32, 0.72, 0, 1), box-shadow 0.6s ease;
             position: relative;
         }
@@ -94,9 +91,8 @@
             transition: transform 0.6s cubic-bezier(0.32, 0.72, 0, 1);
         }
 
-        /* ESTADO EN PAUSA: Shrink de iOS */
         .paused .cover-wrapper {
-            transform: scale(0.78); /* Encogimiento notable */
+            transform: scale(0.78); 
             box-shadow: 0 10px 20px -10px rgba(var(--primary-color-rgb), 0.2) !important;
             border-radius: 30px;
         }
@@ -111,7 +107,7 @@
             display: flex;
             flex-direction: column;
             gap: 2px;
-            text-align: left; /* Apple Music suele alinear a la izquierda la info */
+            text-align: left; 
         }
 
         .song-title {
@@ -132,7 +128,7 @@
             letter-spacing: 0.1px;
         }
 
-        /* ================= BARRA DE PROGRESO ================= */
+        /* ================= BARRA DE PROGRESO Y TEXTO DE TIEMPO ================= */
         .progress-container {
             width: 100%;
             margin-bottom: 40px;
@@ -142,9 +138,9 @@
         .progress-slider {
             -webkit-appearance: none;
             width: 100%;
-            height: 5px; /* Línea delgada elegante */
-            background: rgba(255, 255, 255, 0.2);
-            background-image: linear-gradient(#ffffff, #ffffff);
+            height: 5px; 
+            background: rgba(255, 255, 255, 0.15);
+            background-image: linear-gradient(var(--primary-color), var(--primary-color));
             background-size: var(--progress, 0%) 100%;
             background-repeat: no-repeat;
             border-radius: 4px;
@@ -153,21 +149,20 @@
             transition: height 0.2s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        /* Bolita (Thumb) invisible hasta que se interactúa */
         .progress-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
             width: 0px; 
             height: 0px;
             border-radius: 50%;
-            background: #fff;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+            background: var(--primary-color);
+            box-shadow: 0 2px 8px rgba(var(--primary-color-rgb), 0.6);
             transition: width 0.2s ease, height 0.2s ease;
         }
 
         .progress-container:hover .progress-slider,
         .progress-slider:active {
-            height: 8px; /* Crece al tocar */
+            height: 8px; 
         }
 
         .progress-container:hover .progress-slider::-webkit-slider-thumb,
@@ -179,6 +174,7 @@
         .time-info {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             font-size: 11px;
             color: var(--text-secondary);
             margin-top: 8px;
@@ -186,6 +182,44 @@
             font-variant-numeric: tabular-nums;
             letter-spacing: 0.2px;
             opacity: 0.8;
+            position: relative; /* Para centrar el letrero de mixing */
+        }
+
+        .time-text {
+            transition: opacity 0.4s ease;
+        }
+
+        /* LABEL DE "MIXING..." AL ESTILO APPLE */
+        .mixing-label {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--primary-color);
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+            text-shadow: 0 0 10px rgba(var(--primary-color-rgb), 0.6);
+        }
+
+        /* Cuando está mezclando (is-mixing), ocultamos tiempos y mostramos el texto */
+        .is-mixing .time-text {
+            opacity: 0;
+        }
+
+        .is-mixing .mixing-label {
+            opacity: 1;
+            /* Efecto de latido/resplandor */
+            animation: glow-pulse 1.2s infinite alternate ease-in-out;
+        }
+
+        @keyframes glow-pulse {
+            0% { opacity: 0.5; filter: brightness(1); transform: translate(-50%, -50%) scale(0.98); }
+            100% { opacity: 1; filter: brightness(1.3); transform: translate(-50%, -50%) scale(1.02); }
         }
 
         /* ================= CONTROLES ================= */
@@ -201,7 +235,6 @@
             background: transparent;
             border: none;
             cursor: pointer;
-            color: #FFFFFF;
             transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
             display: flex;
             justify-content: center;
@@ -209,64 +242,44 @@
             border-radius: 12px;
         }
 
-        /* Controles secundarios (Anterior / Siguiente) */
         .btn-nav {
             width: 44px;
             height: 44px;
-            opacity: 0.9;
+            color: var(--primary-color);
+            opacity: 0.95;
+            filter: drop-shadow(0 2px 6px rgba(var(--primary-color-rgb), 0.3));
         }
 
-        .btn-nav svg {
-            width: 32px;
-            height: 32px;
-            fill: currentColor;
-        }
+        .btn-nav svg { width: 32px; height: 32px; fill: currentColor; }
 
-        .btn-nav:hover {
-            opacity: 1;
-            transform: scale(1.1);
-        }
-        
-        .btn-nav:active {
-            transform: scale(0.9);
-            opacity: 0.7;
-        }
+        .btn-nav:hover { opacity: 1; transform: scale(1.1); }
+        .btn-nav:active { transform: scale(0.9); opacity: 0.7; }
 
-        /* Botones de acción (Aleatorio / Repetir) */
         .btn-action {
             width: 36px;
             height: 36px;
-            color: var(--text-secondary);
+            color: rgba(255, 255, 255, 0.4);
         }
 
-        .btn-action svg {
-            width: 20px;
-            height: 20px;
-            fill: currentColor;
-        }
+        .btn-action svg { width: 20px; height: 20px; fill: currentColor; }
 
-        /* Estado Activo Apple Music: Color principal y fondo translúcido */
         .active-action {
-            color: rgb(var(--primary-color-rgb)) !important;
+            color: var(--primary-color) !important;
             background-color: rgba(var(--primary-color-rgb), 0.15);
         }
 
-        /* Botón Play: Pura silueta blanca inmensa, sin círculos */
         .btn-play {
             width: 60px; 
             height: 60px;
-            color: #FFF;
+            color: var(--primary-color);
+            filter: drop-shadow(0 4px 12px rgba(var(--primary-color-rgb), 0.4));
         }
 
-        .btn-play svg {
-            width: 46px;
-            height: 46px;
-            fill: currentColor;
-        }
+        .btn-play svg { width: 46px; height: 46px; fill: currentColor; }
 
         .btn-play:hover {
             transform: scale(1.1);
-            filter: drop-shadow(0 4px 10px rgba(0,0,0,0.3));
+            filter: drop-shadow(0 6px 15px rgba(var(--primary-color-rgb), 0.6));
         }
 
         .btn-play:active {
@@ -284,6 +297,7 @@
         <div class="vignette-overlay"></div>
     </div>
 
+    <!-- EL CONTENEDOR PRINCIPAL QUE RECIBIRÁ LA CLASE 'is-mixing' -->
     <div class="player-container paused" id="player">
         <div class="cover-wrapper" id="cover-glow">
             <img src="" id="cover" crossorigin="anonymous">
@@ -297,8 +311,10 @@
         <div class="progress-container">
             <input type="range" class="progress-slider" id="progress-slider" min="0" max="100" step="0.1" value="0">
             <div class="time-info">
-                <span id="current-time">0:00</span>
-                <span id="duration">0:00</span>
+                <span id="current-time" class="time-text">0:00</span>
+                <!-- TEXTO QUE APARECE CUANDO SE HACE EL CROSSFADE -->
+                <span class="mixing-label">Mixing...</span>
+                <span id="duration" class="time-text">0:00</span>
             </div>
         </div>
 
@@ -311,9 +327,7 @@
             </button>
             
             <button class="btn btn-play" id="btn-play" title="Reproducir / Pausar">
-                <!-- Icono de Play más estilizado -->
                 <svg id="play-icon" viewBox="0 0 24 24"><path d="M8 5.14v14.72a1 1 0 001.5.86l11-7.36a1 1 0 000-1.72l-11-7.36a1 1 0 00-1.5.86z"/></svg>
-                <!-- Icono de Pausa -->
                 <svg id="pause-icon" viewBox="0 0 24 24" style="display:none;"><path d="M6 5h3v14H6zm9 0h3v14h-3z" rx="1"/></svg>
             </button>
             
@@ -329,48 +343,12 @@
     <script>
         /* ================= CONFIGURACIÓN DE TU PLAYLIST ================= */
         const playlist =[
-            { 
-                title: "WOH OH OH", 
-                artist: "Tu Artista", 
-                cover: "covers/WOH OH OH.jpg", 
-                file: "songs/WOH OH OH.mp3",
-                video: "videos/WOH OH OH.mp4"
-            },
-            { 
-                title: "444", 
-                artist: "Tu Artista", 
-                cover: "covers/444.jpg", 
-                file: "songs/444.mp3",
-                video: "videos/444.mp4"
-            },
-            { 
-                title: "FOREVEL TU GANTEL", 
-                artist: "Tu Artista", 
-                cover: "covers/FOREVEL TU GANTEL.jpg", 
-                file: "songs/FOREVEL TU GANTEL.mp3",
-                video: "videos/FOREVEL TU GANTEL.mp4"
-            },
-            { 
-                title: "YO QUIERO", 
-                artist: "Tu Artista", 
-                cover: "covers/YO QUIERO.jpg", 
-                file: "songs/YO QUIERO.mp3",
-                video: "videos/YO QUIERO.mp4"
-            },
-            { 
-                title: "VVS SWITCH REMIX", 
-                artist: "Tu Artista", 
-                cover: "covers/VVS SWITCH REMIX.jpg", 
-                file: "songs/VVS SWITCH REMIX.mp3",
-                video: "videos/VVS SWITCH REMIX.mp4"
-            },
-            { 
-                title: "FALSAS PROMESAS REMIX", 
-                artist: "Tu Artista", 
-                cover: "covers/FALSAS PROMESAS REMIX.jpg", 
-                file: "songs/FALSAS PROMESAS REMIX.mp3",
-                video: "videos/FALSAS PROMESAS REMIX.mp4"
-            }
+            { title: "WOH OH OH", artist: "Tu Artista", cover: "covers/WOH OH OH.jpg", file: "songs/WOH OH OH.mp3", video: "videos/WOH OH OH.mp4" },
+            { title: "444", artist: "Tu Artista", cover: "covers/444.jpg", file: "songs/444.mp3", video: "videos/444.mp4" },
+            { title: "FOREVEL TU GANTEL", artist: "Tu Artista", cover: "covers/FOREVEL TU GANTEL.jpg", file: "songs/FOREVEL TU GANTEL.mp3", video: "videos/FOREVEL TU GANTEL.mp4" },
+            { title: "YO QUIERO", artist: "Tu Artista", cover: "covers/YO QUIERO.jpg", file: "songs/YO QUIERO.mp3", video: "videos/YO QUIERO.mp4" },
+            { title: "VVS SWITCH REMIX", artist: "Tu Artista", cover: "covers/VVS SWITCH REMIX.jpg", file: "songs/VVS SWITCH REMIX.mp3", video: "videos/VVS SWITCH REMIX.mp4" },
+            { title: "FALSAS PROMESAS REMIX", artist: "Tu Artista", cover: "covers/FALSAS PROMESAS REMIX.jpg", file: "songs/FALSAS PROMESAS REMIX.mp3", video: "videos/FALSAS PROMESAS REMIX.mp4" }
         ];
 
         /* ================= ESTADO DEL REPRODUCTOR ================= */
@@ -380,12 +358,10 @@
         let isRepeat = false; 
         let isDragging = false; 
 
-        // Crossfade Settings - CONFIGURADO A 12 SEGUNDOS
         const CROSSFADE_DURATION = 12; 
         let isCrossfading = false;
         let crossfadeInterval = null;
 
-        // Motores Duales
         let audioMain = new Audio();
         let audioNext = new Audio();
         let videoMain = document.getElementById('bg-video-1');
@@ -400,6 +376,7 @@
         const slider = document.getElementById('progress-slider');
         const currTimeEl = document.getElementById('current-time');
         const durationEl = document.getElementById('duration');
+        const playerContainer = document.getElementById('player'); // Instancia global
 
         function formatTime(sec) {
             if (isNaN(sec)) return "0:00";
@@ -424,11 +401,9 @@
 
         function initPlayer() {
             loadSongInfo(currentIndex);
-            
             audioMain.src = playlist[currentIndex].file;
             videoMain.src = playlist[currentIndex].video;
-            
-            forceStopCrossfade(); // Limpieza absoluta antes de iniciar
+            forceStopCrossfade(); 
             resetProgressUI();
         }
 
@@ -452,6 +427,7 @@
                     currTimeEl.textContent = formatTime(currentTime);
                 }
 
+                // Activar crossfade automático 12 segundos antes del final
                 if (duration - currentTime <= CROSSFADE_DURATION && !isCrossfading && duration > 0) {
                     startSmartCrossfade(true); 
                 }
@@ -466,7 +442,7 @@
         setupAudioListeners(audioMain);
         setupAudioListeners(audioNext);
 
-        /* ================= EXTRACCIÓN DE COLOR DINÁMICA (APPLE STYLE) ================= */
+        /* ================= EXTRACCIÓN DE COLOR DINÁMICA MEJORADA ================= */
         coverEl.onload = function() {
             const canvas = document.createElement('canvas');
             const context = canvas.getContext('2d');
@@ -484,15 +460,23 @@
                 const count = data.length / 16;
                 r = Math.floor(r / count); g = Math.floor(g / count); b = Math.floor(b / count);
 
-                // Pasamos los colores RGB nativos al CSS para manejar opacidades libremente
+                let brightness = (r * 299 + g * 587 + b * 114) / 1000;
+                if (brightness < 110) { 
+                    let mix = (110 - brightness) / 100; 
+                    r = Math.floor(r + (255 - r) * mix);
+                    g = Math.floor(g + (255 - g) * mix);
+                    b = Math.floor(b + (255 - b) * mix);
+                }
+
                 rootVars.setProperty('--primary-color-rgb', `${r}, ${g}, ${b}`);
+                rootVars.setProperty('--primary-color', `rgb(${r}, ${g}, ${b})`);
                 
-                // Si el reproductor NO está en pausa, reactivamos la sombra de inmediato
                 if (!playerContainer.classList.contains('paused')) {
                     coverGlow.style.boxShadow = `0 25px 50px -12px rgba(${r}, ${g}, ${b}, 0.6)`;
                 }
             } catch (e) {
                 rootVars.setProperty('--primary-color-rgb', `255, 255, 255`);
+                rootVars.setProperty('--primary-color', `#ffffff`);
             }
         };
 
@@ -508,17 +492,15 @@
         slider.addEventListener('change', () => {
             if (!audioMain.duration) return;
             const seekTime = (slider.value / 100) * audioMain.duration;
-            
             audioMain.currentTime = seekTime;
             videoMain.currentTime = seekTime; 
             isDragging = false;
-
-            if (audioMain.duration - audioMain.currentTime > CROSSFADE_DURATION) {
-                forceStopCrossfade();
-            }
+            
+            // Si el usuario adelanta la canción cancelamos el crossfade para evitar bugs
+            if (audioMain.duration - audioMain.currentTime > CROSSFADE_DURATION) forceStopCrossfade();
         });
 
-        /* ================= MOTOR DE MEZCLA DJ ================= */
+        /* ================= MOTOR DE MEZCLA DJ Y ESTADO "MIXING" ================= */
         function getNextIndex(isAuto = false) {
             if (isAuto && isRepeat) return currentIndex; 
             if (isShuffle) {
@@ -537,37 +519,32 @@
             }
             isCrossfading = false;
             
-            audioNext.pause();
-            videoNext.pause();
-            audioNext.volume = 0;
-            videoNext.style.opacity = '0';
-            
-            audioMain.volume = 1;
-            videoMain.style.opacity = '1';
+            // Desactiva la animación visual de MIXING
+            playerContainer.classList.remove('is-mixing');
+
+            audioNext.pause(); videoNext.pause();
+            audioNext.volume = 0; videoNext.style.opacity = '0';
+            audioMain.volume = 1; videoMain.style.opacity = '1';
         }
 
         function startSmartCrossfade(isAuto = true) {
             if (isCrossfading) return;
-            
             isCrossfading = true;
+
+            // Activa la animación visual de MIXING
+            playerContainer.classList.add('is-mixing');
+
             let nextIdx = getNextIndex(isAuto);
             
-            let outgoingAudio = audioMain;
-            let outgoingVideo = videoMain;
-            
-            audioMain = audioNext;
-            videoMain = videoNext;
-            audioNext = outgoingAudio;
-            videoNext = outgoingVideo;
+            let outgoingAudio = audioMain; let outgoingVideo = videoMain;
+            audioMain = audioNext; videoMain = videoNext;
+            audioNext = outgoingAudio; videoNext = outgoingVideo;
 
             audioMain.src = playlist[nextIdx].file;
             videoMain.src = playlist[nextIdx].video;
-            audioMain.volume = 0;
-            audioMain.currentTime = 0;
-            videoMain.currentTime = 0;
+            audioMain.volume = 0; audioMain.currentTime = 0; videoMain.currentTime = 0;
 
             resetProgressUI();
-            
             audioMain.play().catch(e => console.log(e));
             videoMain.play().catch(e => console.log(e));
 
@@ -585,13 +562,9 @@
                 
                 audioMain.volume = Math.min(1, Math.max(0, Math.sin(t * 0.5 * Math.PI)));
                 audioNext.volume = Math.min(1, Math.max(0, Math.cos(t * 0.5 * Math.PI)));
-                
-                videoMain.style.opacity = t;
-                videoNext.style.opacity = 1 - t;
+                videoMain.style.opacity = t; videoNext.style.opacity = 1 - t;
 
-                if (t >= 1) {
-                    forceStopCrossfade();
-                }
+                if (t >= 1) forceStopCrossfade();
             }, 50);
         }
 
@@ -599,25 +572,20 @@
         const playBtn = document.getElementById('btn-play');
         const playIcon = document.getElementById('play-icon');
         const pauseIcon = document.getElementById('pause-icon');
-        const playerContainer = document.getElementById('player');
 
         function togglePlay() {
             if (isPlaying) {
                 audioMain.pause(); videoMain.pause();
                 if (isCrossfading) { audioNext.pause(); videoNext.pause(); }
                 
-                playIcon.style.display = 'block';
-                pauseIcon.style.display = 'none';
+                playIcon.style.display = 'block'; pauseIcon.style.display = 'none';
                 playerContainer.classList.add('paused');
             } else {
                 audioMain.play(); videoMain.play().catch(e=>console.log(e));
                 if (isCrossfading) { audioNext.play(); videoNext.play(); }
                 
-                playIcon.style.display = 'none';
-                pauseIcon.style.display = 'block';
+                playIcon.style.display = 'none'; pauseIcon.style.display = 'block';
                 playerContainer.classList.remove('paused');
-                
-                // Forzamos actualización visual de la sombra para mantener el efecto spring
                 coverGlow.style.boxShadow = `0 25px 50px -12px rgba(${rootVars.getPropertyValue('--primary-color-rgb') || '255,255,255'}, 0.6)`;
             }
             isPlaying = !isPlaying;
@@ -627,13 +595,8 @@
 
         function playManual(index) {
             forceStopCrossfade(); 
-            currentIndex = index;
-            initPlayer();
-            
-            if(isPlaying) {
-                audioMain.play();
-                videoMain.play();
-            }
+            currentIndex = index; initPlayer();
+            if(isPlaying) { audioMain.play(); videoMain.play(); }
         }
 
         document.getElementById('btn-next').addEventListener('click', () => {
@@ -642,24 +605,18 @@
 
         document.getElementById('btn-prev').addEventListener('click', () => {
             if (audioMain.currentTime > 3) {
-                audioMain.currentTime = 0; 
-                videoMain.currentTime = 0;
-            } else {
-                playManual((currentIndex - 1 + playlist.length) % playlist.length);
-            }
+                audioMain.currentTime = 0; videoMain.currentTime = 0;
+            } else { playManual((currentIndex - 1 + playlist.length) % playlist.length); }
         });
 
         document.getElementById('btn-shuffle').addEventListener('click', function() {
-            isShuffle = !isShuffle;
-            this.classList.toggle('active-action', isShuffle);
+            isShuffle = !isShuffle; this.classList.toggle('active-action', isShuffle);
         });
 
         document.getElementById('btn-repeat').addEventListener('click', function() {
-            isRepeat = !isRepeat;
-            this.classList.toggle('active-action', isRepeat);
+            isRepeat = !isRepeat; this.classList.toggle('active-action', isRepeat);
         });
 
-        // Iniciar
         initPlayer();
     </script>
 </body>
