@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VIVET</title>
+    <title>VIVET - Premium Player</title>
     <style>
-        /* ================= CSS: UI APPLE MUSIC ================= */
+        /* ================= CSS: UI APPLE MUSIC / SPOTIFY PREMIUM ================= */
         :root {
             --primary-color: #ffffff; 
             --primary-color-rgb: 255, 255, 255;
@@ -50,7 +50,7 @@
         .vignette-overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.8) 100%);
+            background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.85) 100%);
             z-index: -1;
             pointer-events: none;
         }
@@ -59,12 +59,12 @@
             width: 100%; 
             max-width: 390px; 
             padding: 40px 35px;
-            background: rgba(20, 20, 20, 0.2);
+            background: rgba(20, 20, 20, 0.25);
             backdrop-filter: blur(60px) saturate(200%);
             -webkit-backdrop-filter: blur(60px) saturate(200%);
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 48px;
-            box-shadow: 0 50px 100px rgba(0, 0, 0, 0.7), inset 0 1px 1px rgba(255,255,255,0.2);
+            box-shadow: 0 50px 100px rgba(0, 0, 0, 0.8), inset 0 1px 1px rgba(255,255,255,0.15);
             text-align: center;
             z-index: 10;
         }
@@ -72,10 +72,10 @@
         .cover-wrapper {
             width: 100%;
             aspect-ratio: 1;
-            border-radius: 24px; 
+            border-radius: 20px; 
             overflow: hidden;
             margin-bottom: 40px;
-            box-shadow: 0 30px 80px -10px rgba(var(--primary-color-rgb), 0.95);
+            box-shadow: 0 30px 80px -10px rgba(var(--primary-color-rgb), 0.85);
             transition: transform 0.6s cubic-bezier(0.32, 0.72, 0, 1), box-shadow 0.6s ease;
             position: relative;
         }
@@ -88,40 +88,40 @@
         }
 
         .paused .cover-wrapper {
-            transform: scale(0.78); 
-            box-shadow: 0 15px 30px -10px rgba(var(--primary-color-rgb), 0.4) !important;
-            border-radius: 30px;
+            transform: scale(0.82); 
+            box-shadow: 0 15px 30px -10px rgba(var(--primary-color-rgb), 0.3) !important;
+            border-radius: 28px;
         }
 
-        .paused .cover-wrapper img { transform: scale(1.02); }
+        .paused .cover-wrapper img { transform: scale(1.05); }
 
         .song-info {
             margin-bottom: 30px;
             display: flex;
             flex-direction: column;
-            gap: 2px;
+            gap: 4px;
             text-align: left; 
         }
 
         .song-title {
             font-size: 24px;
-            font-weight: 700;
+            font-weight: 800;
             letter-spacing: -0.5px;
             color: #FFFFFF;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
         }
 
         .song-artist {
-            font-size: 18px;
+            font-size: 16px;
             color: var(--text-secondary);
             font-weight: 500;
-            letter-spacing: 0.1px;
+            letter-spacing: 0.2px;
         }
 
-        /* ================= BARRA DE PROGRESO ================= */
+        /* ================= BARRA DE PROGRESO PREMIUM ================= */
         .progress-container {
             width: 100%;
             margin-bottom: 40px;
@@ -132,15 +132,30 @@
             -webkit-appearance: none;
             width: 100%;
             height: 6px; 
-            background-color: rgba(var(--primary-color-rgb), 0.3);
-            background-image: linear-gradient(var(--primary-color), var(--primary-color));
+            /* Fondo de la barra inactiva sutil */
+            background-color: rgba(255, 255, 255, 0.1);
+            /* Gradiente de la barra de progreso dinámica */
+            background-image: linear-gradient(90deg, rgba(var(--primary-color-rgb), 0.2) 0%, var(--primary-color) 100%);
             background-size: var(--progress, 0%) 100%;
             background-repeat: no-repeat;
-            border-radius: 4px;
+            border-radius: 6px;
             outline: none;
             cursor: pointer;
-            filter: drop-shadow(0 0 5px rgba(var(--primary-color-rgb), 0.5));
-            transition: height 0.2s cubic-bezier(0.25, 1, 0.5, 1), background-color 0.5s ease;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.5);
+            transition: height 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        /* Efecto láser bajo la barra */
+        .progress-slider::after {
+            content: '';
+            position: absolute;
+            top: 3px; left: 0;
+            height: 6px;
+            width: var(--progress, 0%);
+            background: var(--primary-color);
+            filter: blur(8px);
+            opacity: 0.6;
+            pointer-events: none;
         }
 
         .progress-slider::-webkit-slider-thumb {
@@ -149,17 +164,17 @@
             width: 0px; 
             height: 0px;
             border-radius: 50%;
-            background: var(--primary-color);
-            box-shadow: 0 0 15px rgba(var(--primary-color-rgb), 1);
+            background: #ffffff;
+            box-shadow: 0 0 10px 2px rgba(var(--primary-color-rgb), 1), 0 0 20px rgba(var(--primary-color-rgb), 0.8);
             transition: width 0.2s ease, height 0.2s ease;
         }
 
         .progress-container:hover .progress-slider,
-        .progress-slider:active { height: 9px; }
+        .progress-slider:active { height: 10px; }
 
         .progress-container:hover .progress-slider::-webkit-slider-thumb,
         .progress-slider:active::-webkit-slider-thumb {
-            width: 18px; height: 18px;
+            width: 16px; height: 16px;
         }
 
         .time-info {
@@ -168,10 +183,10 @@
             align-items: center;
             font-size: 11px;
             color: var(--text-secondary);
-            margin-top: 8px;
+            margin-top: 10px;
             font-weight: 600;
             font-variant-numeric: tabular-nums;
-            letter-spacing: 0.2px;
+            letter-spacing: 0.5px;
             opacity: 0.8;
             position: relative; 
         }
@@ -191,18 +206,18 @@
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.4s ease;
-            text-shadow: 0 0 20px rgba(var(--primary-color-rgb), 1);
+            text-shadow: 0 0 15px rgba(var(--primary-color-rgb), 1);
         }
 
         .is-mixing .time-text { opacity: 0; }
         .is-mixing .mixing-label {
             opacity: 1;
-            animation: glow-pulse 0.8s infinite alternate ease-in-out;
+            animation: mix-pulse 0.8s infinite alternate ease-in-out;
         }
 
-        @keyframes glow-pulse {
-            0% { opacity: 0.6; filter: brightness(1); transform: translate(-50%, -50%) scale(0.95); }
-            100% { opacity: 1; filter: brightness(1.8); transform: translate(-50%, -50%) scale(1.05); }
+        @keyframes mix-pulse {
+            0% { opacity: 0.5; filter: brightness(1); transform: translate(-50%, -50%) scale(0.95); }
+            100% { opacity: 1; filter: brightness(1.5); transform: translate(-50%, -50%) scale(1.05); }
         }
 
         /* ================= CONTROLES ================= */
@@ -228,37 +243,34 @@
         .btn-nav {
             width: 44px; height: 44px;
             color: var(--primary-color);
-            filter: drop-shadow(0 0 15px rgba(var(--primary-color-rgb), 1));
+            filter: drop-shadow(0 0 10px rgba(var(--primary-color-rgb), 0.6));
         }
         .btn-nav svg { width: 34px; height: 34px; fill: currentColor; }
-        .btn-nav:hover { opacity: 1; transform: scale(1.1); filter: drop-shadow(0 0 25px rgba(var(--primary-color-rgb), 1)); }
+        .btn-nav:hover { opacity: 1; transform: scale(1.1); filter: drop-shadow(0 0 20px rgba(var(--primary-color-rgb), 1)); }
         .btn-nav:active { transform: scale(0.9); opacity: 0.7; }
 
         .btn-action {
             width: 36px; height: 36px;
-            color: rgba(var(--primary-color-rgb), 0.6); 
+            color: rgba(255, 255, 255, 0.4); 
         }
         .btn-action svg { width: 22px; height: 22px; fill: currentColor; }
         
         .active-action {
             color: var(--primary-color) !important;
-            background-color: rgba(var(--primary-color-rgb), 0.25);
             filter: drop-shadow(0 0 12px rgba(var(--primary-color-rgb), 0.8));
         }
 
         .btn-play {
             width: 64px; height: 64px;
             color: var(--primary-color);
-            filter: drop-shadow(0 0 20px rgba(var(--primary-color-rgb), 1));
+            filter: drop-shadow(0 0 15px rgba(var(--primary-color-rgb), 0.8));
         }
         .btn-play svg { width: 50px; height: 50px; fill: currentColor; }
-        .btn-play:hover { transform: scale(1.1); filter: drop-shadow(0 0 30px rgba(var(--primary-color-rgb), 1)); }
+        .btn-play:hover { transform: scale(1.1); filter: drop-shadow(0 0 25px rgba(var(--primary-color-rgb), 1)); }
         .btn-play:active { transform: scale(0.9); opacity: 0.7; }
 
 
-        /* ================= ANIMACIONES NATURALES ================= */
-        
-        /* Contenedor principal: Reacciona al Play/Pause */
+        /* ================= ANIMACIONES CINEMATOGRÁFICAS ================= */
         #song-animation-container {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -266,130 +278,120 @@
             pointer-events: none;
             overflow: hidden;
             z-index: 5;
-            transition: opacity 0.6s ease-in-out;
-            opacity: 1; /* Visible cuando está en Play */
+            transition: opacity 0.5s ease;
+            opacity: 1; 
         }
 
-        /* Si el reproductor está pausado: Desaparecen suavemente y se detienen */
-        .paused #song-animation-container {
-            opacity: 0;
-        }
-        .paused #song-animation-container * {
-            animation-play-state: paused !important;
-        }
+        .paused #song-animation-container { opacity: 0; }
+        .paused #song-animation-container * { animation-play-state: paused !important; }
 
-        /* 1. WOH OH OH: Ondas de sonido orgánicas (Fondo sutil) */
+        /* 1. WOH OH OH: Ondas de bajo cinemáticas (Subwoofer pulse) */
         .anim-woh {
             position: absolute; top: 50%; left: 50%;
             transform: translate(-50%, -50%);
             border-radius: 50%;
-            border: 2px solid rgba(255, 255, 255, 0.4);
-            box-shadow: 0 0 30px rgba(255,255,255,0.3), inset 0 0 20px rgba(255,255,255,0.1);
-            animation: organic-pulse 3s infinite cubic-bezier(0.1, 0.8, 0.3, 1);
-            mix-blend-mode: overlay;
-        }
-        @keyframes organic-pulse {
-            0% { width: 0; height: 0; opacity: 1; border-width: 8px; }
-            100% { width: 180%; height: 180%; opacity: 0; border-width: 1px; }
-        }
-
-        /* 2. 444: Números místicos balanceándose */
-        .anim-444 {
-            position: absolute; color: rgba(255,255,255,0.7);
-            font-weight: 800; font-size: 20px;
-            filter: drop-shadow(0 0 10px var(--primary-color));
-            animation: float-sway ease-in-out infinite;
+            box-shadow: 0 0 40px 10px rgba(var(--primary-color-rgb), 0.5);
+            animation: bass-wave 2.5s infinite cubic-bezier(0.1, 0.8, 0.3, 1);
             mix-blend-mode: screen;
         }
-        @keyframes float-sway {
-            0% { transform: translate(0, 30px) scale(0.8); opacity: 0; }
-            20% { opacity: 1; }
-            50% { transform: translate(20px, -60px) scale(1.2); }
-            80% { opacity: 1; }
-            100% { transform: translate(-15px, -150px) scale(0.9); opacity: 0; }
+        @keyframes bass-wave {
+            0% { width: 0; height: 0; opacity: 1; }
+            100% { width: 150%; height: 150%; opacity: 0; }
         }
 
-        /* 3. FOREVEL TU GANTEL: Luz de sirena rotando suavemente */
-        .anim-gantel {
-            position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: conic-gradient(from 0deg, transparent 0deg, rgba(255, 0, 0, 0.35) 45deg, transparent 90deg, transparent 180deg, rgba(255, 0, 0, 0.35) 225deg, transparent 270deg);
-            animation: siren-spin 4s linear infinite;
-            mix-blend-mode: overlay;
-        }
-        @keyframes siren-spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* 4. YO QUIERO: Corazón con latido humano (2 tiempos) */
-        .anim-yo-quiero {
-            position: absolute; color: #ff2a55;
-            filter: drop-shadow(0 0 12px rgba(255, 42, 85, 0.8));
-            animation: natural-heartbeat 1.4s infinite;
-        }
-        @keyframes natural-heartbeat {
-            0% { transform: scale(1); opacity: 0.7; }
-            15% { transform: scale(1.25); opacity: 1; }
-            30% { transform: scale(1); opacity: 0.7; }
-            45% { transform: scale(1.25); opacity: 1; }
-            100% { transform: scale(1); opacity: 0.7; }
-        }
-
-        /* 5. VVS SWITCH: Destellos de diamante reales (Luz/Glow) */
-        .anim-vvs {
-            position: absolute;
-            background: #ffffff;
+        /* 2. 444: Orbes místicos desenfocados (Bokeh/Mist) */
+        .anim-444 {
+            position: absolute; 
             border-radius: 50%;
-            box-shadow: 0 0 8px 2px #00e5ff, 0 0 15px 4px #00e5ff;
-            animation: lens-flare ease-in-out infinite;
+            background: radial-gradient(circle, rgba(var(--primary-color-rgb), 0.8) 0%, transparent 70%);
+            filter: blur(15px);
+            mix-blend-mode: screen;
+            animation: float-orbs ease-in-out infinite alternate;
         }
-        @keyframes lens-flare {
-            0% { transform: scale(0); opacity: 0; }
-            50% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(0); opacity: 0; }
+        @keyframes float-orbs {
+            0% { transform: translateY(20px) scale(0.8); opacity: 0.2; }
+            100% { transform: translateY(-40px) scale(1.3); opacity: 0.8; }
         }
 
-        /* 6. FALSAS PROMESAS: Lluvia diagonal melancólica */
+        /* 3. FOREVEL TU GANTEL: Viñeta de peligro pulsante */
+        .anim-gantel {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, transparent 40%, rgba(200, 0, 0, 0.6) 120%);
+            mix-blend-mode: multiply;
+            animation: danger-pulse 1.5s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        @keyframes danger-pulse {
+            0% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+
+        /* 4. YO QUIERO: Fugas de luz de deseo (Magenta/Pink glow) */
+        .anim-yo-quiero {
+            position: absolute; width: 150%; height: 150%;
+            background: radial-gradient(circle at center, transparent 20%, rgba(255, 20, 147, 0.35) 70%);
+            top: -25%; left: -25%;
+            mix-blend-mode: color-dodge;
+            animation: romance-glow 2s infinite alternate ease-in-out;
+        }
+        @keyframes romance-glow {
+            0% { transform: scale(0.9); opacity: 0.4; }
+            100% { transform: scale(1.1); opacity: 1; }
+        }
+
+        /* 5. VVS SWITCH: Reflejo de cristal / Diamante barriendo la portada */
+        .anim-vvs {
+            position: absolute; top: 0; left: -150%; width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+            transform: skewX(-25deg);
+            mix-blend-mode: overlay;
+            animation: diamond-sweep 3s infinite;
+        }
+        @keyframes diamond-sweep {
+            0% { left: -100%; }
+            30%, 100% { left: 200%; }
+        }
+
+        /* 6. FALSAS PROMESAS: Lluvia cinematográfica / Rayones de película */
         .anim-promesas {
             position: absolute;
-            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0.5));
-            transform: rotate(15deg);
-            animation: angled-rain linear infinite;
+            background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.4), transparent);
+            filter: blur(1px);
+            mix-blend-mode: overlay;
+            animation: cinemaric-rain linear infinite;
         }
-        @keyframes angled-rain {
-            0% { transform: translate(-20px, -50px) rotate(15deg); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translate(100px, 400px) rotate(15deg); opacity: 0; }
+        @keyframes cinemaric-rain {
+            0% { transform: translateY(-100%); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(400px); opacity: 0; }
         }
 
-        /* 7. TE VAS: Polvo/Viento desplazándose */
+        /* 7. TE VAS: Niebla desvaneciéndose (Fog drift) */
         .anim-te-vas {
             position: absolute;
-            background: radial-gradient(circle, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 70%);
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 60%);
             border-radius: 50%;
-            animation: wind-dust linear infinite;
+            filter: blur(20px);
             mix-blend-mode: screen;
+            animation: fog-drift linear infinite;
         }
-        @keyframes wind-dust {
-            0% { transform: translate(-30px, 0) scale(0.5); opacity: 0; }
-            20% { opacity: 0.5; }
-            80% { opacity: 0.5; }
-            100% { transform: translate(300px, -50px) scale(1.5); opacity: 0; }
+        @keyframes fog-drift {
+            0% { transform: translate(-50px, 0) scale(1); opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { transform: translate(150px, -30px) scale(2); opacity: 0; }
         }
 
-        /* 8. RELIGION EN TODO: Rayos de luz divina balanceándose */
+        /* 8. RELIGION EN TODO: Rayos de luz dorada celestial (God Rays) */
         .anim-religion {
-            position: absolute;
-            top: -20%; left: -20%; width: 140%; height: 140%;
-            background: linear-gradient(180deg, rgba(255, 240, 180, 0.45) 0%, transparent 65%);
+            position: absolute; top: -30%; left: -20%; width: 140%; height: 140%;
+            background: radial-gradient(ellipse at top center, rgba(255, 220, 100, 0.45) 0%, transparent 60%);
             transform-origin: top center;
-            animation: god-rays 5s infinite alternate ease-in-out;
-            mix-blend-mode: soft-light;
+            animation: divine-light 4s infinite alternate ease-in-out;
+            mix-blend-mode: color-dodge;
         }
-        @keyframes god-rays {
-            0% { transform: rotate(-8deg) scale(1); opacity: 0.6; filter: blur(10px); }
-            100% { transform: rotate(8deg) scale(1.1); opacity: 1; filter: blur(25px); }
+        @keyframes divine-light {
+            0% { transform: rotate(-5deg) scale(1); opacity: 0.5; filter: blur(10px); }
+            100% { transform: rotate(5deg) scale(1.1); opacity: 1; filter: blur(20px); }
         }
 
     </style>
@@ -405,7 +407,7 @@
     <div class="player-container paused" id="player">
         <div class="cover-wrapper" id="cover-glow">
             <img src="" id="cover">
-            <!-- El contenedor de animaciones ahora reacciona automáticamente a la clase 'paused' -->
+            <!-- Contenedor para inyectar animaciones -->
             <div id="song-animation-container"></div>
         </div>
         
@@ -446,7 +448,7 @@
     </div>
 
     <script>
-        /* ================= CONFIGURACIÓN DE TU PLAYLIST ================= */
+        /* ================= CONFIGURACIÓN DE LA PLAYLIST ================= */
         const playlist =[
             { title: "WOH OH OH", artist: "OMAR COURTZ, ROA", cover: "covers/WOH OH OH.jpg", file: "songs/WOH OH OH.mp3", video: "videos/WOH OH OH.mp4" },
             { title: "444", artist: "YAN BLOCK", cover: "covers/444.jpg", file: "songs/444.mp3", video: "videos/444.mp4" },
@@ -498,7 +500,7 @@
             durationEl.textContent = "0:00";
         }
 
-        /* LOGICA DE CARGA INTEGRADA CON GENERACIÓN DE PARTÍCULAS MEJORADAS */
+        /* LÓGICA DE CARGA Y GENERACIÓN DE ANIMACIONES ABSTRACTAS / PREMIUM */
         function loadSongInfo(index) {
             const song = playlist[index];
             coverEl.src = song.cover;
@@ -509,62 +511,50 @@
             let html = '';
 
             if (songTitle.includes("WOH OH OH")) {
-                // 3 Anillos de pulso espaciados
+                // Anillos de bajo difuminados
                 html = `
                     <div class="anim-woh" style="animation-delay: 0s;"></div>
-                    <div class="anim-woh" style="animation-delay: 1s;"></div>
-                    <div class="anim-woh" style="animation-delay: 2s;"></div>
+                    <div class="anim-woh" style="animation-delay: 1.2s;"></div>
                 `;
             } 
             else if (songTitle.includes("444")) {
-                // Genera 5 números flotando aleatoriamente
-                for(let i=0; i<5; i++) {
-                    let left = 10 + Math.random() * 80;
+                // Orbes de luz místicos (Bokeh effect)
+                for(let i=0; i<4; i++) {
+                    let left = 20 + Math.random() * 60;
                     let delay = Math.random() * 2;
                     let duration = 3 + Math.random() * 2;
-                    html += `<div class="anim-444" style="left: ${left}%; animation-delay: ${delay}s; animation-duration: ${duration}s;">4</div>`;
+                    let size = 40 + Math.random() * 40;
+                    html += `<div class="anim-444" style="left: ${left}%; width: ${size}px; height: ${size}px; animation-delay: ${delay}s; animation-duration: ${duration}s;"></div>`;
                 }
             }
             else if (songTitle.includes("FOREVEL TU GANTEL")) {
                 html = '<div class="anim-gantel"></div>';
             }
             else if (songTitle.includes("YO QUIERO")) {
-                html = `
-                    <div class="anim-yo-quiero" style="top: 25%; left: 20%; font-size: 25px; animation-delay: 0s;">❤️</div>
-                    <div class="anim-yo-quiero" style="top: 60%; left: 75%; font-size: 35px; animation-delay: 0.2s;">❤️</div>
-                    <div class="anim-yo-quiero" style="top: 15%; left: 70%; font-size: 15px; animation-delay: 0.5s;">❤️</div>
-                `;
+                html = '<div class="anim-yo-quiero"></div>';
             }
             else if (songTitle.includes("VVS SWITCH")) {
-                // 12 Destellos de lente (Lens Flares)
-                for(let i=0; i<12; i++) {
-                    let left = Math.random() * 95;
-                    let top = Math.random() * 95;
-                    let delay = Math.random() * 2;
-                    let duration = 1.5 + Math.random() * 1.5;
-                    let size = 2 + Math.random() * 3;
-                    html += `<div class="anim-vvs" style="left: ${left}%; top: ${top}%; width: ${size}px; height: ${size}px; animation-delay: ${delay}s; animation-duration: ${duration}s;"></div>`;
-                }
+                // Brillo estilo diamante
+                html = '<div class="anim-vvs"></div>';
             }
             else if (songTitle.includes("FALSAS PROMESAS")) {
-                // 35 Gotas de lluvia delgadas y diagonales
-                for(let i=0; i<35; i++) {
-                    let left = -20 + Math.random() * 140; // Desde un poco antes para cubrir la rotación
-                    let delay = Math.random() * 1;
-                    let duration = 0.5 + Math.random() * 0.3;
-                    let height = 30 + Math.random() * 30;
-                    let width = Math.random() > 0.5 ? 1 : 2;
-                    html += `<div class="anim-promesas" style="left: ${left}%; width: ${width}px; height: ${height}px; animation-delay: ${delay}s; animation-duration: ${duration}s;"></div>`;
+                // Rayones cinematográficos / Lluvia rápida
+                for(let i=0; i<15; i++) {
+                    let left = Math.random() * 100;
+                    let delay = Math.random() * 1.5;
+                    let duration = 0.4 + Math.random() * 0.3;
+                    let height = 40 + Math.random() * 60;
+                    html += `<div class="anim-promesas" style="left: ${left}%; width: 2px; height: ${height}px; animation-delay: ${delay}s; animation-duration: ${duration}s;"></div>`;
                 }
             }
             else if (songTitle.includes("TE VAS")) {
-                // 15 Partículas de polvo/viento flotando cruzando la pantalla
-                for(let i=0; i<15; i++) {
-                    let top = Math.random() * 100;
-                    let size = 15 + Math.random() * 40; // Manchas de polvo de diferentes tamaños
-                    let delay = Math.random() * 4;
-                    let duration = 5 + Math.random() * 3;
-                    html += `<div class="anim-te-vas" style="top: ${top}%; left: -20%; width: ${size}px; height: ${size}px; animation-delay: ${delay}s; animation-duration: ${duration}s;"></div>`;
+                // Bancos de niebla suave cruzando
+                for(let i=0; i<3; i++) {
+                    let top = 10 + Math.random() * 60;
+                    let size = 100 + Math.random() * 100; 
+                    let delay = Math.random() * 3;
+                    let duration = 8 + Math.random() * 4;
+                    html += `<div class="anim-te-vas" style="top: ${top}%; left: -50%; width: ${size}px; height: ${size}px; animation-delay: ${delay}s; animation-duration: ${duration}s;"></div>`;
                 }
             }
             else if (songTitle.includes("RELIGION")) {
@@ -615,7 +605,7 @@
         setupAudioListeners(audioMain);
         setupAudioListeners(audioNext);
 
-        /* ================= EXTRACCIÓN DE COLOR ================= */
+        /* ================= EXTRACCIÓN DE COLOR DINÁMICA ================= */
         coverEl.onload = function() {
             const canvas = document.createElement('canvas');
             const context = canvas.getContext('2d');
@@ -654,8 +644,7 @@
                     s = 1.0; 
                     l = 0.55; 
                 } else {
-                    s = 0;
-                    l = 1; 
+                    s = 0; l = 1; 
                 }
 
                 let c = (1 - Math.abs(2 * l - 1)) * s;
@@ -674,11 +663,12 @@
                 g = Math.round((finalG + m) * 255);
                 b = Math.round((finalB + m) * 255);
 
+                // Aplica los colores a las variables. La barra de progreso los heredará automáticamente.
                 rootVars.setProperty('--primary-color-rgb', `${r}, ${g}, ${b}`);
                 rootVars.setProperty('--primary-color', `rgb(${r}, ${g}, ${b})`);
                 
                 if (!playerContainer.classList.contains('paused')) {
-                    coverGlow.style.boxShadow = `0 30px 80px -10px rgba(${r}, ${g}, ${b}, 0.95)`;
+                    coverGlow.style.boxShadow = `0 30px 80px -10px rgba(${r}, ${g}, ${b}, 0.85)`;
                 }
             } catch (e) {
                 rootVars.setProperty('--primary-color-rgb', `255, 255, 255`);
@@ -772,16 +762,14 @@
                 if (isCrossfading) { audioNext.pause(); videoNext.pause(); }
                 playIcon.style.display = 'block'; pauseIcon.style.display = 'none';
                 
-                // Al pausar, se añade la clase y el CSS detiene y oculta las animaciones automáticamente
                 playerContainer.classList.add('paused');
             } else {
                 audioMain.play(); videoMain.play().catch(e=>console.log(e));
                 if (isCrossfading) { audioNext.play(); videoNext.play(); }
                 playIcon.style.display = 'none'; pauseIcon.style.display = 'block';
                 
-                // Al darle play, se quita la clase y las animaciones se reanudan y aparecen mágicamente
                 playerContainer.classList.remove('paused');
-                coverGlow.style.boxShadow = `0 30px 80px -10px rgba(${rootVars.getPropertyValue('--primary-color-rgb') || '255,255,255'}, 0.95)`;
+                coverGlow.style.boxShadow = `0 30px 80px -10px rgba(${rootVars.getPropertyValue('--primary-color-rgb') || '255,255,255'}, 0.85)`;
             }
             isPlaying = !isPlaying;
         }
