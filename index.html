@@ -255,7 +255,7 @@
         .btn-play:active { transform: scale(0.9); opacity: 0.7; }
 
 
-        /* ================= ANIMACIONES CINEMATOGRÁFICAS SOBRE LA CARÁTULA ================= */
+        /* ================= ANIMACIONES CON "VIBE" DE GÉNERO MUSICAL ================= */
         #song-animation-container {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -271,113 +271,111 @@
         .paused #song-animation-container { opacity: 0; }
         .paused #song-animation-container * { animation-play-state: paused !important; }
 
-        /* 1. WOH OH OH: Ondas de sonido abstractas (Graves) */
+        /* 1. WOH OH OH (Perreo/Club): Pulso de graves de discoteca */
         .anim-woh {
             position: absolute; top: 50%; left: 50%;
             transform: translate(-50%, -50%);
             border-radius: 50%;
-            box-shadow: 0 0 40px 10px rgba(255,255,255,0.4);
-            animation: bass-wave 2.5s infinite cubic-bezier(0.1, 0.8, 0.3, 1);
+            box-shadow: 0 0 50px 15px rgba(255, 255, 255, 0.5);
+            animation: club-bass 1.2s infinite cubic-bezier(0.2, 0.8, 0.4, 1);
             mix-blend-mode: overlay;
         }
-        @keyframes bass-wave {
+        @keyframes club-bass {
             0% { width: 0; height: 0; opacity: 1; }
             100% { width: 150%; height: 150%; opacity: 0; }
         }
 
-        /* 2. 444: Orbes de luz místicos flotando (Efecto Bokeh) */
+        /* 2. 444 (Trap Oscuro): Humo/Sombras moradas subiendo desde el inframundo */
         .anim-444 {
-            position: absolute; 
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(var(--primary-color-rgb), 0.7) 0%, transparent 70%);
-            filter: blur(15px);
-            mix-blend-mode: screen;
-            animation: float-orbs ease-in-out infinite alternate;
+            position: absolute; bottom: -20%; left: 0; width: 100%; height: 80%;
+            background: linear-gradient(to top, rgba(138, 43, 226, 0.6) 0%, transparent 100%);
+            mix-blend-mode: color-dodge;
+            animation: trap-smoke 4s infinite alternate ease-in-out;
+            filter: blur(20px);
         }
-        @keyframes float-orbs {
-            0% { transform: translateY(20px) scale(0.8); opacity: 0.2; }
-            100% { transform: translateY(-40px) scale(1.3); opacity: 0.8; }
+        @keyframes trap-smoke {
+            0% { transform: translateY(10%) scaleX(1); opacity: 0.4; }
+            100% { transform: translateY(-15%) scaleX(1.2); opacity: 0.8; }
         }
 
-        /* 3. FOREVEL TU GANTEL: Viñeta roja pulsante (Peligro/Calle) */
+        /* 3. FOREVEL TU GANTEL (Maleanteo): Luces de sirena de policía roja y azul */
         .anim-gantel {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle, transparent 40%, rgba(200, 0, 0, 0.6) 120%);
-            mix-blend-mode: multiply;
-            animation: danger-pulse 1.5s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(90deg, rgba(255,0,0,0.4) 0%, transparent 40%, transparent 60%, rgba(0,0,255,0.4) 100%);
+            mix-blend-mode: hard-light;
+            animation: police-sirens 0.7s infinite alternate;
         }
-        @keyframes danger-pulse {
-            0% { opacity: 0.3; }
-            100% { opacity: 1; }
+        @keyframes police-sirens {
+            0% { background-position: -200% 0; opacity: 0.5; }
+            100% { background-position: 200% 0; opacity: 1; }
         }
 
-        /* 4. YO QUIERO: Fuga de luz romántica magenta */
+        /* 4. YO QUIERO (Sensual): Resplandor rojo oscuro y pasional */
         .anim-yo-quiero {
-            position: absolute; width: 150%; height: 150%;
-            background: radial-gradient(circle at center, transparent 20%, rgba(255, 20, 147, 0.35) 70%);
-            top: -25%; left: -25%;
-            mix-blend-mode: color-dodge;
-            animation: romance-glow 2s infinite alternate ease-in-out;
+            position: absolute; top: -10%; left: -10%; width: 120%; height: 120%;
+            background: radial-gradient(circle at center, rgba(255, 10, 60, 0.5) 0%, transparent 70%);
+            mix-blend-mode: overlay;
+            animation: sultry-pulse 2.5s infinite alternate ease-in-out;
         }
-        @keyframes romance-glow {
-            0% { transform: scale(0.9); opacity: 0.4; }
+        @keyframes sultry-pulse {
+            0% { transform: scale(0.9); opacity: 0.5; }
             100% { transform: scale(1.1); opacity: 1; }
         }
 
-        /* 5. VVS SWITCH: Destello de diamante barriendo la foto */
+        /* 5. VVS SWITCH (Ice/Malianteo): Destellos gélidos de diamantes */
         .anim-vvs {
-            position: absolute; top: 0; left: -150%; width: 50%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.7), transparent);
-            transform: skewX(-25deg);
-            mix-blend-mode: overlay;
-            animation: diamond-sweep 3s infinite;
+            position: absolute;
+            background: #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 0 10px 3px #00ffff, 0 0 20px 5px rgba(0, 255, 255, 0.5);
+            animation: ice-blink 1.5s infinite ease-in-out;
         }
-        @keyframes diamond-sweep {
-            0% { left: -100%; }
-            30%, 100% { left: 200%; }
+        @keyframes ice-blink {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1) rotate(45deg); opacity: 1; }
+            100% { transform: scale(0); opacity: 0; }
         }
 
-        /* 6. FALSAS PROMESAS: Lluvia triste / Rayones de película clásica */
+        /* 6. FALSAS PROMESAS (Triste/Desamor): Lluvia rápida y melancólica */
         .anim-promesas {
             position: absolute;
-            background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.5), transparent);
-            filter: blur(1px);
+            background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.7), transparent);
+            filter: blur(0.5px);
             mix-blend-mode: overlay;
-            animation: cinemaric-rain linear infinite;
+            animation: sad-rain 0.6s linear infinite;
         }
-        @keyframes cinemaric-rain {
+        @keyframes sad-rain {
             0% { transform: translateY(-100%); opacity: 0; }
-            50% { opacity: 1; }
+            30% { opacity: 1; }
             100% { transform: translateY(400px); opacity: 0; }
         }
 
-        /* 7. TE VAS: Neblina atravesando la portada de lado a lado */
+        /* 7. TE VAS (Nostalgia): Cenizas/Polvo llevados por el viento */
         .anim-te-vas {
             position: absolute;
-            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 60%);
+            background: rgba(255, 200, 100, 0.8);
+            box-shadow: 0 0 10px rgba(255, 150, 50, 0.8);
             border-radius: 50%;
-            filter: blur(20px);
-            mix-blend-mode: screen;
-            animation: fog-drift linear infinite;
+            animation: float-away linear infinite;
         }
-        @keyframes fog-drift {
-            0% { transform: translate(-50px, 0) scale(1); opacity: 0; }
+        @keyframes float-away {
+            0% { transform: translate(-20px, 0) scale(0.5); opacity: 0; }
             20% { opacity: 1; }
             80% { opacity: 1; }
-            100% { transform: translate(150px, -30px) scale(2); opacity: 0; }
+            100% { transform: translate(250px, -80px) scale(1.5); opacity: 0; }
         }
 
-        /* 8. RELIGION EN TODO: Rayos de luz celestiales bajando desde arriba */
+        /* 8. RELIGION (Épico/Celestial): Rayos de luz divina dorada desde el cielo */
         .anim-religion {
             position: absolute; top: -30%; left: -20%; width: 140%; height: 140%;
-            background: radial-gradient(ellipse at top center, rgba(255, 220, 100, 0.45) 0%, transparent 60%);
+            background: linear-gradient(180deg, rgba(255, 215, 0, 0.5) 0%, transparent 75%);
             transform-origin: top center;
-            animation: divine-light 4s infinite alternate ease-in-out;
-            mix-blend-mode: color-dodge;
+            animation: divine-ray 3s infinite alternate ease-in-out;
+            mix-blend-mode: screen;
         }
-        @keyframes divine-light {
-            0% { transform: rotate(-5deg) scale(1); opacity: 0.5; filter: blur(10px); }
-            100% { transform: rotate(5deg) scale(1.1); opacity: 1; filter: blur(20px); }
+        @keyframes divine-ray {
+            0% { transform: rotate(-8deg) scale(1); opacity: 0.6; filter: blur(10px); }
+            100% { transform: rotate(8deg) scale(1.1); opacity: 1; filter: blur(25px); }
         }
 
     </style>
@@ -394,7 +392,7 @@
         
         <div class="cover-wrapper" id="cover-glow">
             <img src="" id="cover">
-            <!-- Aquí se inyectan las luces y efectos, perfectamente integrados sobre la foto -->
+            <!-- Contenedor donde se inyectan las atmósferas musicales sobre la carátula -->
             <div id="song-animation-container"></div>
         </div>
         
@@ -435,7 +433,7 @@
     </div>
 
     <script>
-        /* ================= CONFIGURACIÓN DE LA PLAYLIST ================= */
+        /* ================= CONFIGURACIÓN DE LA PLAYLIST (Actualizada con "RELIGION") ================= */
         const playlist =[
             { title: "WOH OH OH", artist: "OMAR COURTZ, ROA", cover: "covers/WOH OH OH.jpg", file: "songs/WOH OH OH.mp3", video: "videos/WOH OH OH.mp4" },
             { title: "444", artist: "YAN BLOCK", cover: "covers/444.jpg", file: "songs/444.mp3", video: "videos/444.mp4" },
@@ -444,7 +442,7 @@
             { title: "VVS SWITCH REMIX", artist: "PRESSURE, YVNGCHIMI, CDOBLETA. HADES66, ANUEL AA, LUAR LA L", cover: "covers/VVS SWITCH REMIX.jpg", file: "songs/VVS SWITCH REMIX.mp3", video: "videos/VVS SWITCH REMIX.mp4" },
             { title: "FALSAS PROMESAS REMIX", artist: "MIDNVGHT, MORA, ELADIO CARRION, ROA, CLARENT", cover: "covers/FALSAS PROMESAS REMIX.jpg", file: "songs/FALSAS PROMESAS REMIX.mp3", video: "videos/FALSAS PROMESAS REMIX.mp4" },
             { title: "TE VAS", artist: "OZUNA", cover: "covers/TE VAS.jpg", file: "songs/TE VAS.mp3", video: "videos/TE VAS.mp4" },
-            { title: "RELIGION EN TODO", artist: "ARTISTA", cover: "covers/RELIGION EN TODO.jpg", file: "songs/RELIGION EN TODO.mp3", video: "videos/RELIGION EN TODO.mp4" }
+            { title: "RELIGION", artist: "YAN BLOCK", cover: "covers/RELIGION.jpg", file: "songs/RELIGION.mp3", video: "videos/RELIGION.mp4" }
         ];
 
         let currentIndex = 0;
@@ -487,7 +485,7 @@
             durationEl.textContent = "0:00";
         }
 
-        /* LÓGICA DE CARGA DE ANIMACIONES (Inyección directa y segura) */
+        /* LÓGICA DE CARGA DE VIBES (Inyección de los nuevos efectos) */
         function loadSongInfo(index) {
             const song = playlist[index];
             coverEl.src = song.cover;
@@ -497,49 +495,58 @@
             const songTitle = song.title.toUpperCase();
             let html = '';
 
+            // 1. WOH OH OH (Perreo/Club - Graves)
             if (songTitle.includes("WOH OH OH")) {
                 html = `
                     <div class="anim-woh" style="animation-delay: 0s;"></div>
-                    <div class="anim-woh" style="animation-delay: 1.2s;"></div>
+                    <div class="anim-woh" style="animation-delay: 0.6s;"></div>
                 `;
             } 
+            // 2. 444 (Trap Oscuro - Humo)
             else if (songTitle.includes("444")) {
-                for(let i=0; i<4; i++) {
-                    let left = 20 + Math.random() * 60;
-                    let delay = Math.random() * 2;
-                    let duration = 3 + Math.random() * 2;
-                    let size = 40 + Math.random() * 40;
-                    html += `<div class="anim-444" style="left: ${left}%; width: ${size}px; height: ${size}px; animation-delay: ${delay}s; animation-duration: ${duration}s;"></div>`;
-                }
+                html = '<div class="anim-444"></div>';
             }
+            // 3. FOREVEL TU GANTEL (Maleanteo - Sirenas)
             else if (songTitle.includes("FOREVEL TU GANTEL")) {
                 html = '<div class="anim-gantel"></div>';
             }
+            // 4. YO QUIERO (Sensual - Pulso rojo)
             else if (songTitle.includes("YO QUIERO")) {
                 html = '<div class="anim-yo-quiero"></div>';
             }
+            // 5. VVS SWITCH (Ice/Diamantes - Destellos blancos/cyan)
             else if (songTitle.includes("VVS SWITCH")) {
-                html = '<div class="anim-vvs"></div>';
-            }
-            else if (songTitle.includes("FALSAS PROMESAS")) {
-                for(let i=0; i<15; i++) {
-                    let left = Math.random() * 100;
+                for(let i=0; i<8; i++) {
+                    let left = 10 + Math.random() * 80;
+                    let top = 10 + Math.random() * 80;
                     let delay = Math.random() * 1.5;
+                    let duration = 1 + Math.random() * 1;
+                    let size = 3 + Math.random() * 4;
+                    html += `<div class="anim-vvs" style="left: ${left}%; top: ${top}%; width: ${size}px; height: ${size}px; animation-delay: ${delay}s; animation-duration: ${duration}s;"></div>`;
+                }
+            }
+            // 6. FALSAS PROMESAS (Desamor - Lluvia rápida)
+            else if (songTitle.includes("FALSAS PROMESAS")) {
+                for(let i=0; i<20; i++) {
+                    let left = Math.random() * 100;
+                    let delay = Math.random() * 1;
                     let duration = 0.4 + Math.random() * 0.3;
-                    let height = 40 + Math.random() * 60;
+                    let height = 30 + Math.random() * 50;
                     html += `<div class="anim-promesas" style="left: ${left}%; width: 2px; height: ${height}px; animation-delay: ${delay}s; animation-duration: ${duration}s;"></div>`;
                 }
             }
+            // 7. TE VAS (Despedida - Cenizas volando)
             else if (songTitle.includes("TE VAS")) {
-                for(let i=0; i<3; i++) {
-                    let top = 10 + Math.random() * 60;
-                    let size = 100 + Math.random() * 100; 
+                for(let i=0; i<15; i++) {
+                    let top = 20 + Math.random() * 60;
+                    let size = 2 + Math.random() * 5; 
                     let delay = Math.random() * 3;
-                    let duration = 8 + Math.random() * 4;
-                    html += `<div class="anim-te-vas" style="top: ${top}%; left: -50%; width: ${size}px; height: ${size}px; animation-delay: ${delay}s; animation-duration: ${duration}s;"></div>`;
+                    let duration = 3 + Math.random() * 3;
+                    html += `<div class="anim-te-vas" style="top: ${top}%; left: -10%; width: ${size}px; height: ${size}px; animation-delay: ${delay}s; animation-duration: ${duration}s;"></div>`;
                 }
             }
-            else if (songTitle.includes("RELIGION")) {
+            // 8. RELIGION (Épico - Rayos celestiales)
+            else if (songTitle === "RELIGION") {
                 html = '<div class="anim-religion"></div>';
             }
 
