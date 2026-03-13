@@ -267,58 +267,70 @@
             opacity: 1; 
         }
 
-        /* Se apaga automáticamente al pausar */
         .paused #song-animation-container { opacity: 0; }
         .paused #song-animation-container * { animation-play-state: paused !important; }
 
-        /* --- 1. WOH OH OH: CORAZÓN ROTO --- */
+        /* --- 1. WOH OH OH: CORAZÓN ROTO AL COLOR DE LA PORTADA LENTO --- */
         .anim-broken-heart-container {
             position: absolute; top: 50%; left: 50%; width: 60px; height: 60px;
             transform: translate(-50%, -50%);
-            filter: drop-shadow(0 0 20px rgba(255, 0, 40, 0.9));
+            /* Toma el color que absorbe la carátula para el resplandor */
+            filter: drop-shadow(0 0 20px rgba(var(--primary-color-rgb), 0.9));
         }
         .heart-half {
-            position: absolute; width: 30px; height: 45px; background: #ff0a33;
+            position: absolute; width: 30px; height: 45px; 
+            /* Se pinta mágicamente del color extraído */
+            background: var(--primary-color);
             border-radius: 30px 30px 0 0;
             mix-blend-mode: screen;
         }
         .heart-left {
             left: 30px; transform-origin: 0 100%;
-            animation: break-left 2s infinite cubic-bezier(0.4, 0, 0.2, 1);
+            /* Tarda 5 segundos, muy despacio y dramático */
+            animation: break-left 5s infinite cubic-bezier(0.4, 0, 0.2, 1);
         }
         .heart-right {
             left: 0; transform-origin: 100% 100%;
-            animation: break-right 2s infinite cubic-bezier(0.4, 0, 0.2, 1);
+            animation: break-right 5s infinite cubic-bezier(0.4, 0, 0.2, 1);
         }
         @keyframes break-left {
-            0%, 20% { transform: rotate(-45deg); opacity: 1; }
-            50%, 80% { transform: rotate(-65deg) translate(-15px, 15px); opacity: 0; }
+            0%, 25% { transform: rotate(-45deg); opacity: 1; }
+            45%, 85% { transform: rotate(-65deg) translate(-15px, 15px); opacity: 0; }
             100% { transform: rotate(-45deg); opacity: 1; }
         }
         @keyframes break-right {
-            0%, 20% { transform: rotate(45deg); opacity: 1; }
-            50%, 80% { transform: rotate(65deg) translate(15px, 15px); opacity: 0; }
+            0%, 25% { transform: rotate(45deg); opacity: 1; }
+            45%, 85% { transform: rotate(65deg) translate(15px, 15px); opacity: 0; }
             100% { transform: rotate(45deg); opacity: 1; }
         }
 
-        /* --- 2. FOREVEL TU GANTEL: DISCO CLUB --- */
-        .anim-disco-bg {
+        /* --- 2. FOREVEL TU GANTEL: DISCO CLUB (EMOJI 🪩) LENTO --- */
+        .anim-disco-ball {
+            position: absolute; top: 50%; left: 50%;
+            font-size: 80px; /* Tamaño de la bola */
+            transform: translate(-50%, -50%);
+            /* Gira súper suave, 12 segundos por vuelta */
+            animation: disco-emoji-spin 12s linear infinite;
+            z-index: 2;
+        }
+        .anim-disco-light {
             position: absolute; top: 50%; left: 50%; width: 200%; height: 200%;
             transform: translate(-50%, -50%);
-            background: conic-gradient(from 0deg, #ff0055, #ffaa00, #00ffaa, #0055ff, #aa00ff, #ff0055);
-            animation: disco-spin 4s linear infinite;
-            mix-blend-mode: overlay;
-            opacity: 0.6;
+            /* Rayos de luz del color de la portada */
+            background: repeating-conic-gradient(from 0deg, rgba(var(--primary-color-rgb), 0.15) 0deg 15deg, transparent 15deg 30deg);
+            /* Luces giran despacio al revés */
+            animation: disco-light-spin 15s linear infinite reverse;
+            mix-blend-mode: screen;
+            z-index: 1;
         }
-        .anim-disco-beams {
-            position: absolute; top: 50%; left: 50%; width: 250%; height: 250%;
-            transform: translate(-50%, -50%);
-            background: repeating-conic-gradient(from 0deg, transparent 0deg 10deg, rgba(255,255,255,0.4) 10deg 20deg);
-            animation: disco-spin-reverse 6s linear infinite;
-            mix-blend-mode: color-dodge;
+        @keyframes disco-emoji-spin { 
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); } 
         }
-        @keyframes disco-spin { 100% { transform: translate(-50%, -50%) rotate(360deg); } }
-        @keyframes disco-spin-reverse { 100% { transform: translate(-50%, -50%) rotate(-360deg); } }
+        @keyframes disco-light-spin { 
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(-360deg); } 
+        }
 
         /* --- 3. YO QUIERO: ARMAS (Miras láser y disparos) --- */
         .anim-sniper {
@@ -329,11 +341,11 @@
             mix-blend-mode: screen;
             animation: snipe-scan 4s infinite cubic-bezier(0.4, 0, 0.2, 1) alternate;
         }
-        .anim-sniper::before { /* Línea horizontal de la mira */
+        .anim-sniper::before { 
             content: ''; position: absolute; top: 50%; left: -15px; right: -15px; height: 1.5px; 
             background: rgba(255,0,0,0.9); box-shadow: 0 0 5px red;
         }
-        .anim-sniper::after { /* Línea vertical de la mira */
+        .anim-sniper::after { 
             content: ''; position: absolute; left: 50%; top: -15px; bottom: -15px; width: 1.5px; 
             background: rgba(255,0,0,0.9); box-shadow: 0 0 5px red;
         }
@@ -361,19 +373,23 @@
             20%, 22% { opacity: 1; transform: translate(-50%, -50%) scale(1.5); }
         }
 
-        /* --- RESTO DE LAS ANIMACIONES --- */
-        .anim-444 {
-            position: absolute; bottom: -20%; left: 0; width: 100%; height: 80%;
-            background: linear-gradient(to top, rgba(138, 43, 226, 0.6) 0%, transparent 100%);
-            mix-blend-mode: color-dodge;
-            animation: trap-smoke 4s infinite alternate ease-in-out;
-            filter: blur(20px);
+        /* --- 4. 444: NÚMEROS Y SIGNOS ZODIACALES FLOTANTES --- */
+        .anim-zodiac-444 {
+            position: absolute;
+            color: rgba(var(--primary-color-rgb), 0.9); /* Absorben el color de la carátula */
+            font-weight: 800;
+            text-shadow: 0 0 15px var(--primary-color);
+            mix-blend-mode: screen;
+            animation: float-mystic linear infinite;
         }
-        @keyframes trap-smoke {
-            0% { transform: translateY(10%) scaleX(1); opacity: 0.4; }
-            100% { transform: translateY(-15%) scaleX(1.2); opacity: 0.8; }
+        @keyframes float-mystic {
+            0% { transform: translateY(50px) scale(0.8) rotate(-10deg); opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { transform: translateY(-200px) scale(1.2) rotate(20deg); opacity: 0; }
         }
 
+        /* --- RESTO DE LAS ANIMACIONES --- */
         .anim-vvs {
             position: absolute; background: #ffffff; border-radius: 50%;
             box-shadow: 0 0 10px 3px #00ffff, 0 0 20px 5px rgba(0, 255, 255, 0.5);
@@ -535,7 +551,7 @@
             const songTitle = song.title.toUpperCase();
             let html = '';
 
-            // 1. WOH OH OH: Corazón Roto (CSS puro separándose en dos)
+            // 1. WOH OH OH: Corazón Roto Lento al Color de la portada
             if (songTitle.includes("WOH OH OH")) {
                 html = `
                     <div class="anim-broken-heart-container">
@@ -544,15 +560,23 @@
                     </div>
                 `;
             } 
-            // 2. 444: Humo oscuro trap
+            // 2. 444: Números "444" y Signos Zodiacales flotando
             else if (songTitle.includes("444")) {
-                html = '<div class="anim-444"></div>';
+                const signs =["444", "♈", "♉", "♊", "♋", "♌", "♍", "♎", "♏", "♐", "♑", "♒", "♓"];
+                for(let i=0; i<12; i++) {
+                    let left = 5 + Math.random() * 85;
+                    let delay = Math.random() * 4;
+                    let duration = 6 + Math.random() * 4;
+                    let size = 25 + Math.random() * 20;
+                    let content = signs[Math.floor(Math.random() * signs.length)];
+                    html += `<div class="anim-zodiac-444" style="left: ${left}%; font-size: ${size}px; animation-delay: ${delay}s; animation-duration: ${duration}s; bottom: -20%;">${content}</div>`;
+                }
             }
-            // 3. FOREVEL TU GANTEL: Bola de disco y rayos de club
+            // 3. FOREVEL TU GANTEL: Bola de disco (Emoji 🪩) y luces girando lento
             else if (songTitle.includes("FOREVEL TU GANTEL")) {
                 html = `
-                    <div class="anim-disco-bg"></div>
-                    <div class="anim-disco-beams"></div>
+                    <div class="anim-disco-light"></div>
+                    <div class="anim-disco-ball">🪩</div>
                 `;
             }
             // 4. YO QUIERO: Armas (Miras láser escaneando + Fogonazos/Disparos)
@@ -794,11 +818,13 @@
                 audioMain.pause(); videoMain.pause();
                 if (isCrossfading) { audioNext.pause(); videoNext.pause(); }
                 playIcon.style.display = 'block'; pauseIcon.style.display = 'none';
+                
                 playerContainer.classList.add('paused');
             } else {
                 audioMain.play(); videoMain.play().catch(e=>console.log(e));
                 if (isCrossfading) { audioNext.play(); videoNext.play(); }
                 playIcon.style.display = 'none'; pauseIcon.style.display = 'block';
+                
                 playerContainer.classList.remove('paused');
                 coverGlow.style.boxShadow = `0 30px 80px -10px rgba(${rootVars.getPropertyValue('--primary-color-rgb') || '255,255,255'}, 0.85)`;
             }
