@@ -162,7 +162,6 @@
             width: 18px; height: 18px;
         }
 
-        /* ================= TEXTOS DE TIEMPO ================= */
         .time-info {
             display: flex;
             justify-content: space-between;
@@ -206,7 +205,7 @@
             100% { opacity: 1; filter: brightness(1.8); transform: translate(-50%, -50%) scale(1.05); }
         }
 
-        /* ================= CONTROLES COLOREADOS ================= */
+        /* ================= CONTROLES ================= */
         .controls {
             display: flex;
             justify-content: space-between;
@@ -257,7 +256,9 @@
         .btn-play:active { transform: scale(0.9); opacity: 0.7; }
 
 
-        /* ================= ANIMACIONES POR CANCIÓN ================= */
+        /* ================= ANIMACIONES NATURALES ================= */
+        
+        /* Contenedor principal: Reacciona al Play/Pause */
         #song-animation-container {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -265,106 +266,130 @@
             pointer-events: none;
             overflow: hidden;
             z-index: 5;
+            transition: opacity 0.6s ease-in-out;
+            opacity: 1; /* Visible cuando está en Play */
         }
 
-        /* 1. WOH OH OH: Ondas de sonido pulsantes */
+        /* Si el reproductor está pausado: Desaparecen suavemente y se detienen */
+        .paused #song-animation-container {
+            opacity: 0;
+        }
+        .paused #song-animation-container * {
+            animation-play-state: paused !important;
+        }
+
+        /* 1. WOH OH OH: Ondas de sonido orgánicas (Fondo sutil) */
         .anim-woh {
-            position: absolute; top: 50%; left: 50%; width: 100%; height: 100%;
+            position: absolute; top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            border: 3px solid rgba(255,255,255,0.8);
             border-radius: 50%;
-            animation: pulse-ring 2s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 30px rgba(255,255,255,0.3), inset 0 0 20px rgba(255,255,255,0.1);
+            animation: organic-pulse 3s infinite cubic-bezier(0.1, 0.8, 0.3, 1);
+            mix-blend-mode: overlay;
         }
-        @keyframes pulse-ring {
-            0% { width: 0; height: 0; opacity: 1; }
-            100% { width: 200%; height: 200%; opacity: 0; }
+        @keyframes organic-pulse {
+            0% { width: 0; height: 0; opacity: 1; border-width: 8px; }
+            100% { width: 180%; height: 180%; opacity: 0; border-width: 1px; }
         }
 
-        /* 2. 444: Números flotantes misticos */
+        /* 2. 444: Números místicos balanceándose */
         .anim-444 {
-            position: absolute; color: rgba(255,255,255,0.8);
-            font-weight: 900; font-size: 32px;
-            text-shadow: 0 0 15px var(--primary-color);
-            animation: float-up 3s linear infinite;
-        }
-        @keyframes float-up {
-            0% { transform: translateY(150px) scale(0.8); opacity: 0; }
-            20% { opacity: 1; }
-            80% { opacity: 1; }
-            100% { transform: translateY(-50px) scale(1.2); opacity: 0; }
-        }
-
-        /* 3. FOREVEL TU GANTEL: Brillo rojo de sirena/peligro */
-        .anim-gantel {
-            width: 100%; height: 100%;
-            background: radial-gradient(circle, transparent 30%, rgba(255, 0, 0, 0.5) 100%);
-            animation: siren-glow 1s infinite alternate ease-in-out;
-        }
-        @keyframes siren-glow {
-            0% { opacity: 0.1; }
-            100% { opacity: 1; filter: brightness(1.5); }
-        }
-
-        /* 4. YO QUIERO: Corazones latiendo */
-        .anim-yo-quiero {
-            position: absolute; color: #ff3366; font-size: 35px;
-            filter: drop-shadow(0 0 15px #ff3366);
-            animation: heartbeat 0.8s infinite alternate cubic-bezier(0.25, 1, 0.5, 1);
-        }
-        @keyframes heartbeat {
-            0% { transform: scale(1); opacity: 0.6; }
-            100% { transform: scale(1.4); opacity: 1; }
-        }
-
-        /* 5. VVS SWITCH: Destellos de diamantes */
-        .anim-vvs {
-            position: absolute; width: 15px; height: 15px; background: white;
-            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-            animation: sparkle 1.5s infinite linear;
-        }
-        @keyframes sparkle {
-            0% { transform: scale(0) rotate(0deg); opacity: 1; }
-            50% { transform: scale(1.2) rotate(180deg); opacity: 1; filter: drop-shadow(0 0 10px #00ffff); }
-            100% { transform: scale(0) rotate(360deg); opacity: 0; }
-        }
-
-        /* 6. FALSAS PROMESAS: Lluvia triste */
-        .anim-promesas {
-            position: absolute; width: 2px; height: 30px; background: rgba(255,255,255,0.7);
-            animation: rain-fall 0.7s linear infinite;
-        }
-        @keyframes rain-fall {
-            0% { transform: translateY(-30px); opacity: 0; }
-            20% { opacity: 1; }
-            100% { transform: translateY(400px); opacity: 0; }
-        }
-
-        /* 7. TE VAS: Efecto de viento/desvanecimiento lateral */
-        .anim-te-vas {
-            position: absolute; width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            background-size: 200% 100%;
-            animation: wind-fade 2s infinite linear;
-        }
-        @keyframes wind-fade {
-            0% { background-position: 200% 0; opacity: 0; }
-            50% { opacity: 1; }
-            100% { background-position: -200% 0; opacity: 0; }
-        }
-
-        /* 8. RELIGION EN TODO: Luz divina desde arriba */
-        .anim-religion {
-            position: absolute;
-            top: -30%; left: 50%;
-            width: 150%; height: 150%;
-            background: radial-gradient(ellipse at top, rgba(255, 240, 180, 0.6) 0%, transparent 60%);
-            transform: translateX(-50%);
-            animation: divine-glow 3s infinite alternate ease-in-out;
+            position: absolute; color: rgba(255,255,255,0.7);
+            font-weight: 800; font-size: 20px;
+            filter: drop-shadow(0 0 10px var(--primary-color));
+            animation: float-sway ease-in-out infinite;
             mix-blend-mode: screen;
         }
-        @keyframes divine-glow {
-            0% { opacity: 0.3; filter: blur(5px); }
-            100% { opacity: 1; filter: blur(15px) brightness(1.4); }
+        @keyframes float-sway {
+            0% { transform: translate(0, 30px) scale(0.8); opacity: 0; }
+            20% { opacity: 1; }
+            50% { transform: translate(20px, -60px) scale(1.2); }
+            80% { opacity: 1; }
+            100% { transform: translate(-15px, -150px) scale(0.9); opacity: 0; }
+        }
+
+        /* 3. FOREVEL TU GANTEL: Luz de sirena rotando suavemente */
+        .anim-gantel {
+            position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: conic-gradient(from 0deg, transparent 0deg, rgba(255, 0, 0, 0.35) 45deg, transparent 90deg, transparent 180deg, rgba(255, 0, 0, 0.35) 225deg, transparent 270deg);
+            animation: siren-spin 4s linear infinite;
+            mix-blend-mode: overlay;
+        }
+        @keyframes siren-spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 4. YO QUIERO: Corazón con latido humano (2 tiempos) */
+        .anim-yo-quiero {
+            position: absolute; color: #ff2a55;
+            filter: drop-shadow(0 0 12px rgba(255, 42, 85, 0.8));
+            animation: natural-heartbeat 1.4s infinite;
+        }
+        @keyframes natural-heartbeat {
+            0% { transform: scale(1); opacity: 0.7; }
+            15% { transform: scale(1.25); opacity: 1; }
+            30% { transform: scale(1); opacity: 0.7; }
+            45% { transform: scale(1.25); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.7; }
+        }
+
+        /* 5. VVS SWITCH: Destellos de diamante reales (Luz/Glow) */
+        .anim-vvs {
+            position: absolute;
+            background: #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 0 8px 2px #00e5ff, 0 0 15px 4px #00e5ff;
+            animation: lens-flare ease-in-out infinite;
+        }
+        @keyframes lens-flare {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(0); opacity: 0; }
+        }
+
+        /* 6. FALSAS PROMESAS: Lluvia diagonal melancólica */
+        .anim-promesas {
+            position: absolute;
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0.5));
+            transform: rotate(15deg);
+            animation: angled-rain linear infinite;
+        }
+        @keyframes angled-rain {
+            0% { transform: translate(-20px, -50px) rotate(15deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translate(100px, 400px) rotate(15deg); opacity: 0; }
+        }
+
+        /* 7. TE VAS: Polvo/Viento desplazándose */
+        .anim-te-vas {
+            position: absolute;
+            background: radial-gradient(circle, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 70%);
+            border-radius: 50%;
+            animation: wind-dust linear infinite;
+            mix-blend-mode: screen;
+        }
+        @keyframes wind-dust {
+            0% { transform: translate(-30px, 0) scale(0.5); opacity: 0; }
+            20% { opacity: 0.5; }
+            80% { opacity: 0.5; }
+            100% { transform: translate(300px, -50px) scale(1.5); opacity: 0; }
+        }
+
+        /* 8. RELIGION EN TODO: Rayos de luz divina balanceándose */
+        .anim-religion {
+            position: absolute;
+            top: -20%; left: -20%; width: 140%; height: 140%;
+            background: linear-gradient(180deg, rgba(255, 240, 180, 0.45) 0%, transparent 65%);
+            transform-origin: top center;
+            animation: god-rays 5s infinite alternate ease-in-out;
+            mix-blend-mode: soft-light;
+        }
+        @keyframes god-rays {
+            0% { transform: rotate(-8deg) scale(1); opacity: 0.6; filter: blur(10px); }
+            100% { transform: rotate(8deg) scale(1.1); opacity: 1; filter: blur(25px); }
         }
 
     </style>
@@ -380,7 +405,7 @@
     <div class="player-container paused" id="player">
         <div class="cover-wrapper" id="cover-glow">
             <img src="" id="cover">
-            <!-- Contenedor nativo donde se inyectan las animaciones -->
+            <!-- El contenedor de animaciones ahora reacciona automáticamente a la clase 'paused' -->
             <div id="song-animation-container"></div>
         </div>
         
@@ -430,7 +455,6 @@
             { title: "VVS SWITCH REMIX", artist: "PRESSURE, YVNGCHIMI, CDOBLETA. HADES66, ANUEL AA, LUAR LA L", cover: "covers/VVS SWITCH REMIX.jpg", file: "songs/VVS SWITCH REMIX.mp3", video: "videos/VVS SWITCH REMIX.mp4" },
             { title: "FALSAS PROMESAS REMIX", artist: "MIDNVGHT, MORA, ELADIO CARRION, ROA, CLARENT", cover: "covers/FALSAS PROMESAS REMIX.jpg", file: "songs/FALSAS PROMESAS REMIX.mp3", video: "videos/FALSAS PROMESAS REMIX.mp4" },
             { title: "TE VAS", artist: "OZUNA", cover: "covers/TE VAS.jpg", file: "songs/TE VAS.mp3", video: "videos/TE VAS.mp4" },
-            /* AQUI ESTA LA NUEVA CANCION */
             { title: "RELIGION EN TODO", artist: "ARTISTA", cover: "covers/RELIGION EN TODO.jpg", file: "songs/RELIGION EN TODO.mp3", video: "videos/RELIGION EN TODO.mp4" }
         ];
 
@@ -474,62 +498,80 @@
             durationEl.textContent = "0:00";
         }
 
-        /* LOGICA DE CARGA INTEGRADA CON LAS ANIMACIONES */
+        /* LOGICA DE CARGA INTEGRADA CON GENERACIÓN DE PARTÍCULAS MEJORADAS */
         function loadSongInfo(index) {
             const song = playlist[index];
             coverEl.src = song.cover;
             titleEl.textContent = song.title;
             artistEl.textContent = song.artist;
 
-            // Inyectar animación dependiendo del título
             const songTitle = song.title.toUpperCase();
-            animContainer.innerHTML = ''; // Limpiar animación anterior
+            let html = '';
 
             if (songTitle.includes("WOH OH OH")) {
-                animContainer.innerHTML = '<div class="anim-woh"></div><div class="anim-woh" style="animation-delay: 1s;"></div>';
+                // 3 Anillos de pulso espaciados
+                html = `
+                    <div class="anim-woh" style="animation-delay: 0s;"></div>
+                    <div class="anim-woh" style="animation-delay: 1s;"></div>
+                    <div class="anim-woh" style="animation-delay: 2s;"></div>
+                `;
             } 
             else if (songTitle.includes("444")) {
-                animContainer.innerHTML = `
-                    <div class="anim-444" style="left: 20%; animation-delay: 0s;">4</div>
-                    <div class="anim-444" style="left: 50%; animation-delay: 1.5s;">4</div>
-                    <div class="anim-444" style="left: 80%; animation-delay: 0.8s;">4</div>
-                `;
+                // Genera 5 números flotando aleatoriamente
+                for(let i=0; i<5; i++) {
+                    let left = 10 + Math.random() * 80;
+                    let delay = Math.random() * 2;
+                    let duration = 3 + Math.random() * 2;
+                    html += `<div class="anim-444" style="left: ${left}%; animation-delay: ${delay}s; animation-duration: ${duration}s;">4</div>`;
+                }
             }
             else if (songTitle.includes("FOREVEL TU GANTEL")) {
-                animContainer.innerHTML = '<div class="anim-gantel"></div>';
+                html = '<div class="anim-gantel"></div>';
             }
             else if (songTitle.includes("YO QUIERO")) {
-                animContainer.innerHTML = `
-                    <div class="anim-yo-quiero" style="top: 20%; left: 20%;">❤️</div>
-                    <div class="anim-yo-quiero" style="top: 50%; left: 70%; animation-delay: 0.4s; font-size: 25px;">❤️</div>
+                html = `
+                    <div class="anim-yo-quiero" style="top: 25%; left: 20%; font-size: 25px; animation-delay: 0s;">❤️</div>
+                    <div class="anim-yo-quiero" style="top: 60%; left: 75%; font-size: 35px; animation-delay: 0.2s;">❤️</div>
+                    <div class="anim-yo-quiero" style="top: 15%; left: 70%; font-size: 15px; animation-delay: 0.5s;">❤️</div>
                 `;
             }
             else if (songTitle.includes("VVS SWITCH")) {
-                let sparkles = '';
-                for(let i=0; i<10; i++) {
-                    let left = Math.random() * 90;
-                    let top = Math.random() * 90;
-                    let delay = Math.random() * 1.5;
-                    sparkles += `<div class="anim-vvs" style="left: ${left}%; top: ${top}%; animation-delay: ${delay}s;"></div>`;
+                // 12 Destellos de lente (Lens Flares)
+                for(let i=0; i<12; i++) {
+                    let left = Math.random() * 95;
+                    let top = Math.random() * 95;
+                    let delay = Math.random() * 2;
+                    let duration = 1.5 + Math.random() * 1.5;
+                    let size = 2 + Math.random() * 3;
+                    html += `<div class="anim-vvs" style="left: ${left}%; top: ${top}%; width: ${size}px; height: ${size}px; animation-delay: ${delay}s; animation-duration: ${duration}s;"></div>`;
                 }
-                animContainer.innerHTML = sparkles;
             }
             else if (songTitle.includes("FALSAS PROMESAS")) {
-                let rain = '';
-                for(let i=0; i<20; i++) {
-                    let left = Math.random() * 100;
+                // 35 Gotas de lluvia delgadas y diagonales
+                for(let i=0; i<35; i++) {
+                    let left = -20 + Math.random() * 140; // Desde un poco antes para cubrir la rotación
                     let delay = Math.random() * 1;
-                    rain += `<div class="anim-promesas" style="left: ${left}%; animation-delay: ${delay}s;"></div>`;
+                    let duration = 0.5 + Math.random() * 0.3;
+                    let height = 30 + Math.random() * 30;
+                    let width = Math.random() > 0.5 ? 1 : 2;
+                    html += `<div class="anim-promesas" style="left: ${left}%; width: ${width}px; height: ${height}px; animation-delay: ${delay}s; animation-duration: ${duration}s;"></div>`;
                 }
-                animContainer.innerHTML = rain;
             }
             else if (songTitle.includes("TE VAS")) {
-                animContainer.innerHTML = '<div class="anim-te-vas"></div>';
+                // 15 Partículas de polvo/viento flotando cruzando la pantalla
+                for(let i=0; i<15; i++) {
+                    let top = Math.random() * 100;
+                    let size = 15 + Math.random() * 40; // Manchas de polvo de diferentes tamaños
+                    let delay = Math.random() * 4;
+                    let duration = 5 + Math.random() * 3;
+                    html += `<div class="anim-te-vas" style="top: ${top}%; left: -20%; width: ${size}px; height: ${size}px; animation-delay: ${delay}s; animation-duration: ${duration}s;"></div>`;
+                }
             }
             else if (songTitle.includes("RELIGION")) {
-                // Nueva animación de "Luz Divina"
-                animContainer.innerHTML = '<div class="anim-religion"></div>';
+                html = '<div class="anim-religion"></div>';
             }
+
+            animContainer.innerHTML = html;
         }
 
         function initPlayer() {
@@ -573,7 +615,7 @@
         setupAudioListeners(audioMain);
         setupAudioListeners(audioNext);
 
-        /* ================= EXTRACCIÓN DE COLOR NIVEL DIOS ================= */
+        /* ================= EXTRACCIÓN DE COLOR ================= */
         coverEl.onload = function() {
             const canvas = document.createElement('canvas');
             const context = canvas.getContext('2d');
@@ -639,7 +681,6 @@
                     coverGlow.style.boxShadow = `0 30px 80px -10px rgba(${r}, ${g}, ${b}, 0.95)`;
                 }
             } catch (e) {
-                console.error("Error leyendo el color:", e);
                 rootVars.setProperty('--primary-color-rgb', `255, 255, 255`);
                 rootVars.setProperty('--primary-color', `#ffffff`);
             }
@@ -730,11 +771,15 @@
                 audioMain.pause(); videoMain.pause();
                 if (isCrossfading) { audioNext.pause(); videoNext.pause(); }
                 playIcon.style.display = 'block'; pauseIcon.style.display = 'none';
+                
+                // Al pausar, se añade la clase y el CSS detiene y oculta las animaciones automáticamente
                 playerContainer.classList.add('paused');
             } else {
                 audioMain.play(); videoMain.play().catch(e=>console.log(e));
                 if (isCrossfading) { audioNext.play(); videoNext.play(); }
                 playIcon.style.display = 'none'; pauseIcon.style.display = 'block';
+                
+                // Al darle play, se quita la clase y las animaciones se reanudan y aparecen mágicamente
                 playerContainer.classList.remove('paused');
                 coverGlow.style.boxShadow = `0 30px 80px -10px rgba(${rootVars.getPropertyValue('--primary-color-rgb') || '255,255,255'}, 0.95)`;
             }
