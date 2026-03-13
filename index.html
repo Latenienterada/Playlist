@@ -205,7 +205,7 @@
             100% { opacity: 1; filter: brightness(1.5); transform: translate(-50%, -50%) scale(1.05); }
         }
 
-        /* ================= CONTROLES ================= */
+        /* ================= CONTROLES QUE ABSORBEN EL COLOR ================= */
         .controls {
             display: flex;
             justify-content: space-between;
@@ -270,50 +270,61 @@
         .paused #song-animation-container { opacity: 0; }
         .paused #song-animation-container * { animation-play-state: paused !important; }
 
-        /* --- 1. WOH OH OH: CORAZÓN ROTO AL COLOR DE LA PORTADA LENTO --- */
+        /* --- 1. WOH OH OH: CORAZÓN ROTO EN DOS PARTES PERFECTAS --- */
         .anim-broken-heart-container {
-            position: absolute; top: 50%; left: 50%; width: 60px; height: 60px;
+            position: absolute; top: 50%; left: 50%; width: 80px; height: 80px;
             transform: translate(-50%, -50%);
-            filter: drop-shadow(0 0 20px rgba(var(--primary-color-rgb), 0.9));
+            filter: drop-shadow(0 0 15px rgba(var(--primary-color-rgb), 0.8));
         }
         .heart-half {
-            position: absolute; width: 30px; height: 45px; 
+            position: absolute; width: 100%; height: 100%; top: 0; left: 0;
+        }
+        .heart-half.left {
+            clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);
+            transform-origin: 50% 100%;
+            animation: break-left 4s infinite cubic-bezier(0.5, 0, 0.2, 1);
+        }
+        .heart-half.right {
+            clip-path: polygon(50% 0, 100% 0, 100% 100%, 50% 100%);
+            transform-origin: 50% 100%;
+            animation: break-right 4s infinite cubic-bezier(0.5, 0, 0.2, 1);
+        }
+        .heart-shape {
+            position: absolute; top: 25px; left: 20px; width: 40px; height: 40px;
             background: var(--primary-color);
-            border-radius: 30px 30px 0 0;
-            mix-blend-mode: screen;
+            transform: rotate(45deg);
         }
-        .heart-left {
-            left: 30px; transform-origin: 0 100%;
-            animation: break-left 5s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        .heart-shape::before, .heart-shape::after {
+            content: ''; position: absolute; width: 40px; height: 40px;
+            background: var(--primary-color); border-radius: 50%;
         }
-        .heart-right {
-            left: 0; transform-origin: 100% 100%;
-            animation: break-right 5s infinite cubic-bezier(0.4, 0, 0.2, 1);
-        }
+        .heart-shape::before { top: -20px; left: 0; }
+        .heart-shape::after { top: 0; left: -20px; }
+
         @keyframes break-left {
-            0%, 25% { transform: rotate(-45deg); opacity: 1; }
-            45%, 85% { transform: rotate(-65deg) translate(-15px, 15px); opacity: 0; }
-            100% { transform: rotate(-45deg); opacity: 1; }
+            0%, 15% { transform: rotate(0deg) translate(0, 0); opacity: 1; }
+            35%, 80% { transform: rotate(-15deg) translate(-10px, 15px); opacity: 0; }
+            100% { transform: rotate(0deg) translate(0, 0); opacity: 1; }
         }
         @keyframes break-right {
-            0%, 25% { transform: rotate(45deg); opacity: 1; }
-            45%, 85% { transform: rotate(65deg) translate(15px, 15px); opacity: 0; }
-            100% { transform: rotate(45deg); opacity: 1; }
+            0%, 15% { transform: rotate(0deg) translate(0, 0); opacity: 1; }
+            35%, 80% { transform: rotate(15deg) translate(10px, 15px); opacity: 0; }
+            100% { transform: rotate(0deg) translate(0, 0); opacity: 1; }
         }
 
-        /* --- 2. FOREVEL TU GANTEL: DISCO CLUB LENTO --- */
+        /* --- 2. FOREVEL TU GANTEL: DISCO EN LA ESQUINA --- */
         .anim-disco-ball {
-            position: absolute; top: 50%; left: 50%;
-            font-size: 80px; 
+            position: absolute; top: 15%; left: 85%;
+            font-size: 55px; 
             transform: translate(-50%, -50%);
-            animation: disco-emoji-spin 12s linear infinite;
+            animation: disco-emoji-spin 8s linear infinite;
             z-index: 2;
         }
         .anim-disco-light {
-            position: absolute; top: 50%; left: 50%; width: 200%; height: 200%;
+            position: absolute; top: 15%; left: 85%; width: 200%; height: 200%;
             transform: translate(-50%, -50%);
-            background: repeating-conic-gradient(from 0deg, rgba(var(--primary-color-rgb), 0.15) 0deg 15deg, transparent 15deg 30deg);
-            animation: disco-light-spin 15s linear infinite reverse;
+            background: repeating-conic-gradient(from 0deg, rgba(var(--primary-color-rgb), 0.25) 0deg 15deg, transparent 15deg 30deg);
+            animation: disco-light-spin 12s linear infinite reverse;
             mix-blend-mode: screen;
             z-index: 1;
         }
@@ -326,11 +337,36 @@
             100% { transform: translate(-50%, -50%) rotate(-360deg); } 
         }
 
-        /* --- 3. YO QUIERO: ARMAS (Miras láser y disparos) --- */
+        /* --- 3. VVS SWITCH: DESTELLOS DE LUZ (DIAMANTES REALES) --- */
+        .anim-vvs-sweep {
+            position: absolute; top: 0; left: -100%; width: 60%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+            transform: skewX(-25deg);
+            mix-blend-mode: overlay;
+            animation: ice-sweep 3s infinite cubic-bezier(0.2, 0.8, 0.4, 1);
+        }
+        @keyframes ice-sweep {
+            0% { left: -100%; }
+            40%, 100% { left: 200%; }
+        }
+        .anim-vvs-flare-wrapper {
+            position: absolute;
+            transform: translate(-50%, -50%) scale(0);
+            animation: ice-flare 2s infinite ease-in-out;
+            mix-blend-mode: screen;
+        }
+        .flare-v { width: 2px; background: #fff; box-shadow: 0 0 10px #00ffff; margin: 0 auto; border-radius: 2px; }
+        .flare-h { height: 2px; background: #fff; box-shadow: 0 0 10px #00ffff; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border-radius: 2px;}
+        @keyframes ice-flare {
+            0% { transform: translate(-50%, -50%) scale(0) rotate(0deg); opacity: 0; }
+            50% { transform: translate(-50%, -50%) scale(1) rotate(45deg); opacity: 1; filter: brightness(1.5); }
+            100% { transform: translate(-50%, -50%) scale(0) rotate(90deg); opacity: 0; }
+        }
+
+        /* --- 4. YO QUIERO: ARMAS (Miras láser y disparos) --- */
         .anim-sniper {
             position: absolute; width: 70px; height: 70px;
-            border: 1.5px solid rgba(255, 0, 0, 0.8);
-            border-radius: 50%;
+            border: 1.5px solid rgba(255, 0, 0, 0.8); border-radius: 50%;
             box-shadow: 0 0 15px rgba(255,0,0,0.6), inset 0 0 15px rgba(255,0,0,0.3);
             mix-blend-mode: screen;
             animation: snipe-scan 4s infinite cubic-bezier(0.4, 0, 0.2, 1) alternate;
@@ -357,17 +393,15 @@
         .anim-muzzle-flash {
             position: absolute; width: 150px; height: 150px;
             background: radial-gradient(circle, #ffffff 5%, #ffcc00 15%, #ff3300 35%, transparent 70%);
-            mix-blend-mode: color-dodge;
-            transform: translate(-50%, -50%);
-            opacity: 0;
-            animation: gunfire 2s infinite;
+            mix-blend-mode: color-dodge; transform: translate(-50%, -50%);
+            opacity: 0; animation: gunfire 2s infinite;
         }
         @keyframes gunfire {
             0%, 18%, 24%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(0.3); }
             20%, 22% { opacity: 1; transform: translate(-50%, -50%) scale(1.5); }
         }
 
-        /* --- 4. 444: NÚMEROS Y SIGNOS ZODIACALES FLOTANTES --- */
+        /* --- 5. 444: NÚMEROS Y SIGNOS ZODIACALES FLOTANTES --- */
         .anim-zodiac-444 {
             position: absolute;
             color: rgba(var(--primary-color-rgb), 0.9); 
@@ -383,7 +417,7 @@
             100% { transform: translateY(-200px) scale(1.2) rotate(20deg); opacity: 0; }
         }
 
-        /* --- 5. RELIGION: CRUZ LUMINOSA Y RAYOS CELESTIALES --- */
+        /* --- 6. RELIGION: CRUZ LUMINOSA Y RAYOS CELESTIALES --- */
         .anim-religion {
             position: absolute; top: -30%; left: -20%; width: 140%; height: 140%;
             background: linear-gradient(180deg, rgba(255, 255, 255, 0.4) 0%, transparent 75%);
@@ -401,7 +435,6 @@
             width: 6px; height: 90px;
             background: #ffffff;
             border-radius: 10px;
-            /* El aura de la cruz usa el color de la portada */
             box-shadow: 0 0 20px 5px rgba(var(--primary-color-rgb), 0.9), 0 0 40px rgba(255,255,255,0.6);
             animation: holy-cross 4s infinite alternate ease-in-out;
             mix-blend-mode: screen;
@@ -420,18 +453,7 @@
             100% { transform: translate(-50%, -55%) scale(1.05); opacity: 1; filter: brightness(1.3); }
         }
 
-        /* --- RESTO DE LAS ANIMACIONES --- */
-        .anim-vvs {
-            position: absolute; background: #ffffff; border-radius: 50%;
-            box-shadow: 0 0 10px 3px #00ffff, 0 0 20px 5px rgba(0, 255, 255, 0.5);
-            animation: ice-blink 1.5s infinite ease-in-out;
-        }
-        @keyframes ice-blink {
-            0% { transform: scale(0); opacity: 0; }
-            50% { transform: scale(1) rotate(45deg); opacity: 1; }
-            100% { transform: scale(0); opacity: 0; }
-        }
-
+        /* --- 7. FALSAS PROMESAS: LLUVIA --- */
         .anim-promesas {
             position: absolute; background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.7), transparent);
             filter: blur(0.5px); mix-blend-mode: overlay;
@@ -443,6 +465,7 @@
             100% { transform: translateY(400px); opacity: 0; }
         }
 
+        /* --- 8. TE VAS: CENIZAS AL VIENTO --- */
         .anim-te-vas {
             position: absolute; background: rgba(255, 200, 100, 0.8);
             box-shadow: 0 0 10px rgba(255, 150, 50, 0.8); border-radius: 50%;
@@ -569,12 +592,12 @@
             const songTitle = song.title.toUpperCase();
             let html = '';
 
-            // 1. WOH OH OH: Corazón Roto
+            // 1. WOH OH OH: Corazón roto en 2 partes
             if (songTitle.includes("WOH OH OH")) {
                 html = `
                     <div class="anim-broken-heart-container">
-                        <div class="heart-half heart-left"></div>
-                        <div class="heart-half heart-right"></div>
+                        <div class="heart-half left"><div class="heart-shape"></div></div>
+                        <div class="heart-half right"><div class="heart-shape"></div></div>
                     </div>
                 `;
             } 
@@ -590,7 +613,7 @@
                     html += `<div class="anim-zodiac-444" style="left: ${left}%; font-size: ${size}px; animation-delay: ${delay}s; animation-duration: ${duration}s; bottom: -20%;">${content}</div>`;
                 }
             }
-            // 3. FOREVEL TU GANTEL: Bola de disco (Emoji)
+            // 3. FOREVEL TU GANTEL: Bola de disco en la esquina
             else if (songTitle.includes("FOREVEL TU GANTEL")) {
                 html = `
                     <div class="anim-disco-light"></div>
@@ -606,15 +629,18 @@
                     <div class="anim-muzzle-flash" style="top: 80%; left: 40%; animation-delay: 1.2s;"></div>
                 `;
             }
-            // 5. VVS SWITCH: Diamantes
+            // 5. VVS SWITCH: Diamantes y hielo cruzado
             else if (songTitle.includes("VVS SWITCH")) {
-                for(let i=0; i<8; i++) {
-                    let left = 10 + Math.random() * 80;
-                    let top = 10 + Math.random() * 80;
-                    let delay = Math.random() * 1.5;
-                    let duration = 1 + Math.random() * 1;
-                    let size = 3 + Math.random() * 4;
-                    html += `<div class="anim-vvs" style="left: ${left}%; top: ${top}%; width: ${size}px; height: ${size}px; animation-delay: ${delay}s; animation-duration: ${duration}s;"></div>`;
+                html = `<div class="anim-vvs-sweep"></div>`;
+                for(let i=0; i<6; i++) {
+                    let left = 5 + Math.random() * 90;
+                    let top = 5 + Math.random() * 90;
+                    let delay = Math.random() * 2;
+                    let size = 20 + Math.random() * 30;
+                    html += `<div class="anim-vvs-flare-wrapper" style="left: ${left}%; top: ${top}%; animation-delay: ${delay}s;">
+                                <div class="flare-v" style="height: ${size}px;"></div>
+                                <div class="flare-h" style="width: ${size}px;"></div>
+                             </div>`;
                 }
             }
             // 6. FALSAS PROMESAS: Lluvia triste
@@ -637,7 +663,7 @@
                     html += `<div class="anim-te-vas" style="top: ${top}%; left: -10%; width: ${size}px; height: ${size}px; animation-delay: ${delay}s; animation-duration: ${duration}s;"></div>`;
                 }
             }
-            // 8. RELIGION: Rayo divino + CRUZ BRILLANTE
+            // 8. RELIGION: Rayo divino + Cruz
             else if (songTitle === "RELIGION") {
                 html = `
                     <div class="anim-religion"></div>
@@ -689,7 +715,7 @@
         setupAudioListeners(audioMain);
         setupAudioListeners(audioNext);
 
-        /* ================= EXTRACCIÓN DE COLOR (Afecta Botones y Animaciones) ================= */
+        /* ================= EXTRACCIÓN DE COLOR ================= */
         coverEl.onload = function() {
             const canvas = document.createElement('canvas');
             const context = canvas.getContext('2d');
