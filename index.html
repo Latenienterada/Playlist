@@ -205,7 +205,7 @@
             100% { opacity: 1; filter: brightness(1.5); transform: translate(-50%, -50%) scale(1.05); }
         }
 
-        /* ================= CONTROLES QUE ABSORBEN EL COLOR ================= */
+        /* ================= CONTROLES ================= */
         .controls {
             display: flex;
             justify-content: space-between;
@@ -255,7 +255,7 @@
         .btn-play:active { transform: scale(0.9); opacity: 0.7; }
 
 
-        /* ================= ANIMACIONES CINEMATOGRÁFICAS EXCLUSIVAS ================= */
+        /* ================= ANIMACIONES CINEMATOGRÁFICAS ================= */
         #song-animation-container {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -274,19 +274,16 @@
         .anim-broken-heart-container {
             position: absolute; top: 50%; left: 50%; width: 60px; height: 60px;
             transform: translate(-50%, -50%);
-            /* Toma el color que absorbe la carátula para el resplandor */
             filter: drop-shadow(0 0 20px rgba(var(--primary-color-rgb), 0.9));
         }
         .heart-half {
             position: absolute; width: 30px; height: 45px; 
-            /* Se pinta mágicamente del color extraído */
             background: var(--primary-color);
             border-radius: 30px 30px 0 0;
             mix-blend-mode: screen;
         }
         .heart-left {
             left: 30px; transform-origin: 0 100%;
-            /* Tarda 5 segundos, muy despacio y dramático */
             animation: break-left 5s infinite cubic-bezier(0.4, 0, 0.2, 1);
         }
         .heart-right {
@@ -304,21 +301,18 @@
             100% { transform: rotate(45deg); opacity: 1; }
         }
 
-        /* --- 2. FOREVEL TU GANTEL: DISCO CLUB (EMOJI 🪩) LENTO --- */
+        /* --- 2. FOREVEL TU GANTEL: DISCO CLUB LENTO --- */
         .anim-disco-ball {
             position: absolute; top: 50%; left: 50%;
-            font-size: 80px; /* Tamaño de la bola */
+            font-size: 80px; 
             transform: translate(-50%, -50%);
-            /* Gira súper suave, 12 segundos por vuelta */
             animation: disco-emoji-spin 12s linear infinite;
             z-index: 2;
         }
         .anim-disco-light {
             position: absolute; top: 50%; left: 50%; width: 200%; height: 200%;
             transform: translate(-50%, -50%);
-            /* Rayos de luz del color de la portada */
             background: repeating-conic-gradient(from 0deg, rgba(var(--primary-color-rgb), 0.15) 0deg 15deg, transparent 15deg 30deg);
-            /* Luces giran despacio al revés */
             animation: disco-light-spin 15s linear infinite reverse;
             mix-blend-mode: screen;
             z-index: 1;
@@ -376,7 +370,7 @@
         /* --- 4. 444: NÚMEROS Y SIGNOS ZODIACALES FLOTANTES --- */
         .anim-zodiac-444 {
             position: absolute;
-            color: rgba(var(--primary-color-rgb), 0.9); /* Absorben el color de la carátula */
+            color: rgba(var(--primary-color-rgb), 0.9); 
             font-weight: 800;
             text-shadow: 0 0 15px var(--primary-color);
             mix-blend-mode: screen;
@@ -387,6 +381,43 @@
             20% { opacity: 1; }
             80% { opacity: 1; }
             100% { transform: translateY(-200px) scale(1.2) rotate(20deg); opacity: 0; }
+        }
+
+        /* --- 5. RELIGION: CRUZ LUMINOSA Y RAYOS CELESTIALES --- */
+        .anim-religion {
+            position: absolute; top: -30%; left: -20%; width: 140%; height: 140%;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.4) 0%, transparent 75%);
+            transform-origin: top center;
+            animation: divine-ray 3s infinite alternate ease-in-out;
+            mix-blend-mode: overlay;
+        }
+        @keyframes divine-ray {
+            0% { transform: rotate(-8deg) scale(1); opacity: 0.4; filter: blur(10px); }
+            100% { transform: rotate(8deg) scale(1.1); opacity: 0.8; filter: blur(25px); }
+        }
+
+        .anim-cross {
+            position: absolute; top: 50%; left: 50%;
+            width: 6px; height: 90px;
+            background: #ffffff;
+            border-radius: 10px;
+            /* El aura de la cruz usa el color de la portada */
+            box-shadow: 0 0 20px 5px rgba(var(--primary-color-rgb), 0.9), 0 0 40px rgba(255,255,255,0.6);
+            animation: holy-cross 4s infinite alternate ease-in-out;
+            mix-blend-mode: screen;
+            z-index: 3;
+        }
+        .anim-cross::before {
+            content: '';
+            position: absolute; top: 25px; left: -25px;
+            width: 56px; height: 6px;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px 5px rgba(var(--primary-color-rgb), 0.9), 0 0 40px rgba(255,255,255,0.6);
+        }
+        @keyframes holy-cross {
+            0% { transform: translate(-50%, -45%) scale(0.95); opacity: 0.7; filter: brightness(1); }
+            100% { transform: translate(-50%, -55%) scale(1.05); opacity: 1; filter: brightness(1.3); }
         }
 
         /* --- RESTO DE LAS ANIMACIONES --- */
@@ -423,19 +454,6 @@
             80% { opacity: 1; }
             100% { transform: translate(250px, -80px) scale(1.5); opacity: 0; }
         }
-
-        .anim-religion {
-            position: absolute; top: -30%; left: -20%; width: 140%; height: 140%;
-            background: linear-gradient(180deg, rgba(255, 215, 0, 0.5) 0%, transparent 75%);
-            transform-origin: top center;
-            animation: divine-ray 3s infinite alternate ease-in-out;
-            mix-blend-mode: screen;
-        }
-        @keyframes divine-ray {
-            0% { transform: rotate(-8deg) scale(1); opacity: 0.6; filter: blur(10px); }
-            100% { transform: rotate(8deg) scale(1.1); opacity: 1; filter: blur(25px); }
-        }
-
     </style>
 </head>
 <body>
@@ -551,7 +569,7 @@
             const songTitle = song.title.toUpperCase();
             let html = '';
 
-            // 1. WOH OH OH: Corazón Roto Lento al Color de la portada
+            // 1. WOH OH OH: Corazón Roto
             if (songTitle.includes("WOH OH OH")) {
                 html = `
                     <div class="anim-broken-heart-container">
@@ -572,14 +590,14 @@
                     html += `<div class="anim-zodiac-444" style="left: ${left}%; font-size: ${size}px; animation-delay: ${delay}s; animation-duration: ${duration}s; bottom: -20%;">${content}</div>`;
                 }
             }
-            // 3. FOREVEL TU GANTEL: Bola de disco (Emoji 🪩) y luces girando lento
+            // 3. FOREVEL TU GANTEL: Bola de disco (Emoji)
             else if (songTitle.includes("FOREVEL TU GANTEL")) {
                 html = `
                     <div class="anim-disco-light"></div>
                     <div class="anim-disco-ball">🪩</div>
                 `;
             }
-            // 4. YO QUIERO: Armas (Miras láser escaneando + Fogonazos/Disparos)
+            // 4. YO QUIERO: Armas
             else if (songTitle.includes("YO QUIERO")) {
                 html = `
                     <div class="anim-sniper" style="animation-delay: 0s;"><div class="anim-sniper-dot"></div></div>
@@ -588,7 +606,7 @@
                     <div class="anim-muzzle-flash" style="top: 80%; left: 40%; animation-delay: 1.2s;"></div>
                 `;
             }
-            // 5. VVS SWITCH: Hielo/Diamantes
+            // 5. VVS SWITCH: Diamantes
             else if (songTitle.includes("VVS SWITCH")) {
                 for(let i=0; i<8; i++) {
                     let left = 10 + Math.random() * 80;
@@ -619,9 +637,12 @@
                     html += `<div class="anim-te-vas" style="top: ${top}%; left: -10%; width: ${size}px; height: ${size}px; animation-delay: ${delay}s; animation-duration: ${duration}s;"></div>`;
                 }
             }
-            // 8. RELIGION: Rayo divino
+            // 8. RELIGION: Rayo divino + CRUZ BRILLANTE
             else if (songTitle === "RELIGION") {
-                html = '<div class="anim-religion"></div>';
+                html = `
+                    <div class="anim-religion"></div>
+                    <div class="anim-cross"></div>
+                `;
             }
 
             animContainer.innerHTML = html;
@@ -668,7 +689,7 @@
         setupAudioListeners(audioMain);
         setupAudioListeners(audioNext);
 
-        /* ================= EXTRACCIÓN DE COLOR (Afecta Botones automáticamente) ================= */
+        /* ================= EXTRACCIÓN DE COLOR (Afecta Botones y Animaciones) ================= */
         coverEl.onload = function() {
             const canvas = document.createElement('canvas');
             const context = canvas.getContext('2d');
