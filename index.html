@@ -29,15 +29,12 @@
 
         /* --- VIDEOS DE FONDO --- */
         .video-background {
-            /* Ajustado al 100% exacto ya que sin blur no necesitamos márgenes extra */
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             object-fit: cover; z-index: 1; opacity: 0; 
-            /* Blur eliminado, brillo aumentado para que sea bien claro */
             filter: brightness(0.85) saturate(1.1); 
         }
         .video-background.active { opacity: 1; z-index: 2; }
         
-        /* Gradiente suavizado para mantener legibilidad sin tapar tanto el video */
         .overlay { 
             position: absolute; inset: 0; 
             background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.3) 60%, rgba(0,0,0,0.85) 100%); 
@@ -52,12 +49,30 @@
             justify-content: space-between;
         }
 
-        /* --- HEADER Y MINI ECUALIZADOR --- */
+        /* --- HEADER, LOGO Y MINI ECUALIZADOR --- */
         .header { 
             display: flex; justify-content: center; align-items: center; gap: 8px;
             font-size: 13px; font-weight: 700; letter-spacing: 2px; color: var(--accent-color); 
             text-transform: uppercase; margin-bottom: 20px; transition: color 0.5s; position: relative; 
-            text-shadow: 0 2px 4px rgba(0,0,0,0.8); /* Sombra para resaltar sobre fondo claro */
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8); 
+        }
+
+        /* LOGO DINÁMICO */
+        .site-logo {
+            width: 32px; /* Tamaño del logo */
+            height: 32px;
+            background-color: var(--accent-color);
+            /* Usamos mask-image para rellenarlo con el color de acento */
+            -webkit-mask-image: url('covers/logo.png'); 
+            -webkit-mask-size: contain;
+            -webkit-mask-repeat: no-repeat;
+            -webkit-mask-position: center;
+            mask-image: url('covers/logo.png');
+            mask-size: contain;
+            mask-repeat: no-repeat;
+            mask-position: center;
+            transition: background-color 0.5s ease;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); /* Sombra para que resalte */
         }
         
         .mini-eq {
@@ -69,6 +84,7 @@
         .eq-bar {
             width: 3px; background-color: var(--accent-color); border-radius: 2px;
             animation: eqBounce 0.5s infinite alternate ease-in-out;
+            transition: background-color 0.5s ease;
         }
         @keyframes eqBounce { 0% { height: 3px; } 100% { height: 12px; } }
 
@@ -80,7 +96,7 @@
             font-size: 10px; font-weight: 800; letter-spacing: 1px;
             box-shadow: 0 0 15px var(--accent-glow);
             opacity: 0; visibility: hidden;
-            transition: opacity 0.4s ease, background-color 0.4s ease;
+            transition: opacity 0.4s ease, background-color 0.5s ease;
             z-index: 20;
         }
         .mixing-badge.active { opacity: 1; visibility: visible; animation: pulseMixing 1.5s infinite; }
@@ -102,7 +118,6 @@
             transition: transform 0.8s ease;
         }
 
-        /* EFECTO RESPIRACIÓN (KEN BURNS) MIENTRAS SUENA */
         body:not(.player-paused) .artwork-container img {
             animation: breatheCover 8s infinite alternate ease-in-out;
         }
@@ -117,15 +132,12 @@
             position: absolute; color: var(--accent-color); font-size: 20px; font-weight: bold;
             pointer-events: none; z-index: 5; opacity: 0;
             animation: floatNote linear forwards; text-shadow: 0 0 10px var(--accent-glow);
+            transition: color 0.5s ease;
         }
         @keyframes floatNote { 0% { transform: translateY(0) scale(0.5) rotate(-15deg); opacity: 0; } 20% { opacity: 1; transform: translateY(-30px) scale(1.2) rotate(15deg); } 100% { transform: translateY(-120px) scale(0.8) rotate(-20deg); opacity: 0; } }
 
-        /* --- INFO DE CANCIÓN (ANIMACIÓN DE DESLIZAMIENTO) --- */
+        /* --- INFO DE CANCIÓN --- */
         .track-info { text-align: left; margin-bottom: 25px; overflow: hidden; }
-        
-        .track-info-animated {
-            /* Esta clase se reinicia desde JS para hacer el efecto de slide cada que cambia de canción */
-        }
         @keyframes slideUpFade { 
             from { opacity: 0; transform: translateY(20px); } 
             to { opacity: 1; transform: translateY(0); } 
@@ -141,7 +153,7 @@
             background: rgba(255, 255, 255, 0.2); outline: none; cursor: pointer;
             background-image: linear-gradient(var(--accent-color), var(--accent-color));
             background-size: var(--progress, 0%) 100%; background-repeat: no-repeat;
-            transition: height 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), background-image 0.4s ease;
+            transition: height 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), background-image 0.5s ease;
         }
         .progress-bar:active { height: 10px; }
         .progress-bar::-webkit-slider-thumb {
@@ -161,7 +173,7 @@
         .btn { 
             background: none; border: none; cursor: pointer; color: var(--accent-color); 
             display: flex; align-items: center; justify-content: center; 
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.4s ease, filter 0.4s;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.5s ease, filter 0.4s;
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
         }
         
@@ -175,13 +187,13 @@
             box-shadow: 0 10px 30px var(--accent-glow);
             position: relative;
             filter: none;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.5s ease, box-shadow 0.5s ease;
         }
         .btn-play:hover { transform: scale(1.1); filter: none; }
         .btn-play:active { transform: scale(0.85); }
         .btn-play svg { width: 36px; height: 36px; fill: #000; margin-left: 4px; transition: fill 0.4s ease; }
         .btn-play.is-playing svg { margin-left: 0; } 
 
-        /* LATIDO DEL BOTÓN DE PLAY CUANDO ESTÁ PAUSADO */
         .player-paused .btn-play { animation: heartbeat 2s infinite; }
         @keyframes heartbeat {
             0% { box-shadow: 0 0 0 0 var(--accent-glow); }
@@ -191,7 +203,7 @@
 
         .btn-secondary { opacity: 0.9; }
         .btn-secondary.active { opacity: 1; filter: drop-shadow(0 0 10px var(--accent-glow)); }
-        .btn-secondary.active::after { content: ''; position: absolute; bottom: -8px; width: 5px; height: 5px; background: var(--accent-color); border-radius: 50%; }
+        .btn-secondary.active::after { content: ''; position: absolute; bottom: -8px; width: 5px; height: 5px; background: var(--accent-color); border-radius: 50%; transition: background-color 0.5s ease; }
 
     </style>
 </head>
@@ -202,15 +214,17 @@
     <div class="overlay"></div>
 
     <div class="player-app">
+        <!-- HEADER INTEGRADO CON EL LOGO -->
         <div class="header">
             <div class="mixing-badge" id="mixing-badge">MIXING...</div>
+            <div class="site-logo"></div>
+            V I V E T
             <!-- Mini Ecualizador Animado -->
             <div class="mini-eq">
                 <div class="eq-bar" style="animation-delay: 0.1s;"></div>
                 <div class="eq-bar" style="animation-delay: 0.3s;"></div>
                 <div class="eq-bar" style="animation-delay: 0.0s;"></div>
             </div>
-            V I V E T
         </div>
         
         <div id="artwork-wrapper">
@@ -221,7 +235,6 @@
 
         <div>
             <div class="track-info">
-                <!-- Wrapper para la animación de slide-up -->
                 <div class="track-info-animated" id="track-animator">
                     <div class="track-title" id="title">Cargando...</div>
                     <div class="track-artist" id="artist">VIVET Music</div>
@@ -301,7 +314,6 @@
         }
         setInterval(spawnFloatingNote, 700);
 
-        // --- MOTOR DE SINCRONIZACIÓN DE AUDIO Y VIDEO ---
         function handleAudioTick(e) {
             let activeAudio = activeLayer === 1 ? a1 : a2;
             let activeVideo = activeLayer === 1 ? v1 : v2;
