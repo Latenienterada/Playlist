@@ -27,16 +27,14 @@
             overflow: hidden; position: relative;
         }
 
-        /* --- VIDEOS DE FONDO (AHORA MUCHO MÁS VISIBLES Y CLAROS) --- */
+        /* --- VIDEOS DE FONDO --- */
         .video-background {
             position: absolute; top: -5%; left: -5%; width: 110%; height: 110%;
             object-fit: cover; z-index: 1; opacity: 0; 
-            /* Se redujo el blur y se subió el brillo para ver el video completo */
             filter: blur(8px) brightness(0.65) saturate(1.2); 
         }
         .video-background.active { opacity: 1; z-index: 2; }
         
-        /* Degradado inteligente: Arriba es 100% transparente para ver el video, abajo oscurece para ver los botones */
         .overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.95) 100%); z-index: 3; }
 
         /* --- CONTENEDOR PRINCIPAL --- */
@@ -146,8 +144,9 @@
 </head>
 <body class="player-paused">
 
-    <video id="vid1" class="video-background active" playsinline></video>
-    <video id="vid2" class="video-background" playsinline></video>
+    <!-- EL ARREGLO ESTÁ AQUÍ: Agregada la etiqueta "muted" a los videos -->
+    <video id="vid1" class="video-background active" muted playsinline></video>
+    <video id="vid2" class="video-background" muted playsinline></video>
     <div class="overlay"></div>
 
     <div class="player-app">
@@ -493,7 +492,6 @@
             progressBar.style.setProperty('--progress', `${e.target.value}%`);
         });
         
-        // Sincronizar audio y video al arrastrar la barra de tiempo
         progressBar.addEventListener('change', (e) => {
             isDragging = false;
             let activeAudio = activeLayer === 1 ? a1 : a2;
@@ -501,7 +499,7 @@
             if (activeAudio.duration) {
                 let newTime = (e.target.value / 100) * activeAudio.duration;
                 activeAudio.currentTime = newTime;
-                activeVideo.currentTime = newTime; // Sincroniza al instante
+                activeVideo.currentTime = newTime; 
             }
         });
 
