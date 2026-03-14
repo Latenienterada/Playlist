@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VIVET - Premium Player</title>
+    <title>VIVET</title>
     <style>
-        /* ================= CSS: UI PREMIUM ================= */
+        /* ================= CSS: UI APPLE MUSIC ================= */
         :root {
             --primary-color: #ffffff; 
             --primary-color-rgb: 255, 255, 255;
@@ -50,7 +50,7 @@
         .vignette-overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.85) 100%);
+            background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.8) 100%);
             z-index: -1;
             pointer-events: none;
         }
@@ -59,12 +59,12 @@
             width: 100%; 
             max-width: 390px; 
             padding: 40px 35px;
-            background: rgba(20, 20, 20, 0.25);
+            background: rgba(20, 20, 20, 0.2);
             backdrop-filter: blur(60px) saturate(200%);
             -webkit-backdrop-filter: blur(60px) saturate(200%);
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 48px;
-            box-shadow: 0 50px 100px rgba(0, 0, 0, 0.8), inset 0 1px 1px rgba(255,255,255,0.15);
+            box-shadow: 0 50px 100px rgba(0, 0, 0, 0.7), inset 0 1px 1px rgba(255,255,255,0.2);
             text-align: center;
             z-index: 10;
         }
@@ -72,10 +72,11 @@
         .cover-wrapper {
             width: 100%;
             aspect-ratio: 1;
-            border-radius: 20px; 
+            border-radius: 24px; 
             overflow: hidden;
             margin-bottom: 40px;
-            box-shadow: 0 30px 80px -10px rgba(var(--primary-color-rgb), 0.85);
+            /* Resplandor del disco al 100% de fuerza */
+            box-shadow: 0 30px 80px -10px rgba(var(--primary-color-rgb), 0.95);
             transition: transform 0.6s cubic-bezier(0.32, 0.72, 0, 1), box-shadow 0.6s ease;
             position: relative;
         }
@@ -88,40 +89,40 @@
         }
 
         .paused .cover-wrapper {
-            transform: scale(0.82); 
-            box-shadow: 0 15px 30px -10px rgba(var(--primary-color-rgb), 0.3) !important;
-            border-radius: 28px;
+            transform: scale(0.78); 
+            box-shadow: 0 15px 30px -10px rgba(var(--primary-color-rgb), 0.4) !important;
+            border-radius: 30px;
         }
 
-        .paused .cover-wrapper img { transform: scale(1.05); }
+        .paused .cover-wrapper img { transform: scale(1.02); }
 
         .song-info {
             margin-bottom: 30px;
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 2px;
             text-align: left; 
         }
 
         .song-title {
             font-size: 24px;
-            font-weight: 800;
+            font-weight: 700;
             letter-spacing: -0.5px;
             color: #FFFFFF;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
 
         .song-artist {
-            font-size: 16px;
+            font-size: 18px;
             color: var(--text-secondary);
             font-weight: 500;
-            letter-spacing: 0.2px;
+            letter-spacing: 0.1px;
         }
 
-        /* ================= BARRA DE PROGRESO ================= */
+        /* ================= BARRA DE PROGRESO (100% GLOW) ================= */
         .progress-container {
             width: 100%;
             margin-bottom: 40px;
@@ -132,15 +133,16 @@
             -webkit-appearance: none;
             width: 100%;
             height: 6px; 
-            background-color: rgba(255, 255, 255, 0.1);
-            background-image: linear-gradient(90deg, rgba(var(--primary-color-rgb), 0.2) 0%, var(--primary-color) 100%);
+            background-color: rgba(var(--primary-color-rgb), 0.3);
+            background-image: linear-gradient(var(--primary-color), var(--primary-color));
             background-size: var(--progress, 0%) 100%;
             background-repeat: no-repeat;
-            border-radius: 6px;
+            border-radius: 4px;
             outline: none;
             cursor: pointer;
-            box-shadow: inset 0 1px 2px rgba(0,0,0,0.5);
-            transition: height 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+            /* Añadimos un drop-shadow a la propia barra para que parezca luz láser */
+            filter: drop-shadow(0 0 5px rgba(var(--primary-color-rgb), 0.5));
+            transition: height 0.2s cubic-bezier(0.25, 1, 0.5, 1), background-color 0.5s ease;
         }
 
         .progress-slider::-webkit-slider-thumb {
@@ -149,29 +151,31 @@
             width: 0px; 
             height: 0px;
             border-radius: 50%;
-            background: #ffffff;
-            box-shadow: 0 0 10px 2px rgba(var(--primary-color-rgb), 1);
+            background: var(--primary-color);
+            /* Glow al MÁXIMO (Opacidad 1) en la bolita */
+            box-shadow: 0 0 15px rgba(var(--primary-color-rgb), 1);
             transition: width 0.2s ease, height 0.2s ease;
         }
 
         .progress-container:hover .progress-slider,
-        .progress-slider:active { height: 10px; }
+        .progress-slider:active { height: 9px; }
 
         .progress-container:hover .progress-slider::-webkit-slider-thumb,
         .progress-slider:active::-webkit-slider-thumb {
-            width: 16px; height: 16px;
+            width: 18px; height: 18px;
         }
 
+        /* ================= TEXTOS DE TIEMPO Y "MIXING..." ================= */
         .time-info {
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-size: 11px;
             color: var(--text-secondary);
-            margin-top: 10px;
+            margin-top: 8px;
             font-weight: 600;
             font-variant-numeric: tabular-nums;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.2px;
             opacity: 0.8;
             position: relative; 
         }
@@ -183,6 +187,7 @@
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
+            /* Texto al 100% de luz neón */
             color: var(--primary-color);
             font-size: 11px;
             font-weight: 800;
@@ -191,21 +196,21 @@
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.4s ease;
-            text-shadow: 0 0 15px rgba(var(--primary-color-rgb), 1);
+            text-shadow: 0 0 20px rgba(var(--primary-color-rgb), 1);
         }
 
         .is-mixing .time-text { opacity: 0; }
         .is-mixing .mixing-label {
             opacity: 1;
-            animation: mix-pulse 0.8s infinite alternate ease-in-out;
+            animation: glow-pulse 0.8s infinite alternate ease-in-out;
         }
 
-        @keyframes mix-pulse {
-            0% { opacity: 0.5; filter: brightness(1); transform: translate(-50%, -50%) scale(0.95); }
-            100% { opacity: 1; filter: brightness(1.5); transform: translate(-50%, -50%) scale(1.05); }
+        @keyframes glow-pulse {
+            0% { opacity: 0.6; filter: brightness(1); transform: translate(-50%, -50%) scale(0.95); }
+            100% { opacity: 1; filter: brightness(1.8); transform: translate(-50%, -50%) scale(1.05); }
         }
 
-        /* ================= CONTROLES QUE ABSORBEN EL COLOR ================= */
+        /* ================= CONTROLES COLOREADOS (100% FULL VIBRANCE) ================= */
         .controls {
             display: flex;
             justify-content: space-between;
@@ -225,258 +230,44 @@
             border-radius: 12px;
         }
 
+        /* Botones Anterior y Siguiente */
         .btn-nav {
             width: 44px; height: 44px;
             color: var(--primary-color);
-            filter: drop-shadow(0 0 10px rgba(var(--primary-color-rgb), 0.6));
+            /* Destello constante al 100% */
+            filter: drop-shadow(0 0 15px rgba(var(--primary-color-rgb), 1));
         }
         .btn-nav svg { width: 34px; height: 34px; fill: currentColor; }
-        .btn-nav:hover { opacity: 1; transform: scale(1.1); filter: drop-shadow(0 0 20px rgba(var(--primary-color-rgb), 1)); }
+        .btn-nav:hover { opacity: 1; transform: scale(1.1); filter: drop-shadow(0 0 25px rgba(var(--primary-color-rgb), 1)); }
         .btn-nav:active { transform: scale(0.9); opacity: 0.7; }
 
+        /* Aleatorio y Repetir */
         .btn-action {
             width: 36px; height: 36px;
-            color: rgba(255, 255, 255, 0.4); 
+            color: rgba(var(--primary-color-rgb), 0.6); 
         }
         .btn-action svg { width: 22px; height: 22px; fill: currentColor; }
         
         .active-action {
             color: var(--primary-color) !important;
+            background-color: rgba(var(--primary-color-rgb), 0.25);
             filter: drop-shadow(0 0 12px rgba(var(--primary-color-rgb), 0.8));
         }
 
+        /* Botón Play gigante y súper brillante */
         .btn-play {
             width: 64px; height: 64px;
             color: var(--primary-color);
-            filter: drop-shadow(0 0 15px rgba(var(--primary-color-rgb), 0.8));
+            /* 100% fuerza del brillo central */
+            filter: drop-shadow(0 0 20px rgba(var(--primary-color-rgb), 1));
         }
         .btn-play svg { width: 50px; height: 50px; fill: currentColor; }
-        .btn-play:hover { transform: scale(1.1); filter: drop-shadow(0 0 25px rgba(var(--primary-color-rgb), 1)); }
+        .btn-play:hover {
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 30px rgba(var(--primary-color-rgb), 1));
+        }
         .btn-play:active { transform: scale(0.9); opacity: 0.7; }
 
-
-        /* ================= ANIMACIONES CINEMATOGRÁFICAS ================= */
-        #song-animation-container {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            border-radius: inherit;
-            pointer-events: none;
-            overflow: hidden;
-            z-index: 5;
-            transition: opacity 0.5s ease;
-            opacity: 1; 
-        }
-
-        .paused #song-animation-container { opacity: 0; }
-        .paused #song-animation-container * { animation-play-state: paused !important; }
-
-        /* --- 1. WOH OH OH: CORAZÓN ROTO EN DOS PARTES PERFECTAS --- */
-        .anim-broken-heart-container {
-            position: absolute; top: 50%; left: 50%; width: 80px; height: 80px;
-            transform: translate(-50%, -50%);
-            filter: drop-shadow(0 0 15px rgba(var(--primary-color-rgb), 0.8));
-        }
-        .heart-half {
-            position: absolute; width: 100%; height: 100%; top: 0; left: 0;
-        }
-        .heart-half.left {
-            clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);
-            transform-origin: 50% 100%;
-            animation: break-left 4s infinite cubic-bezier(0.5, 0, 0.2, 1);
-        }
-        .heart-half.right {
-            clip-path: polygon(50% 0, 100% 0, 100% 100%, 50% 100%);
-            transform-origin: 50% 100%;
-            animation: break-right 4s infinite cubic-bezier(0.5, 0, 0.2, 1);
-        }
-        .heart-shape {
-            position: absolute; top: 25px; left: 20px; width: 40px; height: 40px;
-            background: var(--primary-color);
-            transform: rotate(45deg);
-        }
-        .heart-shape::before, .heart-shape::after {
-            content: ''; position: absolute; width: 40px; height: 40px;
-            background: var(--primary-color); border-radius: 50%;
-        }
-        .heart-shape::before { top: -20px; left: 0; }
-        .heart-shape::after { top: 0; left: -20px; }
-
-        @keyframes break-left {
-            0%, 15% { transform: rotate(0deg) translate(0, 0); opacity: 1; }
-            35%, 80% { transform: rotate(-15deg) translate(-10px, 15px); opacity: 0; }
-            100% { transform: rotate(0deg) translate(0, 0); opacity: 1; }
-        }
-        @keyframes break-right {
-            0%, 15% { transform: rotate(0deg) translate(0, 0); opacity: 1; }
-            35%, 80% { transform: rotate(15deg) translate(10px, 15px); opacity: 0; }
-            100% { transform: rotate(0deg) translate(0, 0); opacity: 1; }
-        }
-
-        /* --- 2. FOREVEL TU GANTEL: DISCO EN LA ESQUINA --- */
-        .anim-disco-ball {
-            position: absolute; top: 15%; left: 85%;
-            font-size: 55px; 
-            transform: translate(-50%, -50%);
-            animation: disco-emoji-spin 8s linear infinite;
-            z-index: 2;
-        }
-        .anim-disco-light {
-            position: absolute; top: 15%; left: 85%; width: 200%; height: 200%;
-            transform: translate(-50%, -50%);
-            background: repeating-conic-gradient(from 0deg, rgba(var(--primary-color-rgb), 0.25) 0deg 15deg, transparent 15deg 30deg);
-            animation: disco-light-spin 12s linear infinite reverse;
-            mix-blend-mode: screen;
-            z-index: 1;
-        }
-        @keyframes disco-emoji-spin { 
-            0% { transform: translate(-50%, -50%) rotate(0deg); }
-            100% { transform: translate(-50%, -50%) rotate(360deg); } 
-        }
-        @keyframes disco-light-spin { 
-            0% { transform: translate(-50%, -50%) rotate(0deg); }
-            100% { transform: translate(-50%, -50%) rotate(-360deg); } 
-        }
-
-        /* --- 3. VVS SWITCH: DESTELLOS DE LUZ (DIAMANTES REALES) --- */
-        .anim-vvs-sweep {
-            position: absolute; top: 0; left: -100%; width: 60%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
-            transform: skewX(-25deg);
-            mix-blend-mode: overlay;
-            animation: ice-sweep 3s infinite cubic-bezier(0.2, 0.8, 0.4, 1);
-        }
-        @keyframes ice-sweep {
-            0% { left: -100%; }
-            40%, 100% { left: 200%; }
-        }
-        .anim-vvs-flare-wrapper {
-            position: absolute;
-            transform: translate(-50%, -50%) scale(0);
-            animation: ice-flare 2s infinite ease-in-out;
-            mix-blend-mode: screen;
-        }
-        .flare-v { width: 2px; background: #fff; box-shadow: 0 0 10px #00ffff; margin: 0 auto; border-radius: 2px; }
-        .flare-h { height: 2px; background: #fff; box-shadow: 0 0 10px #00ffff; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border-radius: 2px;}
-        @keyframes ice-flare {
-            0% { transform: translate(-50%, -50%) scale(0) rotate(0deg); opacity: 0; }
-            50% { transform: translate(-50%, -50%) scale(1) rotate(45deg); opacity: 1; filter: brightness(1.5); }
-            100% { transform: translate(-50%, -50%) scale(0) rotate(90deg); opacity: 0; }
-        }
-
-        /* --- 4. YO QUIERO: ARMAS (Miras láser y disparos) --- */
-        .anim-sniper {
-            position: absolute; width: 70px; height: 70px;
-            border: 1.5px solid rgba(255, 0, 0, 0.8); border-radius: 50%;
-            box-shadow: 0 0 15px rgba(255,0,0,0.6), inset 0 0 15px rgba(255,0,0,0.3);
-            mix-blend-mode: screen;
-            animation: snipe-scan 4s infinite cubic-bezier(0.4, 0, 0.2, 1) alternate;
-        }
-        .anim-sniper::before { 
-            content: ''; position: absolute; top: 50%; left: -15px; right: -15px; height: 1.5px; 
-            background: rgba(255,0,0,0.9); box-shadow: 0 0 5px red;
-        }
-        .anim-sniper::after { 
-            content: ''; position: absolute; left: 50%; top: -15px; bottom: -15px; width: 1.5px; 
-            background: rgba(255,0,0,0.9); box-shadow: 0 0 5px red;
-        }
-        .anim-sniper-dot {
-            position: absolute; top: 50%; left: 50%; width: 5px; height: 5px;
-            background: #ff0000; border-radius: 50%; transform: translate(-50%, -50%);
-            box-shadow: 0 0 10px 3px red;
-        }
-        @keyframes snipe-scan {
-            0% { top: 15%; left: 15%; transform: scale(1); }
-            30% { top: 60%; left: 70%; transform: scale(0.8); }
-            60% { top: 75%; left: 20%; transform: scale(1.1); }
-            100% { top: 25%; left: 65%; transform: scale(0.9); }
-        }
-        .anim-muzzle-flash {
-            position: absolute; width: 150px; height: 150px;
-            background: radial-gradient(circle, #ffffff 5%, #ffcc00 15%, #ff3300 35%, transparent 70%);
-            mix-blend-mode: color-dodge; transform: translate(-50%, -50%);
-            opacity: 0; animation: gunfire 2s infinite;
-        }
-        @keyframes gunfire {
-            0%, 18%, 24%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(0.3); }
-            20%, 22% { opacity: 1; transform: translate(-50%, -50%) scale(1.5); }
-        }
-
-        /* --- 5. 444: NÚMEROS Y SIGNOS ZODIACALES FLOTANTES --- */
-        .anim-zodiac-444 {
-            position: absolute;
-            color: rgba(var(--primary-color-rgb), 0.9); 
-            font-weight: 800;
-            text-shadow: 0 0 15px var(--primary-color);
-            mix-blend-mode: screen;
-            animation: float-mystic linear infinite;
-        }
-        @keyframes float-mystic {
-            0% { transform: translateY(50px) scale(0.8) rotate(-10deg); opacity: 0; }
-            20% { opacity: 1; }
-            80% { opacity: 1; }
-            100% { transform: translateY(-200px) scale(1.2) rotate(20deg); opacity: 0; }
-        }
-
-        /* --- 6. RELIGION: CRUZ LUMINOSA Y RAYOS CELESTIALES --- */
-        .anim-religion {
-            position: absolute; top: -30%; left: -20%; width: 140%; height: 140%;
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.4) 0%, transparent 75%);
-            transform-origin: top center;
-            animation: divine-ray 3s infinite alternate ease-in-out;
-            mix-blend-mode: overlay;
-        }
-        @keyframes divine-ray {
-            0% { transform: rotate(-8deg) scale(1); opacity: 0.4; filter: blur(10px); }
-            100% { transform: rotate(8deg) scale(1.1); opacity: 0.8; filter: blur(25px); }
-        }
-
-        .anim-cross {
-            position: absolute; top: 50%; left: 50%;
-            width: 6px; height: 90px;
-            background: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 0 20px 5px rgba(var(--primary-color-rgb), 0.9), 0 0 40px rgba(255,255,255,0.6);
-            animation: holy-cross 4s infinite alternate ease-in-out;
-            mix-blend-mode: screen;
-            z-index: 3;
-        }
-        .anim-cross::before {
-            content: '';
-            position: absolute; top: 25px; left: -25px;
-            width: 56px; height: 6px;
-            background: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 0 20px 5px rgba(var(--primary-color-rgb), 0.9), 0 0 40px rgba(255,255,255,0.6);
-        }
-        @keyframes holy-cross {
-            0% { transform: translate(-50%, -45%) scale(0.95); opacity: 0.7; filter: brightness(1); }
-            100% { transform: translate(-50%, -55%) scale(1.05); opacity: 1; filter: brightness(1.3); }
-        }
-
-        /* --- 7. FALSAS PROMESAS: LLUVIA --- */
-        .anim-promesas {
-            position: absolute; background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.7), transparent);
-            filter: blur(0.5px); mix-blend-mode: overlay;
-            animation: sad-rain 0.6s linear infinite;
-        }
-        @keyframes sad-rain {
-            0% { transform: translateY(-100%); opacity: 0; }
-            30% { opacity: 1; }
-            100% { transform: translateY(400px); opacity: 0; }
-        }
-
-        /* --- 8. TE VAS: CENIZAS AL VIENTO --- */
-        .anim-te-vas {
-            position: absolute; background: rgba(255, 200, 100, 0.8);
-            box-shadow: 0 0 10px rgba(255, 150, 50, 0.8); border-radius: 50%;
-            animation: float-away linear infinite;
-        }
-        @keyframes float-away {
-            0% { transform: translate(-20px, 0) scale(0.5); opacity: 0; }
-            20% { opacity: 1; }
-            80% { opacity: 1; }
-            100% { transform: translate(250px, -80px) scale(1.5); opacity: 0; }
-        }
     </style>
 </head>
 <body>
@@ -488,10 +279,8 @@
     </div>
 
     <div class="player-container paused" id="player">
-        
         <div class="cover-wrapper" id="cover-glow">
             <img src="" id="cover">
-            <div id="song-animation-container"></div>
         </div>
         
         <div class="song-info">
@@ -531,6 +320,7 @@
     </div>
 
     <script>
+        /* ================= CONFIGURACIÓN DE TU PLAYLIST ================= */
         const playlist =[
             { title: "WOH OH OH", artist: "OMAR COURTZ, ROA", cover: "covers/WOH OH OH.jpg", file: "songs/WOH OH OH.mp3", video: "videos/WOH OH OH.mp4" },
             { title: "444", artist: "YAN BLOCK", cover: "covers/444.jpg", file: "songs/444.mp3", video: "videos/444.mp4" },
@@ -538,8 +328,7 @@
             { title: "YO QUIERO", artist: "HADES66", cover: "covers/YO QUIERO.jpg", file: "songs/YO QUIERO.mp3", video: "videos/YO QUIERO.mp4" },
             { title: "VVS SWITCH REMIX", artist: "PRESSURE, YVNGCHIMI, CDOBLETA. HADES66, ANUEL AA, LUAR LA L", cover: "covers/VVS SWITCH REMIX.jpg", file: "songs/VVS SWITCH REMIX.mp3", video: "videos/VVS SWITCH REMIX.mp4" },
             { title: "FALSAS PROMESAS REMIX", artist: "MIDNVGHT, MORA, ELADIO CARRION, ROA, CLARENT", cover: "covers/FALSAS PROMESAS REMIX.jpg", file: "songs/FALSAS PROMESAS REMIX.mp3", video: "videos/FALSAS PROMESAS REMIX.mp4" },
-            { title: "TE VAS", artist: "OZUNA", cover: "covers/TE VAS.jpg", file: "songs/TE VAS.mp3", video: "videos/TE VAS.mp4" },
-            { title: "RELIGION", artist: "ARTISTA", cover: "covers/RELIGION.jpg", file: "songs/RELIGION.mp3", video: "videos/RELIGION.mp4" }
+            { title: "TE VAS", artist: "OZUNA", cover: "covers/TE VAS.jpg", file: "songs/TE VAS.mp3", video: "videos/TE VAS.mp4" }
         ];
 
         let currentIndex = 0;
@@ -566,7 +355,6 @@
         const currTimeEl = document.getElementById('current-time');
         const durationEl = document.getElementById('duration');
         const playerContainer = document.getElementById('player');
-        const animContainer = document.getElementById('song-animation-container');
 
         function formatTime(sec) {
             if (isNaN(sec)) return "0:00";
@@ -582,96 +370,11 @@
             durationEl.textContent = "0:00";
         }
 
-        /* LÓGICA DE INYECCIÓN DE ANIMACIONES */
         function loadSongInfo(index) {
             const song = playlist[index];
             coverEl.src = song.cover;
             titleEl.textContent = song.title;
             artistEl.textContent = song.artist;
-
-            const songTitle = song.title.toUpperCase();
-            let html = '';
-
-            // 1. WOH OH OH: Corazón roto en 2 partes
-            if (songTitle.includes("WOH OH OH")) {
-                html = `
-                    <div class="anim-broken-heart-container">
-                        <div class="heart-half left"><div class="heart-shape"></div></div>
-                        <div class="heart-half right"><div class="heart-shape"></div></div>
-                    </div>
-                `;
-            } 
-            // 2. 444: Números "444" y Signos Zodiacales flotando
-            else if (songTitle.includes("444")) {
-                const signs =["444", "♈", "♉", "♊", "♋", "♌", "♍", "♎", "♏", "♐", "♑", "♒", "♓"];
-                for(let i=0; i<12; i++) {
-                    let left = 5 + Math.random() * 85;
-                    let delay = Math.random() * 4;
-                    let duration = 6 + Math.random() * 4;
-                    let size = 25 + Math.random() * 20;
-                    let content = signs[Math.floor(Math.random() * signs.length)];
-                    html += `<div class="anim-zodiac-444" style="left: ${left}%; font-size: ${size}px; animation-delay: ${delay}s; animation-duration: ${duration}s; bottom: -20%;">${content}</div>`;
-                }
-            }
-            // 3. FOREVEL TU GANTEL: Bola de disco en la esquina
-            else if (songTitle.includes("FOREVEL TU GANTEL")) {
-                html = `
-                    <div class="anim-disco-light"></div>
-                    <div class="anim-disco-ball">🪩</div>
-                `;
-            }
-            // 4. YO QUIERO: Armas
-            else if (songTitle.includes("YO QUIERO")) {
-                html = `
-                    <div class="anim-sniper" style="animation-delay: 0s;"><div class="anim-sniper-dot"></div></div>
-                    <div class="anim-sniper" style="animation-delay: -2s; animation-duration: 5s;"><div class="anim-sniper-dot"></div></div>
-                    <div class="anim-muzzle-flash" style="top: 30%; left: 70%; animation-delay: 0.5s;"></div>
-                    <div class="anim-muzzle-flash" style="top: 80%; left: 40%; animation-delay: 1.2s;"></div>
-                `;
-            }
-            // 5. VVS SWITCH: Diamantes y hielo cruzado
-            else if (songTitle.includes("VVS SWITCH")) {
-                html = `<div class="anim-vvs-sweep"></div>`;
-                for(let i=0; i<6; i++) {
-                    let left = 5 + Math.random() * 90;
-                    let top = 5 + Math.random() * 90;
-                    let delay = Math.random() * 2;
-                    let size = 20 + Math.random() * 30;
-                    html += `<div class="anim-vvs-flare-wrapper" style="left: ${left}%; top: ${top}%; animation-delay: ${delay}s;">
-                                <div class="flare-v" style="height: ${size}px;"></div>
-                                <div class="flare-h" style="width: ${size}px;"></div>
-                             </div>`;
-                }
-            }
-            // 6. FALSAS PROMESAS: Lluvia triste
-            else if (songTitle.includes("FALSAS PROMESAS")) {
-                for(let i=0; i<20; i++) {
-                    let left = Math.random() * 100;
-                    let delay = Math.random() * 1;
-                    let duration = 0.4 + Math.random() * 0.3;
-                    let height = 30 + Math.random() * 50;
-                    html += `<div class="anim-promesas" style="left: ${left}%; width: 2px; height: ${height}px; animation-delay: ${delay}s; animation-duration: ${duration}s;"></div>`;
-                }
-            }
-            // 7. TE VAS: Cenizas
-            else if (songTitle.includes("TE VAS")) {
-                for(let i=0; i<15; i++) {
-                    let top = 20 + Math.random() * 60;
-                    let size = 2 + Math.random() * 5; 
-                    let delay = Math.random() * 3;
-                    let duration = 3 + Math.random() * 3;
-                    html += `<div class="anim-te-vas" style="top: ${top}%; left: -10%; width: ${size}px; height: ${size}px; animation-delay: ${delay}s; animation-duration: ${duration}s;"></div>`;
-                }
-            }
-            // 8. RELIGION: Rayo divino + Cruz
-            else if (songTitle === "RELIGION") {
-                html = `
-                    <div class="anim-religion"></div>
-                    <div class="anim-cross"></div>
-                `;
-            }
-
-            animContainer.innerHTML = html;
         }
 
         function initPlayer() {
@@ -715,7 +418,7 @@
         setupAudioListeners(audioMain);
         setupAudioListeners(audioNext);
 
-        /* ================= EXTRACCIÓN DE COLOR ================= */
+        /* ================= EXTRACCIÓN DE COLOR NIVEL DIOS (100% VIBRANCE) ================= */
         coverEl.onload = function() {
             const canvas = document.createElement('canvas');
             const context = canvas.getContext('2d');
@@ -750,8 +453,18 @@
                     if (h < 0) h += 360;
                 }
 
-                if (s > 0.08) { s = 1.0; l = 0.55; } else { s = 0; l = 1; }
+                /* MAGIA AL 100%: 
+                   Saturación a 1.0 (100% Color) 
+                   Luminosidad a 0.55 (El brillo perfecto para que el color sea explosivo sin volverse blanco) */
+                if (s > 0.08) { 
+                    s = 1.0; 
+                    l = 0.55; 
+                } else {
+                    s = 0;
+                    l = 1; 
+                }
 
+                // Transformando la luz pura de vuelta a RGB
                 let c = (1 - Math.abs(2 * l - 1)) * s;
                 let x = c * (1 - Math.abs((h / 60) % 2 - 1));
                 let m = l - c / 2;
@@ -772,9 +485,10 @@
                 rootVars.setProperty('--primary-color', `rgb(${r}, ${g}, ${b})`);
                 
                 if (!playerContainer.classList.contains('paused')) {
-                    coverGlow.style.boxShadow = `0 30px 80px -10px rgba(${r}, ${g}, ${b}, 0.85)`;
+                    coverGlow.style.boxShadow = `0 30px 80px -10px rgba(${r}, ${g}, ${b}, 0.95)`;
                 }
             } catch (e) {
+                console.error("Error leyendo el color:", e);
                 rootVars.setProperty('--primary-color-rgb', `255, 255, 255`);
                 rootVars.setProperty('--primary-color', `#ffffff`);
             }
@@ -865,15 +579,13 @@
                 audioMain.pause(); videoMain.pause();
                 if (isCrossfading) { audioNext.pause(); videoNext.pause(); }
                 playIcon.style.display = 'block'; pauseIcon.style.display = 'none';
-                
                 playerContainer.classList.add('paused');
             } else {
                 audioMain.play(); videoMain.play().catch(e=>console.log(e));
                 if (isCrossfading) { audioNext.play(); videoNext.play(); }
                 playIcon.style.display = 'none'; pauseIcon.style.display = 'block';
-                
                 playerContainer.classList.remove('paused');
-                coverGlow.style.boxShadow = `0 30px 80px -10px rgba(${rootVars.getPropertyValue('--primary-color-rgb') || '255,255,255'}, 0.85)`;
+                coverGlow.style.boxShadow = `0 30px 80px -10px rgba(${rootVars.getPropertyValue('--primary-color-rgb') || '255,255,255'}, 0.95)`;
             }
             isPlaying = !isPlaying;
         }
@@ -904,3 +616,4 @@
     </script>
 </body>
 </html>
+
