@@ -29,12 +29,20 @@
 
         /* --- VIDEOS DE FONDO --- */
         .video-background {
-            position: absolute; top: -5%; left: -5%; width: 110%; height: 110%;
+            /* Ajustado al 100% exacto ya que sin blur no necesitamos márgenes extra */
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             object-fit: cover; z-index: 1; opacity: 0; 
-            filter: blur(8px) brightness(0.65) saturate(1.2); 
+            /* Blur eliminado, brillo aumentado para que sea bien claro */
+            filter: brightness(0.85) saturate(1.1); 
         }
         .video-background.active { opacity: 1; z-index: 2; }
-        .overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.95) 100%); z-index: 3; }
+        
+        /* Gradiente suavizado para mantener legibilidad sin tapar tanto el video */
+        .overlay { 
+            position: absolute; inset: 0; 
+            background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.3) 60%, rgba(0,0,0,0.85) 100%); 
+            z-index: 3; 
+        }
 
         /* --- CONTENEDOR PRINCIPAL --- */
         .player-app {
@@ -49,6 +57,7 @@
             display: flex; justify-content: center; align-items: center; gap: 8px;
             font-size: 13px; font-weight: 700; letter-spacing: 2px; color: var(--accent-color); 
             text-transform: uppercase; margin-bottom: 20px; transition: color 0.5s; position: relative; 
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8); /* Sombra para resaltar sobre fondo claro */
         }
         
         .mini-eq {
@@ -122,8 +131,8 @@
             to { opacity: 1; transform: translateY(0); } 
         }
 
-        .track-title { font-size: 28px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 6px; letter-spacing: -0.5px; }
-        .track-artist { font-size: 18px; font-weight: 500; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .track-title { font-size: 28px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 6px; letter-spacing: -0.5px; text-shadow: 0 2px 8px rgba(0,0,0,0.6); }
+        .track-artist { font-size: 18px; font-weight: 500; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-shadow: 0 2px 4px rgba(0,0,0,0.6); }
 
         /* --- BARRA DE PROGRESO --- */
         .progress-area { margin-bottom: 30px; }
@@ -144,7 +153,7 @@
             width: 18px; height: 18px; box-shadow: 0 0 15px var(--accent-color); 
         }
         
-        .time-info { display: flex; justify-content: space-between; margin-top: 10px; font-size: 12px; font-weight: 700; color: var(--text-sub); }
+        .time-info { display: flex; justify-content: space-between; margin-top: 10px; font-size: 12px; font-weight: 700; color: var(--text-sub); text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
 
         /* --- CONTROLES --- */
         .controls { display: flex; align-items: center; justify-content: space-between; }
@@ -153,6 +162,7 @@
             background: none; border: none; cursor: pointer; color: var(--accent-color); 
             display: flex; align-items: center; justify-content: center; 
             transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.4s ease, filter 0.4s;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
         }
         
         .btn:hover { filter: brightness(1.3) drop-shadow(0 0 12px var(--accent-glow)); }
@@ -164,8 +174,9 @@
             background-color: var(--accent-color); color: #000;
             box-shadow: 0 10px 30px var(--accent-glow);
             position: relative;
+            filter: none;
         }
-        .btn-play:hover { transform: scale(1.1); }
+        .btn-play:hover { transform: scale(1.1); filter: none; }
         .btn-play:active { transform: scale(0.85); }
         .btn-play svg { width: 36px; height: 36px; fill: #000; margin-left: 4px; transition: fill 0.4s ease; }
         .btn-play.is-playing svg { margin-left: 0; } 
@@ -413,9 +424,8 @@
         }
 
         function updateUI(track, layerNum, isManual = false) {
-            // Reiniciar animación de texto (Slide Up & Fade In)
             trackAnimator.style.animation = 'none';
-            trackAnimator.offsetHeight; /* Trigger Reflow para reiniciar la animación */
+            trackAnimator.offsetHeight; 
             trackAnimator.style.animation = 'slideUpFade 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards';
 
             document.getElementById('title').textContent = track.title;
