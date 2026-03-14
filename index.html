@@ -34,7 +34,6 @@
             filter: blur(8px) brightness(0.65) saturate(1.2); 
         }
         .video-background.active { opacity: 1; z-index: 2; }
-        
         .overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.95) 100%); z-index: 3; }
 
         /* --- CONTENEDOR PRINCIPAL --- */
@@ -45,7 +44,24 @@
             justify-content: space-between;
         }
 
-        .header { text-align: center; font-size: 13px; font-weight: 700; letter-spacing: 2px; color: var(--accent-color); text-transform: uppercase; margin-bottom: 20px; transition: color 0.5s; position: relative; }
+        /* --- HEADER Y MINI ECUALIZADOR --- */
+        .header { 
+            display: flex; justify-content: center; align-items: center; gap: 8px;
+            font-size: 13px; font-weight: 700; letter-spacing: 2px; color: var(--accent-color); 
+            text-transform: uppercase; margin-bottom: 20px; transition: color 0.5s; position: relative; 
+        }
+        
+        .mini-eq {
+            display: flex; align-items: flex-end; gap: 3px; height: 12px;
+            opacity: 0; transition: opacity 0.3s ease;
+        }
+        body:not(.player-paused) .mini-eq { opacity: 1; }
+        
+        .eq-bar {
+            width: 3px; background-color: var(--accent-color); border-radius: 2px;
+            animation: eqBounce 0.5s infinite alternate ease-in-out;
+        }
+        @keyframes eqBounce { 0% { height: 3px; } 100% { height: 12px; } }
 
         /* --- INDICADOR "MIXING..." --- */
         .mixing-badge {
@@ -58,13 +74,10 @@
             transition: opacity 0.4s ease, background-color 0.4s ease;
             z-index: 20;
         }
-        .mixing-badge.active {
-            opacity: 1; visibility: visible;
-            animation: pulseMixing 1.5s infinite;
-        }
+        .mixing-badge.active { opacity: 1; visibility: visible; animation: pulseMixing 1.5s infinite; }
         @keyframes pulseMixing { 0% { transform: translateX(-50%) scale(0.95); opacity: 0.8; } 50% { transform: translateX(-50%) scale(1.05); opacity: 1; } 100% { transform: translateX(-50%) scale(0.95); opacity: 0.8; } }
 
-        /* --- PORTADA Y NOTAS FLOTANTES --- */
+        /* --- PORTADA ANIMADA --- */
         #artwork-wrapper { position: relative; margin-bottom: 30px; }
         
         .artwork-container {
@@ -74,8 +87,18 @@
             transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.6s ease;
             transform-origin: center bottom;
         }
-        .artwork-container img { width: 100%; height: 100%; object-fit: cover; }
         
+        .artwork-container img { 
+            width: 100%; height: 100%; object-fit: cover; 
+            transition: transform 0.8s ease;
+        }
+
+        /* EFECTO RESPIRACIÓN (KEN BURNS) MIENTRAS SUENA */
+        body:not(.player-paused) .artwork-container img {
+            animation: breatheCover 8s infinite alternate ease-in-out;
+        }
+        @keyframes breatheCover { 0% { transform: scale(1); } 100% { transform: scale(1.06); } }
+
         .player-paused .artwork-container {
             transform: scale(0.82);
             box-shadow: 0 10px 30px rgba(0,0,0,0.4), 0 0 15px rgba(255,255,255,0.02);
@@ -88,8 +111,17 @@
         }
         @keyframes floatNote { 0% { transform: translateY(0) scale(0.5) rotate(-15deg); opacity: 0; } 20% { opacity: 1; transform: translateY(-30px) scale(1.2) rotate(15deg); } 100% { transform: translateY(-120px) scale(0.8) rotate(-20deg); opacity: 0; } }
 
-        /* --- INFO DE CANCIÓN --- */
-        .track-info { text-align: left; margin-bottom: 25px; }
+        /* --- INFO DE CANCIÓN (ANIMACIÓN DE DESLIZAMIENTO) --- */
+        .track-info { text-align: left; margin-bottom: 25px; overflow: hidden; }
+        
+        .track-info-animated {
+            /* Esta clase se reinicia desde JS para hacer el efecto de slide cada que cambia de canción */
+        }
+        @keyframes slideUpFade { 
+            from { opacity: 0; transform: translateY(20px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+
         .track-title { font-size: 28px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 6px; letter-spacing: -0.5px; }
         .track-artist { font-size: 18px; font-weight: 500; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
@@ -105,10 +137,12 @@
         .progress-bar:active { height: 10px; }
         .progress-bar::-webkit-slider-thumb {
             -webkit-appearance: none; width: 0; height: 0;
-            background: #fff; border-radius: 50%; box-shadow: 0 0 10px rgba(0,0,0,0.5);
-            transition: width 0.2s, height 0.2s;
+            background: #fff; border-radius: 50%; box-shadow: 0 0 10px var(--accent-glow);
+            transition: width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), height 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        .progress-bar:active::-webkit-slider-thumb, .progress-bar:hover::-webkit-slider-thumb { width: 16px; height: 16px; }
+        .progress-bar:active::-webkit-slider-thumb, .progress-bar:hover::-webkit-slider-thumb { 
+            width: 18px; height: 18px; box-shadow: 0 0 15px var(--accent-color); 
+        }
         
         .time-info { display: flex; justify-content: space-between; margin-top: 10px; font-size: 12px; font-weight: 700; color: var(--text-sub); }
 
@@ -116,8 +150,7 @@
         .controls { display: flex; align-items: center; justify-content: space-between; }
         
         .btn { 
-            background: none; border: none; cursor: pointer; 
-            color: var(--accent-color); 
+            background: none; border: none; cursor: pointer; color: var(--accent-color); 
             display: flex; align-items: center; justify-content: center; 
             transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.4s ease, filter 0.4s;
         }
@@ -130,11 +163,20 @@
             width: 76px; height: 76px; border-radius: 50%;
             background-color: var(--accent-color); color: #000;
             box-shadow: 0 10px 30px var(--accent-glow);
+            position: relative;
         }
         .btn-play:hover { transform: scale(1.1); }
         .btn-play:active { transform: scale(0.85); }
         .btn-play svg { width: 36px; height: 36px; fill: #000; margin-left: 4px; transition: fill 0.4s ease; }
         .btn-play.is-playing svg { margin-left: 0; } 
+
+        /* LATIDO DEL BOTÓN DE PLAY CUANDO ESTÁ PAUSADO */
+        .player-paused .btn-play { animation: heartbeat 2s infinite; }
+        @keyframes heartbeat {
+            0% { box-shadow: 0 0 0 0 var(--accent-glow); }
+            70% { box-shadow: 0 0 0 15px rgba(255,255,255,0); }
+            100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); }
+        }
 
         .btn-secondary { opacity: 0.9; }
         .btn-secondary.active { opacity: 1; filter: drop-shadow(0 0 10px var(--accent-glow)); }
@@ -144,7 +186,6 @@
 </head>
 <body class="player-paused">
 
-    <!-- EL ARREGLO ESTÁ AQUÍ: Agregada la etiqueta "muted" a los videos -->
     <video id="vid1" class="video-background active" muted playsinline></video>
     <video id="vid2" class="video-background" muted playsinline></video>
     <div class="overlay"></div>
@@ -152,6 +193,12 @@
     <div class="player-app">
         <div class="header">
             <div class="mixing-badge" id="mixing-badge">MIXING...</div>
+            <!-- Mini Ecualizador Animado -->
+            <div class="mini-eq">
+                <div class="eq-bar" style="animation-delay: 0.1s;"></div>
+                <div class="eq-bar" style="animation-delay: 0.3s;"></div>
+                <div class="eq-bar" style="animation-delay: 0.0s;"></div>
+            </div>
             V I V E T
         </div>
         
@@ -163,8 +210,11 @@
 
         <div>
             <div class="track-info">
-                <div class="track-title" id="title">Cargando...</div>
-                <div class="track-artist" id="artist">VIVET Music</div>
+                <!-- Wrapper para la animación de slide-up -->
+                <div class="track-info-animated" id="track-animator">
+                    <div class="track-title" id="title">Cargando...</div>
+                    <div class="track-artist" id="artist">VIVET Music</div>
+                </div>
             </div>
 
             <div class="progress-area">
@@ -221,6 +271,7 @@
         const timeTotalEl = document.getElementById('time-total');
         const playBtn = document.getElementById('btn-play');
         const mixingBadge = document.getElementById('mixing-badge');
+        const trackAnimator = document.getElementById('track-animator');
         const colorCache = {};
 
         function spawnFloatingNote() {
@@ -243,14 +294,12 @@
             let activeAudio = activeLayer === 1 ? a1 : a2;
             let activeVideo = activeLayer === 1 ? v1 : v2;
 
-            // 1. Corrector de desface (Mantiene Audio y Video perfectamente sincronizados)
             if (e.target === activeAudio && !isDragging) {
                 if (Math.abs(activeAudio.currentTime - activeVideo.currentTime) > 0.3) {
                     activeVideo.currentTime = activeAudio.currentTime;
                 }
             }
 
-            // 2. Transición automática
             if (e.target === activeAudio && !isCrossfading && activeAudio.duration) {
                 let timeLeft = activeAudio.duration - activeAudio.currentTime;
                 if (timeLeft <= CROSSFADE_TIME && activeAudio.currentTime > CROSSFADE_TIME) {
@@ -258,7 +307,6 @@
                 }
             }
 
-            // 3. Mezcla Background
             if (isCrossfading && fadingOutAudio && fadingInAudio) {
                 let elapsed = (Date.now() - fadeStartTime) / 1000;
                 let progress = Math.min(elapsed / CROSSFADE_TIME, 1);
@@ -267,7 +315,6 @@
                 fadingInAudio.volume = Math.sin(progress * 0.5 * Math.PI);
 
                 if (progress >= 1) {
-                    // Apagamos audio y video salientes para ahorrar memoria/CPU
                     fadingOutAudio.pause();
                     fadingOutAudio.volume = 0;
                     let fadingOutVideo = (fadingOutAudio === a1) ? v1 : v2;
@@ -366,6 +413,11 @@
         }
 
         function updateUI(track, layerNum, isManual = false) {
+            // Reiniciar animación de texto (Slide Up & Fade In)
+            trackAnimator.style.animation = 'none';
+            trackAnimator.offsetHeight; /* Trigger Reflow para reiniciar la animación */
+            trackAnimator.style.animation = 'slideUpFade 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards';
+
             document.getElementById('title').textContent = track.title;
             document.getElementById('artist').textContent = track.artist;
             document.getElementById('cover').src = track.cover;
