@@ -75,7 +75,6 @@
             border-radius: 24px; 
             overflow: hidden;
             margin-bottom: 40px;
-            /* Resplandor del disco al 100% de fuerza */
             box-shadow: 0 30px 80px -10px rgba(var(--primary-color-rgb), 0.95);
             transition: transform 0.6s cubic-bezier(0.32, 0.72, 0, 1), box-shadow 0.6s ease;
             position: relative;
@@ -122,7 +121,6 @@
             letter-spacing: 0.1px;
         }
 
-        /* ================= BARRA DE PROGRESO (100% GLOW) ================= */
         .progress-container {
             width: 100%;
             margin-bottom: 40px;
@@ -140,7 +138,6 @@
             border-radius: 4px;
             outline: none;
             cursor: pointer;
-            /* Añadimos un drop-shadow a la propia barra para que parezca luz láser */
             filter: drop-shadow(0 0 5px rgba(var(--primary-color-rgb), 0.5));
             transition: height 0.2s cubic-bezier(0.25, 1, 0.5, 1), background-color 0.5s ease;
         }
@@ -152,7 +149,6 @@
             height: 0px;
             border-radius: 50%;
             background: var(--primary-color);
-            /* Glow al MÁXIMO (Opacidad 1) en la bolita */
             box-shadow: 0 0 15px rgba(var(--primary-color-rgb), 1);
             transition: width 0.2s ease, height 0.2s ease;
         }
@@ -165,7 +161,6 @@
             width: 18px; height: 18px;
         }
 
-        /* ================= TEXTOS DE TIEMPO Y "MIXING..." ================= */
         .time-info {
             display: flex;
             justify-content: space-between;
@@ -187,7 +182,6 @@
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
-            /* Texto al 100% de luz neón */
             color: var(--primary-color);
             font-size: 11px;
             font-weight: 800;
@@ -210,7 +204,6 @@
             100% { opacity: 1; filter: brightness(1.8); transform: translate(-50%, -50%) scale(1.05); }
         }
 
-        /* ================= CONTROLES COLOREADOS (100% FULL VIBRANCE) ================= */
         .controls {
             display: flex;
             justify-content: space-between;
@@ -230,18 +223,15 @@
             border-radius: 12px;
         }
 
-        /* Botones Anterior y Siguiente */
         .btn-nav {
             width: 44px; height: 44px;
             color: var(--primary-color);
-            /* Destello constante al 100% */
             filter: drop-shadow(0 0 15px rgba(var(--primary-color-rgb), 1));
         }
         .btn-nav svg { width: 34px; height: 34px; fill: currentColor; }
         .btn-nav:hover { opacity: 1; transform: scale(1.1); filter: drop-shadow(0 0 25px rgba(var(--primary-color-rgb), 1)); }
         .btn-nav:active { transform: scale(0.9); opacity: 0.7; }
 
-        /* Aleatorio y Repetir */
         .btn-action {
             width: 36px; height: 36px;
             color: rgba(var(--primary-color-rgb), 0.6); 
@@ -254,11 +244,9 @@
             filter: drop-shadow(0 0 12px rgba(var(--primary-color-rgb), 0.8));
         }
 
-        /* Botón Play gigante y súper brillante */
         .btn-play {
             width: 64px; height: 64px;
             color: var(--primary-color);
-            /* 100% fuerza del brillo central */
             filter: drop-shadow(0 0 20px rgba(var(--primary-color-rgb), 1));
         }
         .btn-play svg { width: 50px; height: 50px; fill: currentColor; }
@@ -326,10 +314,10 @@
             { title: "444", artist: "YAN BLOCK", cover: "covers/444.jpg", file: "songs/444.mp3", video: "videos/444.mp4" },
             { title: "FOREVEL TU GANTEL", artist: "OMAR COURTZ, NENGO FLOW", cover: "covers/FOREVEL TU GANTEL.jpg", file: "songs/FOREVEL TU GANTEL.mp3", video: "videos/FOREVEL TU GANTEL.mp4" },
             { title: "YO QUIERO", artist: "HADES66", cover: "covers/YO QUIERO.jpg", file: "songs/YO QUIERO.mp3", video: "videos/YO QUIERO.mp4" },
-            { title: "VVS SWITCH REMIX", artist: "PRESSURE, YVNGCHIMI, CDOBLETA. HADES66, ANUEL AA, LUAR LA L", cover: "covers/VVS SWITCH REMIX.jpg", file: "songs/VVS SWITCH REMIX.mp3", video: "videos/VVS SWITCH REMIX.mp4" },
+            { title: "VVS SWITCH REMIX", artist: "PRESSURE, YVNGCHIMI, CDOBLETA, HADES66, ANUEL AA, LUAR LA L", cover: "covers/VVS SWITCH REMIX.jpg", file: "songs/VVS SWITCH REMIX.mp3", video: "videos/VVS SWITCH REMIX.mp4" },
             { title: "FALSAS PROMESAS REMIX", artist: "MIDNVGHT, MORA, ELADIO CARRION, ROA, CLARENT", cover: "covers/FALSAS PROMESAS REMIX.jpg", file: "songs/FALSAS PROMESAS REMIX.mp3", video: "videos/FALSAS PROMESAS REMIX.mp4" },
-            { title: "TE VAS", artist: "OZUNA", cover: "covers/TE VAS.jpg", file: "songs/TE VAS.mp3", video: "videos/TE VAS.mp4" }
-            { title: "RELIGION", artist: "YAN BLOCK", cover: "covers/RELIGION.jpg", file: "songs/RELEGION.mp3", video: "videos/RELIGION.mp4" }
+            { title: "TE VAS", artist: "OZUNA", cover: "covers/TE VAS.jpg", file: "songs/TE VAS.mp3", video: "videos/TE VAS.mp4" },
+            { title: "RELIGION", artist: "YAN BLOCK", cover: "covers/RELIGION.jpg", file: "songs/RELIGION.mp3", video: "videos/RELIGION.mp4" },
             { title: "MEDIA HORA", artist: "YAN BLOCK", cover: "covers/MEDIA HORA.jpg", file: "songs/MEDIA HORA.mp3", video: "videos/MEDIA HORA.mp4" }
         ];
 
@@ -420,7 +408,6 @@
         setupAudioListeners(audioMain);
         setupAudioListeners(audioNext);
 
-        /* ================= EXTRACCIÓN DE COLOR NIVEL DIOS (100% VIBRANCE) ================= */
         coverEl.onload = function() {
             const canvas = document.createElement('canvas');
             const context = canvas.getContext('2d');
@@ -455,9 +442,6 @@
                     if (h < 0) h += 360;
                 }
 
-                /* MAGIA AL 100%: 
-                   Saturación a 1.0 (100% Color) 
-                   Luminosidad a 0.55 (El brillo perfecto para que el color sea explosivo sin volverse blanco) */
                 if (s > 0.08) { 
                     s = 1.0; 
                     l = 0.55; 
@@ -466,7 +450,6 @@
                     l = 1; 
                 }
 
-                // Transformando la luz pura de vuelta a RGB
                 let c = (1 - Math.abs(2 * l - 1)) * s;
                 let x = c * (1 - Math.abs((h / 60) % 2 - 1));
                 let m = l - c / 2;
@@ -618,4 +601,3 @@
     </script>
 </body>
 </html>
-
