@@ -3,18 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VIVET - Reproductor Inmersivo</title>
+    <title>VIVET - Music Player</title>
     <style>
-        /* ================= CSS: UI APPLE MUSIC INMERSIVO ================= */
+        /* ================= CSS: UI APPLE MUSIC ================= */
         :root {
-            /* Colores base para cuando no hay portada */
-            --primary-color: #ff3b30; 
-            --primary-color-rgb: 255, 59, 48;
+            --primary-color: #ffffff; 
+            --primary-color-rgb: 255, 255, 255;
             --bg-color: #000000;
             --text-color: #FFFFFF;
             --text-secondary: rgba(255, 255, 255, 0.55);
-            /* Color para las 'auroras' de fondo */
-            --aurora-color: rgba(var(--primary-color-rgb), 0.05);
         }
 
         * {
@@ -33,64 +30,8 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             overflow: hidden;
-            transition: background-color 1s ease;
         }
 
-        /* ================= FONDO ANIMADO DE AURORAS (NUEVO) ================= */
-        .background-aurora {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -3;
-            overflow: hidden;
-        }
-
-        .aurora-blob {
-            position: absolute;
-            border-radius: 50%;
-            background-color: var(--aurora-color);
-            filter: blur(100px);
-            opacity: 0;
-            transition: background-color 1s ease;
-            animation: aurora-float infinite ease-in-out;
-        }
-
-        /* Creamos diferentes blobs con animaciones únicas */
-        .aurora-blob-1 { width: 800px; height: 800px; top: -200px; left: -200px; animation-duration: 25s; }
-        .aurora-blob-2 { width: 600px; height: 600px; bottom: -150px; right: -150px; animation-duration: 20s; animation-delay: -5s; }
-        .aurora-blob-3 { width: 500px; height: 500px; top: 30%; left: 50%; transform: translate(-50%, -50%); animation-duration: 30s; animation-delay: -10s; }
-
-        @keyframes aurora-float {
-            0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 0.1; }
-            33% { transform: translate(100px, -100px) scale(1.1) rotate(5deg); opacity: 0.2; }
-            66% { transform: translate(-50px, 150px) scale(0.9) rotate(-5deg); opacity: 0.15; }
-        }
-
-        /* ================= PARTÍCULAS Y 'DIBUJITOS' (NUEVO) ================= */
-        .particle-background {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1; /* Sobre los videos de fondo */
-            pointer-events: none;
-        }
-
-        .particle {
-            position: absolute;
-            border-radius: 50%;
-            /* Usamos una versión suave del color extraído */
-            background-color: rgba(var(--primary-color-rgb), 0.2); 
-            animation: particle-rise infinite linear;
-            transition: background-color 1s ease;
-            box-shadow: 0 0 10px rgba(var(--primary-color-rgb), 0.5);
-        }
-
-        @keyframes particle-rise {
-            0% { transform: translateY(100vh) scale(0); opacity: 0; }
-            20% { opacity: 1; }
-            80% { opacity: 0.8; }
-            100% { transform: translateY(-10vh) scale(1); opacity: 0; }
-        }
-
-        /* ================= CONTENIDO ORIGINAL MEJORADO ================= */
         .video-container {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -109,7 +50,7 @@
         .vignette-overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.9) 100%);
+            background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.8) 100%);
             z-index: -1;
             pointer-events: none;
         }
@@ -118,19 +59,15 @@
             width: 100%; 
             max-width: 390px; 
             padding: 40px 35px;
-            /* Cristal más transparente para ver el fondo */
             background: rgba(20, 20, 20, 0.2);
-            backdrop-filter: blur(50px) saturate(200%);
-            -webkit-backdrop-filter: blur(50px) saturate(200%);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(60px) saturate(200%);
+            -webkit-backdrop-filter: blur(60px) saturate(200%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 48px;
-            box-shadow: 0 50px 100px rgba(0, 0, 0, 0.7), inset 0 1px 1px rgba(255,255,255,0.1);
+            box-shadow: 0 50px 100px rgba(0, 0, 0, 0.7), inset 0 1px 1px rgba(255,255,255,0.2);
             text-align: center;
             z-index: 10;
-            transition: transform 0.3s ease;
         }
-
-        .player-container:active { transform: scale(0.99); }
 
         .cover-wrapper {
             width: 100%;
@@ -138,23 +75,21 @@
             border-radius: 24px; 
             overflow: hidden;
             margin-bottom: 40px;
-            /* Resplandor más suave por defecto */
-            box-shadow: 0 30px 60px -10px rgba(var(--primary-color-rgb), 0.6);
+            box-shadow: 0 30px 80px -10px rgba(var(--primary-color-rgb), 0.95);
             transition: transform 0.6s cubic-bezier(0.32, 0.72, 0, 1), box-shadow 0.6s ease;
             position: relative;
         }
 
-        /* Animación suave para la portada al cambiar */
         .cover-wrapper img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.6s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.3s ease;
+            transition: transform 0.6s cubic-bezier(0.32, 0.72, 0, 1);
         }
 
         .paused .cover-wrapper {
             transform: scale(0.78); 
-            box-shadow: 0 15px 30px -10px rgba(var(--primary-color-rgb), 0.3) !important;
+            box-shadow: 0 15px 30px -10px rgba(var(--primary-color-rgb), 0.4) !important;
             border-radius: 30px;
         }
 
@@ -186,7 +121,6 @@
             letter-spacing: 0.1px;
         }
 
-        /* ================= BARRA DE PROGRESO INMERSIVA ================= */
         .progress-container {
             width: 100%;
             margin-bottom: 40px;
@@ -197,19 +131,15 @@
             -webkit-appearance: none;
             width: 100%;
             height: 6px; 
-            background-color: rgba(var(--primary-color-rgb), 0.1);
+            background-color: rgba(var(--primary-color-rgb), 0.3);
             background-image: linear-gradient(var(--primary-color), var(--primary-color));
             background-size: var(--progress, 0%) 100%;
             background-repeat: no-repeat;
             border-radius: 4px;
             outline: none;
             cursor: pointer;
-            filter: drop-shadow(0 0 5px rgba(var(--primary-color-rgb), 0.3));
-            transition: height 0.2s cubic-bezier(0.25, 1, 0.5, 1), background-color 0.5s ease, filter 0.3s ease;
-        }
-
-        .playing-animations .progress-slider {
-            filter: drop-shadow(0 0 8px rgba(var(--primary-color-rgb), 0.6));
+            filter: drop-shadow(0 0 5px rgba(var(--primary-color-rgb), 0.5));
+            transition: height 0.2s cubic-bezier(0.25, 1, 0.5, 1), background-color 0.5s ease;
         }
 
         .progress-slider::-webkit-slider-thumb {
@@ -231,7 +161,6 @@
             width: 18px; height: 18px;
         }
 
-        /* ================= TEXTOS DE TIEMPO Y "MIXING..." ================= */
         .time-info {
             display: flex;
             justify-content: space-between;
@@ -275,7 +204,6 @@
             100% { opacity: 1; filter: brightness(1.8); transform: translate(-50%, -50%) scale(1.05); }
         }
 
-        /* ================= CONTROLES COLOREADOS INMERSIVOS ================= */
         .controls {
             display: flex;
             justify-content: space-between;
@@ -295,36 +223,31 @@
             border-radius: 12px;
         }
 
-        /* Botones Anterior y Siguiente */
         .btn-nav {
             width: 44px; height: 44px;
-            color: rgba(var(--primary-color-rgb), 0.8);
-            filter: drop-shadow(0 0 10px rgba(var(--primary-color-rgb), 0.4));
+            color: var(--primary-color);
+            filter: drop-shadow(0 0 15px rgba(var(--primary-color-rgb), 1));
         }
         .btn-nav svg { width: 34px; height: 34px; fill: currentColor; }
-        .btn-nav:hover { opacity: 1; transform: scale(1.1); filter: drop-shadow(0 0 20px rgba(var(--primary-color-rgb), 0.8)); }
+        .btn-nav:hover { opacity: 1; transform: scale(1.1); filter: drop-shadow(0 0 25px rgba(var(--primary-color-rgb), 1)); }
         .btn-nav:active { transform: scale(0.9); opacity: 0.7; }
 
-        /* Aleatorio y Repetir */
         .btn-action {
             width: 36px; height: 36px;
-            color: rgba(var(--primary-color-rgb), 0.4); 
+            color: rgba(var(--primary-color-rgb), 0.6); 
         }
         .btn-action svg { width: 22px; height: 22px; fill: currentColor; }
-        .btn-action:hover { color: rgba(var(--primary-color-rgb), 0.8); }
         
         .active-action {
             color: var(--primary-color) !important;
-            background-color: rgba(var(--primary-color-rgb), 0.15);
+            background-color: rgba(var(--primary-color-rgb), 0.25);
             filter: drop-shadow(0 0 12px rgba(var(--primary-color-rgb), 0.8));
         }
 
-        /* Botón Play gigante y súper brillante con animación de pulso (NUEVO) */
         .btn-play {
             width: 64px; height: 64px;
             color: var(--primary-color);
-            filter: drop-shadow(0 0 20px rgba(var(--primary-color-rgb), 0.8));
-            position: relative;
+            filter: drop-shadow(0 0 20px rgba(var(--primary-color-rgb), 1));
         }
         .btn-play svg { width: 50px; height: 50px; fill: currentColor; }
         .btn-play:hover {
@@ -333,38 +256,9 @@
         }
         .btn-play:active { transform: scale(0.9); opacity: 0.7; }
 
-        /* Efecto de pulso alrededor del play cuando suena */
-        .btn-play::after {
-            content: '';
-            position: absolute;
-            top: 50%; left: 50%;
-            width: 100%; height: 100%;
-            transform: translate(-50%, -50%);
-            border-radius: 50%;
-            background-color: rgba(var(--primary-color-rgb), 0.3);
-            z-index: -1;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .playing-animations .btn-play::after {
-            animation: play-pulse 1.5s infinite;
-        }
-
-        @keyframes play-pulse {
-            0% { width: 100%; height: 100%; opacity: 0.6; }
-            100% { width: 160%; height: 160%; opacity: 0; }
-        }
-
     </style>
 </head>
-<body class="">
-
-    <div class="background-aurora">
-        <div class="aurora-blob aurora-blob-1"></div>
-        <div class="aurora-blob aurora-blob-2"></div>
-        <div class="aurora-blob aurora-blob-3"></div>
-    </div>
+<body>
 
     <div class="video-container">
         <video id="bg-video-1" class="bg-video" autoplay loop muted playsinline></video>
@@ -372,11 +266,9 @@
         <div class="vignette-overlay"></div>
     </div>
 
-    <div class="particle-background" id="particle-background"></div>
-
     <div class="player-container paused" id="player">
         <div class="cover-wrapper" id="cover-glow">
-            <img src="" id="cover" style="opacity: 0;">
+            <img src="" id="cover" alt="Cover">
         </div>
         
         <div class="song-info">
@@ -416,13 +308,13 @@
     </div>
 
     <script>
-        /* ================= CONFIGURACIÓN DE TU PLAYLIST ================= */
+        /* ================= PLAYLIST ================= */
         const playlist =[
             { title: "WOH OH OH", artist: "OMAR COURTZ, ROA", cover: "covers/WOH OH OH.jpg", file: "songs/WOH OH OH.mp3", video: "videos/WOH OH OH.mp4" },
             { title: "444", artist: "YAN BLOCK", cover: "covers/444.jpg", file: "songs/444.mp3", video: "videos/444.mp4" },
             { title: "FOREVEL TU GANTEL", artist: "OMAR COURTZ, NENGO FLOW", cover: "covers/FOREVEL TU GANTEL.jpg", file: "songs/FOREVEL TU GANTEL.mp3", video: "videos/FOREVEL TU GANTEL.mp4" },
             { title: "YO QUIERO", artist: "HADES66", cover: "covers/YO QUIERO.jpg", file: "songs/YO QUIERO.mp3", video: "videos/YO QUIERO.mp4" },
-            { title: "VVS SWITCH REMIX", artist: "PRESSURE, YVNGCHIMI, CDOBLETA. HADES66, ANUEL AA, LUAR LA L", cover: "covers/VVS SWITCH REMIX.jpg", file: "songs/VVS SWITCH REMIX.mp3", video: "videos/VVS SWITCH REMIX.mp4" },
+            { title: "VVS SWITCH REMIX", artist: "PRESSURE, YVNGCHIMI, CDOBLETA, HADES66, ANUEL AA, LUAR LA L", cover: "covers/VVS SWITCH REMIX.jpg", file: "songs/VVS SWITCH REMIX.mp3", video: "videos/VVS SWITCH REMIX.mp4" },
             { title: "FALSAS PROMESAS REMIX", artist: "MIDNVGHT, MORA, ELADIO CARRION, ROA, CLARENT", cover: "covers/FALSAS PROMESAS REMIX.jpg", file: "songs/FALSAS PROMESAS REMIX.mp3", video: "videos/FALSAS PROMESAS REMIX.mp4" },
             { title: "TE VAS", artist: "OZUNA", cover: "covers/TE VAS.jpg", file: "songs/TE VAS.mp3", video: "videos/TE VAS.mp4" },
             { title: "RELIGION", artist: "YAN BLOCK", cover: "covers/RELIGION.jpg", file: "songs/RELIGION.mp3", video: "videos/RELIGION.mp4" },
@@ -453,7 +345,6 @@
         const currTimeEl = document.getElementById('current-time');
         const durationEl = document.getElementById('duration');
         const playerContainer = document.getElementById('player');
-        const particleBackground = document.getElementById('particle-background');
 
         function formatTime(sec) {
             if (isNaN(sec)) return "0:00";
@@ -462,16 +353,9 @@
             return `${min}:${s < 10 ? '0' : ''}${s}`;
         }
 
-        function resetProgressUI() {
-            slider.value = 0;
-            slider.style.setProperty('--progress', '0%');
-            currTimeEl.textContent = "0:00";
-            durationEl.textContent = "0:00";
-        }
-
-        function loadSongInfo(index, animate = false) {
+        function loadSongInfo(index) {
             const song = playlist[index];
-            if(animate) coverEl.style.opacity = '0';
+            if (!song) return;
             coverEl.src = song.cover;
             titleEl.textContent = song.title;
             artistEl.textContent = song.artist;
@@ -481,172 +365,77 @@
             loadSongInfo(currentIndex);
             audioMain.src = playlist[currentIndex].file;
             videoMain.src = playlist[currentIndex].video;
-            forceStopCrossfade(); 
-            resetProgressUI();
-            updateImmersiveBackgrounds();
+            forceStopCrossfade();
+            
+            slider.value = 0;
+            slider.style.setProperty('--progress', '0%');
+            currTimeEl.textContent = "0:00";
         }
 
-        /* ================= SISTEMA DE PARTÍCULAS / 'DIBUJITOS' (NUEVO) ================= */
-        function generateParticles() {
-            particleBackground.innerHTML = ''; // Limpiar existentes
-            const particleCount = 20; // Número de 'dibujitos'
+        // Listener unificado para el audio principal
+        audioMain.addEventListener('timeupdate', () => {
+            if (!audioMain.duration || isDragging) return;
 
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.classList.add('particle');
-                
-                // Tamaño aleatorio para variedad (5px a 20px)
-                const size = Math.random() * 15 + 5;
-                particle.style.width = `${size}px`;
-                particle.style.height = `${size}px`;
-                
-                // Posición horizontal aleatoria
-                particle.style.left = `${Math.random() * 100}vw`;
-                
-                // Duración y retraso aleatorios para un flujo continuo
-                particle.style.animationDuration = `${Math.random() * 10 + 10}s`;
-                particle.style.animationDelay = `-${Math.random() * 20}s`;
-                
-                particleBackground.appendChild(particle);
+            const currentTime = audioMain.currentTime;
+            const duration = audioMain.duration;
+
+            // Sincronización video
+            if (Math.abs(videoMain.currentTime - currentTime) > 0.3) {
+                videoMain.currentTime = currentTime;
             }
-        }
+            
+            // Barra de progreso
+            const percent = (currentTime / duration) * 100;
+            slider.value = percent;
+            slider.style.setProperty('--progress', `${percent}%`);
+            currTimeEl.textContent = formatTime(currentTime);
 
-        function updateImmersiveBackgrounds() {
-            // Generar partículas la primera vez
-            if(particleBackground.children.length === 0) generateParticles();
-        }
+            // Disparar crossfade automático
+            if (duration - currentTime <= CROSSFADE_DURATION && !isCrossfading && duration > 0) {
+                startSmartCrossfade(true); 
+            }
+        });
 
-        function setupAudioListeners(audioElement) {
-            audioElement.addEventListener('timeupdate', (e) => {
-                if (e.target !== audioMain) return;
-                if (!audioMain.duration) return;
+        audioMain.addEventListener('loadedmetadata', () => {
+            durationEl.textContent = formatTime(audioMain.duration);
+        });
 
-                const currentTime = audioMain.currentTime;
-                const duration = audioMain.duration;
-
-                if (!isDragging && Math.abs(videoMain.currentTime - currentTime) > 0.3) {
-                    videoMain.currentTime = currentTime;
-                }
-                
-                if (!isDragging) {
-                    const percent = (currentTime / duration) * 100;
-                    slider.value = percent;
-                    slider.style.setProperty('--progress', `${percent}%`);
-                    currTimeEl.textContent = formatTime(currentTime);
-                }
-
-                if (duration - currentTime <= CROSSFADE_DURATION && !isCrossfading && duration > 0) {
-                    startSmartCrossfade(true); 
-                }
-            });
-
-            audioElement.addEventListener('loadedmetadata', (e) => {
-                if (e.target !== audioMain) return;
-                durationEl.textContent = formatTime(audioMain.duration);
-            });
-        }
-
-        setupAudioListeners(audioMain);
-        setupAudioListeners(audioNext);
-
-        /* ================= EXTRACCIÓN DE COLOR NIVEL INMERSIVO (MEJORADO) ================= */
+        // Extracción de color
         coverEl.onload = function() {
-            coverEl.style.opacity = '1'; // Mostrar portada con suavidad
             const canvas = document.createElement('canvas');
             const context = canvas.getContext('2d');
-            canvas.width = coverEl.width || 1;
-            canvas.height = coverEl.height || 1;
-            
+            canvas.width = 10; canvas.height = 10;
             try {
-                context.drawImage(coverEl, 0, 0, canvas.width, canvas.height);
-                const data = context.getImageData(0, 0, canvas.width, canvas.height).data;
-                
-                let r = 0, g = 0, b = 0, count = 0;
-                
-                for (let i = 0; i < data.length; i += 16) { 
-                    r += data[i]; g += data[i+1]; b += data[i+2];
-                    count++;
-                }
-                r = Math.floor(r / count); 
-                g = Math.floor(g / count); 
-                b = Math.floor(b / count);
-
-                let rNorm = r/255, gNorm = g/255, bNorm = b/255;
-                let cMax = Math.max(rNorm, gNorm, bNorm), cMin = Math.min(rNorm, gNorm, bNorm);
-                let delta = cMax - cMin;
-                let h = 0, s = 0, l = (cMax + cMin) / 2;
-
-                if (delta !== 0) {
-                    s = l < 0.5 ? delta / (cMax + cMin) : delta / (2 - cMax - cMin);
-                    if (cMax === rNorm) h = ((gNorm - bNorm) / delta) % 6;
-                    else if (cMax === gNorm) h = (bNorm - rNorm) / delta + 2;
-                    else h = (rNorm - gNorm) / delta + 4;
-                    h = Math.round(h * 60);
-                    if (h < 0) h += 360;
-                }
-
-                // Ajuste de colores para que sean vibrantes e inmersivos
-                if (s > 0.08) { 
-                    s = 1.0; 
-                    l = 0.55; 
-                } else {
-                    // Colores muy oscuros/grises -> Blanco inmersivo
-                    s = 0;
-                    l = 1; 
-                }
-
-                let c = (1 - Math.abs(2 * l - 1)) * s;
-                let x = c * (1 - Math.abs((h / 60) % 2 - 1));
-                let m = l - c / 2;
-                let finalR = 0, finalG = 0, finalB = 0;
-
-                if (h >= 0 && h < 60) { finalR = c; finalG = x; finalB = 0; }
-                else if (h >= 60 && h < 120) { finalR = x; finalG = c; finalB = 0; }
-                else if (h >= 120 && h < 180) { finalR = 0; finalG = c; finalB = x; }
-                else if (h >= 180 && h < 240) { finalR = 0; finalG = x; finalB = c; }
-                else if (h >= 240 && h < 300) { finalR = x; finalG = 0; finalB = c; }
-                else if (h >= 300 && h < 360) { finalR = c; finalG = 0; finalB = x; }
-
-                r = Math.round((finalR + m) * 255);
-                g = Math.round((finalG + m) * 255);
-                b = Math.round((finalB + m) * 255);
-
-                // Actualizar variables de CSS para que todo reaccione
+                context.drawImage(coverEl, 0, 0, 10, 10);
+                const data = context.getImageData(0, 0, 10, 10).data;
+                let r=0, g=0, b=0;
+                for(let i=0; i<data.length; i+=4){ r+=data[i]; g+=data[i+1]; b+=data[i+2]; }
+                r=Math.floor(r/25), g=Math.floor(g/25), b=Math.floor(b/25);
                 rootVars.setProperty('--primary-color-rgb', `${r}, ${g}, ${b}`);
                 rootVars.setProperty('--primary-color', `rgb(${r}, ${g}, ${b})`);
-                rootVars.setProperty('--aurora-color', `rgba(${r}, ${g}, ${b}, 0.05)`);
-                
-                // Actualizar sombras de portada inmediatamente si no está pausado
-                if (!playerContainer.classList.contains('paused')) {
-                    coverGlow.style.boxShadow = `0 30px 80px -10px rgba(${r}, ${g}, ${b}, 0.95)`;
-                }
-            } catch (e) {
-                console.error("Error leyendo el color:", e);
-                rootVars.setProperty('--primary-color-rgb', `255, 59, 48`); // Default rojo Apple
-                rootVars.setProperty('--primary-color', `#ff3b30`);
-                rootVars.setProperty('--aurora-color', `rgba(255, 59, 48, 0.05)`);
+            } catch(e) { 
+                rootVars.setProperty('--primary-color-rgb', '255,255,255');
             }
         };
 
         slider.addEventListener('input', () => {
             isDragging = true;
-            if (!audioMain.duration) return;
             const seekTime = (slider.value / 100) * audioMain.duration;
             currTimeEl.textContent = formatTime(seekTime);
             slider.style.setProperty('--progress', `${slider.value}%`);
         });
 
         slider.addEventListener('change', () => {
-            if (!audioMain.duration) return;
             const seekTime = (slider.value / 100) * audioMain.duration;
             audioMain.currentTime = seekTime;
             videoMain.currentTime = seekTime; 
             isDragging = false;
+            // Si adelantamos manualmente, cancelamos crossfades pendientes
             if (audioMain.duration - audioMain.currentTime > CROSSFADE_DURATION) forceStopCrossfade();
         });
 
         function getNextIndex(isAuto = false) {
-            if (isAuto && isRepeat) return currentIndex; 
+            if (isAuto && isRepeat) return currentIndex;
             if (isShuffle) {
                 let next;
                 do { next = Math.floor(Math.random() * playlist.length); } 
@@ -667,88 +456,79 @@
 
         function startSmartCrossfade(isAuto = true) {
             if (isCrossfading) return;
+            
+            let nextIdx = getNextIndex(isAuto);
             isCrossfading = true;
             playerContainer.classList.add('is-mixing');
 
-            let nextIdx = getNextIndex(isAuto);
-            
+            // 1. Swapping de objetos: El que era "Next" ahora será el "Main"
             let outgoingAudio = audioMain; let outgoingVideo = videoMain;
             audioMain = audioNext; videoMain = videoNext;
             audioNext = outgoingAudio; videoNext = outgoingVideo;
 
-            audioMain.src = playlist[nextIdx].file;
-            videoMain.src = playlist[nextIdx].video;
-            audioMain.volume = 0; audioMain.currentTime = 0; videoMain.currentTime = 0;
-
-            resetProgressUI();
-            audioMain.play().catch(e => console.log(e));
-            videoMain.play().catch(e => console.log(e));
-
+            // 2. Cargar la NUEVA canción en el nuevo audioMain
             currentIndex = nextIdx;
-            loadSongInfo(currentIndex, true); // Cambiar info con animación
-            // Las partículas se actualizan solas con la variable de color CSS
+            audioMain.src = playlist[currentIndex].file;
+            videoMain.src = playlist[currentIndex].video;
+            audioMain.volume = 0;
+            
+            // 3. Actualizar Interfaz INMEDIATAMENTE
+            loadSongInfo(currentIndex);
 
-            let startTime = Date.now();
-            let durationMs = CROSSFADE_DURATION * 1000; 
+            audioMain.play().then(() => {
+                videoMain.play();
+                let startTime = Date.now();
+                let durationMs = CROSSFADE_DURATION * 1000;
 
-            if (crossfadeInterval) clearInterval(crossfadeInterval);
+                crossfadeInterval = setInterval(() => {
+                    let elapsed = Date.now() - startTime;
+                    let t = Math.min(elapsed / durationMs, 1);
+                    
+                    audioMain.volume = Math.sin(t * Math.PI / 2);
+                    audioNext.volume = Math.cos(t * Math.PI / 2);
+                    videoMain.style.opacity = t;
+                    videoNext.style.opacity = 1 - t;
 
-            crossfadeInterval = setInterval(() => {
-                let elapsed = Date.now() - startTime;
-                let t = Math.min(elapsed / durationMs, 1); 
-                
-                // Sinusoidal para una mezcla inmersiva y suave
-                audioMain.volume = Math.min(1, Math.max(0, Math.sin(t * 0.5 * Math.PI)));
-                audioNext.volume = Math.min(1, Math.max(0, Math.cos(t * 0.5 * Math.PI)));
-                videoMain.style.opacity = t; videoNext.style.opacity = 1 - t;
-
-                if (t >= 1) forceStopCrossfade();
-            }, 50);
+                    if (t >= 1) forceStopCrossfade();
+                }, 50);
+            });
         }
 
-        const playBtn = document.getElementById('btn-play');
-        const playIcon = document.getElementById('play-icon');
-        const pauseIcon = document.getElementById('pause-icon');
-        const bodyEl = document.body;
-
-        function togglePlay() {
+        // BOTONES
+        document.getElementById('btn-play').addEventListener('click', () => {
             if (isPlaying) {
                 audioMain.pause(); videoMain.pause();
                 if (isCrossfading) { audioNext.pause(); videoNext.pause(); }
-                playIcon.style.display = 'block'; pauseIcon.style.display = 'none';
+                document.getElementById('play-icon').style.display = 'block';
+                document.getElementById('pause-icon').style.display = 'none';
                 playerContainer.classList.add('paused');
-                bodyEl.classList.remove('playing-animations'); // Desactivar pulsos
             } else {
-                audioMain.play(); videoMain.play().catch(e=>console.log(e));
+                audioMain.play(); videoMain.play();
                 if (isCrossfading) { audioNext.play(); videoNext.play(); }
-                playIcon.style.display = 'none'; pauseIcon.style.display = 'block';
+                document.getElementById('play-icon').style.display = 'none';
+                document.getElementById('pause-icon').style.display = 'block';
                 playerContainer.classList.remove('paused');
-                bodyEl.classList.add('playing-animations'); // Activar pulsos inmersivos
-                
-                coverGlow.style.boxShadow = `0 30px 80px -10px rgba(${rootVars.getPropertyValue('--primary-color-rgb') || '255,59,48'}, 0.95)`;
             }
             isPlaying = !isPlaying;
-        }
+        });
 
-        playBtn.addEventListener('click', togglePlay);
+        document.getElementById('btn-next').addEventListener('click', () => {
+            // Si ya estamos mezclando, cancelamos y vamos a la siguiente real
+            if (isCrossfading) forceStopCrossfade();
+            currentIndex = getNextIndex(false);
+            initPlayer();
+            if(isPlaying) audioMain.play(), videoMain.play();
+        });
 
-        function playManual(index) {
-            forceStopCrossfade(); 
-            currentIndex = index; initPlayer();
-            // Mantener el estado de reproducción si ya estaba sonando
-            if(isPlaying) { 
-                audioMain.play(); videoMain.play(); 
-                bodyEl.classList.add('playing-animations');
-            } else {
-                playerContainer.classList.add('paused');
-                bodyEl.classList.remove('playing-animations');
-            }
-        }
-
-        document.getElementById('btn-next').addEventListener('click', () => { playManual(getNextIndex(false)); });
         document.getElementById('btn-prev').addEventListener('click', () => {
-            if (audioMain.currentTime > 3) { audioMain.currentTime = 0; videoMain.currentTime = 0; } 
-            else { playManual((currentIndex - 1 + playlist.length) % playlist.length); }
+            if (isCrossfading) forceStopCrossfade();
+            if (audioMain.currentTime > 3) {
+                audioMain.currentTime = 0; videoMain.currentTime = 0;
+            } else {
+                currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
+                initPlayer();
+            }
+            if(isPlaying) audioMain.play(), videoMain.play();
         });
 
         document.getElementById('btn-shuffle').addEventListener('click', function() {
