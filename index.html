@@ -59,10 +59,9 @@
 
         /* LOGO DINÁMICO */
         .site-logo {
-            width: 32px; /* Tamaño del logo */
+            width: 32px; 
             height: 32px;
             background-color: var(--accent-color);
-            /* Usamos mask-image para rellenarlo con el color de acento */
             -webkit-mask-image: url('covers/LOGO.png'); 
             -webkit-mask-size: contain;
             -webkit-mask-repeat: no-repeat;
@@ -72,7 +71,7 @@
             mask-repeat: no-repeat;
             mask-position: center;
             transition: background-color 0.5s ease;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); /* Sombra para que resalte */
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); 
         }
         
         .mini-eq {
@@ -168,7 +167,7 @@
         .time-info { display: flex; justify-content: space-between; margin-top: 10px; font-size: 12px; font-weight: 700; color: var(--text-sub); text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
 
         /* --- CONTROLES --- */
-        .controls { display: flex; align-items: center; justify-content: space-between; }
+        .controls { display: flex; align-items: center; justify-content: space-between; position: relative; }
         
         .btn { 
             background: none; border: none; cursor: pointer; color: var(--accent-color); 
@@ -201,7 +200,7 @@
             100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); }
         }
 
-        .btn-secondary { opacity: 0.9; }
+        .btn-secondary { opacity: 0.9; position: relative; }
         .btn-secondary.active { opacity: 1; filter: drop-shadow(0 0 10px var(--accent-glow)); }
         .btn-secondary.active::after { content: ''; position: absolute; bottom: -8px; width: 5px; height: 5px; background: var(--accent-color); border-radius: 50%; transition: background-color 0.5s ease; }
 
@@ -270,7 +269,7 @@
             { title: "444", artist: "YAN BLOCK", cover: "covers/444.jpg", file: "songs/444.mp3", video: "videos/444.mp4" },
             { title: "FOREVEL TU GANTEL", artist: "OMAR COURTZ, NENGO FLOW", cover: "covers/FOREVEL TU GANTEL.jpg", file: "songs/FOREVEL TU GANTEL.mp3", video: "videos/FOREVEL TU GANTEL.mp4" },
             { title: "YO QUIERO", artist: "HADES66", cover: "covers/YO QUIERO.jpg", file: "songs/YO QUIERO.mp3", video: "videos/YO QUIERO.mp4" },
-            { title: "VVS SWITCH REMIX", artist: "ANUEL AA, LUAR LA L", cover: "covers/VVS SWITCH REMIX.jpg", file: "songs/VVS SWITCH REMIX.mp3", video: "videos/VVS SWITCH REMIX.mp4" },
+            { title: "PACTO REMIX", artist: "JAY WHEELER, ANUEL AA, HADES66, BRIANT MYERS y DEI V", cover: "covers/PACTO REMIX.jpg", file: "songs/PACTO REMIX.mp3", video: "videos/PACTO REMIX.mp4" },
             { title: "FALSAS PROMESAS REMIX", artist: "MORA, ELADIO CARRION", cover: "covers/FALSAS PROMESAS REMIX.jpg", file: "songs/FALSAS PROMESAS REMIX.mp3", video: "videos/FALSAS PROMESAS REMIX.mp4" },
             { title: "TE VAS", artist: "OZUNA", cover: "covers/TE VAS.jpg", file: "songs/TE VAS.mp3", video: "videos/TE VAS.mp4" },
             { title: "RELIGION", artist: "YAN BLOCK", cover: "covers/RELIGION.jpg", file: "songs/RELIGION.mp3", video: "videos/RELIGION.mp4" },
@@ -282,6 +281,9 @@
         let isPlaying = false;
         let isDragging = false;
         
+        let isShuffle = false;
+        let isRepeat = false;
+
         let isCrossfading = false;
         let fadeStartTime = 0;
         let fadingOutAudio = null;
@@ -299,9 +301,35 @@
         const trackAnimator = document.getElementById('track-animator');
         const colorCache = {};
 
+        // Botones de Shuffle y Repeat
+        document.getElementById('btn-shuffle').addEventListener('click', function() {
+            isShuffle = !isShuffle;
+            this.classList.toggle('active', isShuffle);
+        });
+
+        document.getElementById('btn-repeat').addEventListener('click', function() {
+            isRepeat = !isRepeat;
+            this.classList.toggle('active', isRepeat);
+        });
+
+        // Lógica de cálculo del siguiente índice
+        function getNextTrackIndex(isAuto = false) {
+            if (isAuto && isRepeat) return currentIdx;
+            if (isShuffle) {
+                let nextIdx = Math.floor(Math.random() * playlist.length);
+                if (playlist.length > 1) {
+                    while (nextIdx === currentIdx) {
+                        nextIdx = Math.floor(Math.random() * playlist.length);
+                    }
+                }
+                return nextIdx;
+            }
+            return (currentIdx + 1) % playlist.length;
+        }
+
         function spawnFloatingNote() {
             if (!isPlaying || document.hidden) return;
-            const notes =['♪', '♫', '♬', '♩'];
+            const notes = ['♪', '♫', '♬', '♩'];
             const note = document.createElement('div');
             note.className = 'music-note';
             note.innerText = notes[Math.floor(Math.random() * notes.length)];
@@ -412,7 +440,7 @@
             isCrossfading = true;
             mixingBadge.classList.add('active');
 
-            let nextIdx = (currentIdx + 1) % playlist.length;
+            let nextIdx = getNextTrackIndex(true);
             let nextLayer = activeLayer === 1 ? 2 : 1;
             
             fadingOutAudio = activeLayer === 1 ? a1 : a2;
@@ -549,7 +577,9 @@
 
         playBtn.addEventListener('click', togglePlay);
         
-        const nextAction = () => playTrack((currentIdx + 1) % playlist.length, true);
+        // Next salta considerando el modo aleatorio
+        const nextAction = () => playTrack(getNextTrackIndex(false), true);
+        // Prev estándar para retroceder
         const prevAction = () => playTrack((currentIdx - 1 + playlist.length) % playlist.length, true);
         
         document.getElementById('btn-next').addEventListener('click', nextAction);
